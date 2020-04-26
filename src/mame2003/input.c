@@ -382,35 +382,22 @@ double round(double number)
 #endif
 #endif
 
+float map(float value, float start1, float stop1, float start2, float stop2)
+{
+  float outgoing =   start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+
+    return outgoing;
+}
+long map2(long x, long in_min, long in_max, long out_min, long out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 int convert_analog_scale(int input)
 {
-	static const int TRIGGER_MAX = 0x8000;
-	int neg_test = 0;
-	float scale;
-	int trigger_deadzone;
 
-	trigger_deadzone = (32678 * options.deadzone) / 100;
+// log_cb(RETRO_LOG_INFO, LOGPRE "map(%d) map2(%d) \n,",(int)map(input,0,32767,0,128),(int)map2(input,0,32767,0,128));
 
-	if (input < 0) {
-		input = abs(input); neg_test = 1;
-	}
-	scale = ((float)TRIGGER_MAX / (float)(TRIGGER_MAX - trigger_deadzone));
-
-	if (input > 0 && input > trigger_deadzone) {
-		// Re-scale analog range
-		float scaled = (input - trigger_deadzone) * scale;
-		input = (int)round(scaled);
-
-		if (input > +32767)
-			input = +32767;
-		input = input / 327.68;
-	} else {
-		input = 0;
-	}
-
-
-	if (neg_test) input = -abs(input);
-	return (int)input * 1.28;
+return (int)map(input,0,32767,0,128);
 }
 
 /* get pointer axis vector from coord */
