@@ -174,7 +174,67 @@ static WRITE16_HANDLER( digital_w )
 
 static READ16_HANDLER( analog_r )
 {
-	return readinputport(whichport);
+
+  #define max  255
+  #define cent 128
+  #define bump 51;
+
+  #define up   1
+  #define down 2
+  #define left 4
+  #define right 8
+
+  static INT16  xvalue = 0x80;
+  static INT16  yvalue = 0x80;
+  static INT16  currentx  = 0x80;
+  static INT16  currenty  = 0x80;
+  static INT16  center = 0;
+  int flag;
+  int temp;
+  UINT16 direction;
+
+  if( options.cheat_input_ports) // use cheat ports
+  {
+
+    if(whichport == 0 || whichport ==2)   direction = readinputport(6);
+
+    temp = direction & ~16;
+
+    if ( temp == 0 ) center =1;
+
+    else if ( temp == up         ) { center=0; xvalue = cent; yvalue = max;  currentx=cent;      currenty= cent+bump; }
+    else if ( temp == down       ) { center=0; xvalue = cent; yvalue = 0;    currentx=cent;      currenty= cent-bump; }
+    else if ( temp == left       ) { center=0; xvalue = max;  yvalue = cent; currentx=cent+bump; currenty= cent;      }
+    else if ( temp == right      ) { center=0; xvalue = 0;    yvalue = cent; currentx=cent-bump; currenty= cent;      }
+
+    else if ( temp == right+up   ) { center=0 ;xvalue = 0;    yvalue = max;  currentx=cent-bump; currenty= cent+bump; }
+    else if ( temp == right+down ) { center=0; xvalue = 0;    yvalue = 0;    currentx=cent-bump; currenty= cent-bump; }
+    else if ( temp == left+up    ) { center=0; xvalue = max;  yvalue = max;  currentx=cent+bump; currenty= cent+bump; }
+    else if ( temp == left+down  ) { center=0; xvalue = max;  yvalue = 0;    currentx=cent+bump; currenty= cent-bump; }
+    else log_cb(RETRO_LOG_INFO, LOGPRE "unhandled condition %d\n",temp);
+
+
+//   log_cb(RETRO_LOG_INFO, LOGPRE "flag:%d center:%d xval:%d yval:%d\n", temp, center, xvalue, yvalue);
+
+
+
+    if (whichport == 0)
+    {
+      if (center)
+        return currentx;
+      return xvalue;
+    }
+
+    else if (whichport == 2)
+    {
+      if (center)
+        return currenty;
+      return yvalue;
+    }
+    else log_cb(RETRO_LOG_INFO, LOGPRE "unhandled condition1 %d\n",temp);
+  }
+  else // use original inputs
+    return readinputport(whichport);
 }
 
 
@@ -289,6 +349,13 @@ INPUT_PORTS_START( foodf )
 	PORT_DIPSETTING(    0x00, DEF_STR( 1C_1C ))
 	PORT_DIPSETTING(    0xc0, DEF_STR( 1C_2C ))
 	PORT_DIPSETTING(    0x40, DEF_STR( Free_Play ))
+
+  PORT_START	/* fake port for digital joystick control */
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_JOYSTICK_UP    | IPF_8WAY | IPF_CHEAT )
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_JOYSTICK_DOWN  | IPF_8WAY | IPF_CHEAT )
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_JOYSTICK_LEFT  | IPF_8WAY | IPF_CHEAT )
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_JOYSTICK_RIGHT | IPF_8WAY | IPF_CHEAT )
+
 INPUT_PORTS_END
 
 
