@@ -127,7 +127,7 @@ int16_t analogjoy[4][4] = { 0 };
 
 int convert_analog_scale(int input);
 void controller_remap(unsigned port, unsigned device);
-
+int16_t retropad_layout[4];
 static struct retro_input_descriptor empty[] = { { 0 } };
 /******************************************************************************
 *
@@ -436,7 +436,7 @@ void retro_set_controller_port_device(unsigned in_port, unsigned device)
 {
 	environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, empty); // is this necessary? it was in the sample code
 	printf("port:%u device:%u\n",in_port , device);
-	options.retropad_layout[in_port] = device;
+	retropad_layout[in_port] = device;
 	controller_remap(in_port, device);
 }
 

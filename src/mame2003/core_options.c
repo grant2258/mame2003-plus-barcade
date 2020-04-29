@@ -39,7 +39,6 @@ void init_core_options(void)
 	init_default(&default_options[OPT_STV_BIOS], APPNAME "_stv_bios", "Specify Sega ST-V BIOS (Restart core); default|japan|japana|us|japan_b|taiwan|europe");
 	init_default(&default_options[OPT_USE_ALT_SOUND], APPNAME "_use_alt_sound", "Use CD soundtrack (Restart core); enabled|disabled");
 	init_default(&default_options[OPT_SHARE_DIAL], APPNAME "_dialsharexy", "Share 2 player dial controls across one X/Y device; disabled|enabled");
-	init_default(&default_options[OPT_DEADZONE], APPNAME "_deadzone", "Analog deadzone; 20|0|5|10|15|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95");
 	init_default(&default_options[OPT_TATE_MODE], APPNAME "_tate_mode", "TATE Mode - Rotating display (Restart core); disabled|enabled");
 	init_default(&default_options[OPT_VECTOR_RESOLUTION], APPNAME "_vector_resolution", "Vector resolution (Restart core); 1024x768|640x480|1280x960|1440x1080|1600x1200|original");
 	init_default(&default_options[OPT_VECTOR_ANTIALIAS], APPNAME "_vector_antialias", "Vector antialiasing; enabled|disabled");
@@ -304,9 +303,6 @@ void update_variables(bool first_time)
 					options.dial_share_xy = 0;
 					break;
 				}
-			case OPT_DEADZONE:
-				options.deadzone = atoi(var.value);
-				break;
 
 			case OPT_TATE_MODE:
 				if (strcmp(var.value, "enabled") == 0)
@@ -623,3 +619,4 @@ void set_content_flags(void)
 		log_cb(RETRO_LOG_INFO, LOGPRE "Content has an NVRAM bootstrap controlled via core option.\n");
 	}
 }
+

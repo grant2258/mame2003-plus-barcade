@@ -76,26 +76,6 @@ struct retro_variable_default {
 	const char *	defaults_string;
 };
 
-enum {
-	IDX_CLASSIC = 0,
-	IDX_MODERN,
-	IDX_8BUTTON,
-	IDX_6BUTTON,
-	IDX_PAD_end,
-};
-
-#define PLAYER_COUNT 6
-
-enum /*the "display numbers" for each player, as opposed to their array index */
-{
-	DISP_PLAYER1 = 1,
-	DISP_PLAYER2,
-	DISP_PLAYER3,
-	DISP_PLAYER4,
-	DISP_PLAYER5,
-	DISP_PLAYER6
-};
-
 
 /******************************************************************************
 *
@@ -342,7 +322,6 @@ enum /* controls the order in which core options appear. common, important, and 
 	OPT_DISPLAY_SETUP= 0,
 	OPT_INPUT_INTERFACE,
 	OPT_4WAY,
-	OPT_DEADZONE,
 	OPT_Cheat_Input_Ports,
 	OPT_MOUSE_DEVICE,
 	OPT_SHARE_DIAL,
