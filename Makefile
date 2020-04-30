@@ -185,7 +185,7 @@ else ifeq ($(platform), rpi3)
    fpic = -fPIC
    CFLAGS += $(fpic)
    LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T
-   PLATCFLAGS += -marm -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
+   PLATCFLAGS +=-march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
    PLATCFLAGS += -fomit-frame-pointer -ffast-math
    CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions
    CPU_ARCH := arm
