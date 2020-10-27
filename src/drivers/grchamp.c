@@ -483,7 +483,7 @@ INPUT_PORTS_START( grchamp )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_COIN1 )		/* Coin B */
 
 	PORT_START /* Accel */
-	PORT_ANALOGX( 0xff, 0x00, IPT_PEDAL, 100, 16, 0x00, 0xff, KEYCODE_LCONTROL, IP_JOY_DEFAULT, IP_KEY_DEFAULT, IP_JOY_DEFAULT )
+	PORT_ANALOG( 0xff, 0x00, IPT_PEDAL, 100, 16, 0x00, 0xff )
 	/*mask,default,type,sensitivity,delta,min,max*/
 
 	PORT_START /* Wheel */
