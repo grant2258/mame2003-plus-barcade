@@ -241,12 +241,13 @@ int osd_is_joy_pressed(int joycode);
 
 
 /* We support 4 players for each analog control / trackball */
-#define OSD_MAX_JOY_ANALOG      4
+#define OSD_MAX_JOY_ANALOG      8
 #define X_AXIS                  0
 #define Y_AXIS                  1
 #define Z_AXIS                  2
 #define PEDAL_AXIS              3
-#define MAX_ANALOG_AXES 4
+#define PEDAL_AXIS2             4
+#define MAX_ANALOG_AXES 5
 
 /* added for building joystick seq for analog inputs */
 int osd_is_joystick_axis_code(int joycode);

@@ -184,17 +184,21 @@ void osd_get_path(int pathtype, char* path)
   char save_path_buffer[PATH_MAX_LENGTH]= {0};
   char sys_path_buffer[PATH_MAX_LENGTH]= {0};
 
+
   save_path_buffer[0] = '\0';
   if(options.save_subfolder)
-    snprintf(save_path_buffer, PATH_MAX_LENGTH, "%s%c%s", options.libretro_save_path,path_default_slash_c(), APPNAME);
+    snprintf(save_path_buffer, PATH_MAX_LENGTH, "%s%c%s", options.libretro_save_path, PATH_DEFAULT_SLASH_C(), APPNAME);
   else
     snprintf(save_path_buffer, PATH_MAX_LENGTH, "%s", options.libretro_save_path);
 
   sys_path_buffer[0] = '\0';
   if(options.system_subfolder)
-    snprintf(sys_path_buffer, PATH_MAX_LENGTH, "%s%c%s", options.libretro_system_path,path_default_slash_c(), APPNAME);
+    snprintf(sys_path_buffer, PATH_MAX_LENGTH, "%s%c%s", options.libretro_system_path, PATH_DEFAULT_SLASH_C(), APPNAME);
   else
     snprintf(sys_path_buffer, PATH_MAX_LENGTH, "%s", options.libretro_system_path);
+
+//  log_cb(RETRO_LOG_DEBUG, LOGPRE "osd_get_path() called:  sys_path_buffer= %s  \n osd_get_path() save_path_buffer= %s\n", sys_path_buffer, save_path_buffer);
+
 
    switch (pathtype)
    {
@@ -205,22 +209,22 @@ void osd_get_path(int pathtype, char* path)
 
       /* user-initiated content goes in mame2003 save directory subfolders */
       case FILETYPE_IMAGE_DIFF:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer,path_default_slash_c(), "diff");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer, PATH_DEFAULT_SLASH_C(), "diff");
          break;
       case FILETYPE_NVRAM:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer,path_default_slash_c(), "nvram");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer, PATH_DEFAULT_SLASH_C(), "nvram");
          break;
       case FILETYPE_HIGHSCORE:
-          snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer,path_default_slash_c(), "hi");
+          snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer, PATH_DEFAULT_SLASH_C(), "hi");
          break;
       case FILETYPE_CONFIG:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer,path_default_slash_c(), "cfg");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer, PATH_DEFAULT_SLASH_C(), "cfg");
          break;
       case FILETYPE_MEMCARD:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer,path_default_slash_c(), "memcard");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer, PATH_DEFAULT_SLASH_C(), "memcard");
          break;
       case FILETYPE_CTRLR:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer,path_default_slash_c(), "ctrlr");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", save_path_buffer, PATH_DEFAULT_SLASH_C(), "ctrlr");
          break;
       case FILETYPE_XML_DAT:
          snprintf(path, PATH_MAX_LENGTH, "%s", save_path_buffer);
@@ -228,19 +232,24 @@ void osd_get_path(int pathtype, char* path)
 
          /* static, pregenerated content goes in mam2003 system directory subfolders */
       case FILETYPE_ARTWORK:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", sys_path_buffer,path_default_slash_c(), "artwork");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", sys_path_buffer, PATH_DEFAULT_SLASH_C(), "artwork");
          break;
       case FILETYPE_SAMPLE:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", sys_path_buffer,path_default_slash_c(), "samples");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", sys_path_buffer, PATH_DEFAULT_SLASH_C(), "samples");
          break;
       case FILETYPE_SAMPLE_FLAC:
-         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", sys_path_buffer,path_default_slash_c(), "samples");
+         snprintf(path, PATH_MAX_LENGTH, "%s%c%s", sys_path_buffer, PATH_DEFAULT_SLASH_C(), "samples");
          break;
 
       default:
          /* .dat files and additional core content goes in mame2003 system directory */
          snprintf(path, PATH_MAX_LENGTH, "%s", sys_path_buffer);
+      break;
    }
+/* might as well create other directories at this point */
+  if (!path_is_directory(path))
+    if (!path_mkdir(path))   log_cb(RETRO_LOG_DEBUG, LOGPRE "osd_get_path() failed to create path %s\n",path);
+  log_cb(RETRO_LOG_DEBUG, LOGPRE "osd_get_path() path=%s\n",path);
 }
 
 int osd_get_path_info(int pathtype, int pathindex, const char *filename)
@@ -249,9 +258,9 @@ int osd_get_path_info(int pathtype, int pathindex, const char *filename)
    char currDir[PATH_MAX_LENGTH];
 
    osd_get_path(pathtype, currDir);
-   snprintf(buffer, PATH_MAX_LENGTH, "%s%c%s", currDir,path_default_slash_c(), filename);
+   snprintf(buffer, PATH_MAX_LENGTH, "%s%c%s", currDir, PATH_DEFAULT_SLASH_C(), filename);
 
-   log_cb(RETRO_LOG_DEBUG, "(osd_get_path_info) (buffer = [%s]), (directory: [%s]), (path type: [%d]), (filename: [%s]) \n", buffer, currDir, pathtype, filename);
+   log_cb(RETRO_LOG_DEBUG, "(osd_get_path_info) buffer=%s\n",  buffer);
 
    if (path_is_directory(buffer))
    {
@@ -263,6 +272,7 @@ int osd_get_path_info(int pathtype, int pathindex, const char *filename)
       log_cb(RETRO_LOG_DEBUG, "(osd_get_path_info) path is file _-_ %s\n",buffer);
       return PATH_IS_FILE;
    }
+
    log_cb(RETRO_LOG_DEBUG, "(osd_get_path_info) path not found _-_ %s\n",buffer);
    return PATH_NOT_FOUND;
 }
@@ -274,12 +284,13 @@ FILE* osd_fopen(int pathtype, int pathindex, const char *filename, const char *m
    FILE* out;
 
    osd_get_path(pathtype, currDir);
-   snprintf(buffer, PATH_MAX_LENGTH, "%s%c%s", currDir,path_default_slash_c(), filename);
-   log_cb(RETRO_LOG_DEBUG, "(osd_fopen) called: %s\n",buffer);
-   path_mkdir(currDir);
+  if (!path_is_directory(currDir))  log_cb(RETRO_LOG_DEBUG, "(osd_fopen) path:%s does not exist\n",currDir);
+
+   snprintf(buffer, PATH_MAX_LENGTH, "%s%c%s", currDir, PATH_DEFAULT_SLASH_C(), filename);
 
    out = fopen(buffer, mode);
-
+   if (out)  log_cb(RETRO_LOG_DEBUG, "(osd_fopen) opened file:%s\n", buffer);
+   else  log_cb(RETRO_LOG_DEBUG, "(osd_fopen) failed open file:%s\n", buffer);
    return out;
 }
 
@@ -808,12 +819,12 @@ const char *get_extension_for_filetype(int filetype)
 	/* now open the file appropriately */
 	switch (filetype)
 	{
-		case FILETYPE_RAW:			/* raw data files */
-		case FILETYPE_ROM:			/* ROM files */
-		case FILETYPE_HIGHSCORE_DB:	/* highscore database/history files */
-		case FILETYPE_HISTORY:		/* game history files */
-		case FILETYPE_CHEAT:		/* cheat file */
-		default:					/* anything else */
+		case FILETYPE_RAW:              /* raw data files */
+		case FILETYPE_ROM:              /* ROM files */
+		case FILETYPE_HIGHSCORE_DB:     /* highscore database/history files */
+		case FILETYPE_HISTORY:          /* game history files */
+		case FILETYPE_CHEAT:            /* cheat file */
+		default:                        /* anything else */
 			extension = NULL;
 			break;
 
@@ -829,7 +840,7 @@ const char *get_extension_for_filetype(int filetype)
 			extension = "wav";
 			break;
 
-		case FILETYPE_SAMPLE_FLAC:		/* samples */
+		case FILETYPE_SAMPLE_FLAC:	/* samples */
 			extension = "flac";
 			break;
 
@@ -880,7 +891,7 @@ static mame_file *generic_fopen(int pathtype, const char *gamename, const char *
 	mame_file file, *newfile;
 	char tempname[256];
 
-	log_cb(RETRO_LOG_DEBUG, "(generic_fopen) (%d, %s, %s, %s, %X)\n", pathtype, gamename, filename, extension, flags);
+	log_cb(RETRO_LOG_DEBUG, "(generic_fopen) (pathtype:%d, gamename:%s, filename:%s, extension:%s, flags:%X)\n", pathtype, gamename, filename, extension, flags);
 
 	/* reset the file handle */
 	memset(&file, 0, sizeof(file));
@@ -912,7 +923,7 @@ static mame_file *generic_fopen(int pathtype, const char *gamename, const char *
 
 		/* first look for path/gamename as a directory */
 		compose_path(name, gamename, NULL, NULL);
-		log_cb(RETRO_LOG_DEBUG, LOGPRE "Trying %s\n", name);
+		log_cb(RETRO_LOG_DEBUG, LOGPRE "(generic_fopen) first try name =%s\n", name);
 
 
 		/* if the directory exists, proceed */
@@ -921,7 +932,7 @@ static mame_file *generic_fopen(int pathtype, const char *gamename, const char *
 			log_cb(RETRO_LOG_DEBUG, LOGPRE "(generic_fopen) directory exists: %s\n", name);
 			/* now look for path/gamename/filename.ext */
 			compose_path(name, gamename, filename, extension);
-
+      log_cb(RETRO_LOG_DEBUG, LOGPRE "(generic_fopen)  second try name =%s\n", name);
 			/* if we need checksums, load it into RAM and compute it along the way */
 			if (flags & FILEFLAG_HASH)
 			{

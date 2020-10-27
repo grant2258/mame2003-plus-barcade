@@ -3,127 +3,135 @@
 #include <math.h>
 //#include "inptport.h"
 /* todo
-  fix analog up
-  do lots of testing a lots changed
+   do lots of testing a lots changed
 */
 int deadzone = (int) 32767 * 0.2;
+const int number_of_controls=28;
 struct JoystickInfo mame_joy_map[] =
 {
-	{ "J1 Left",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_LEFT,   JOYCODE_1_LEFT	      },
-	{ "J1 Right",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_RIGHT,  JOYCODE_1_RIGHT	      },
-	{ "J1 Up",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_UP,     JOYCODE_1_UP	      },
-	{ "J1 Down",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_DOWN,   JOYCODE_1_DOWN	      },
-	{ "J1 B",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_B,      JOYCODE_OTHER	      },
-	{ "J1 A",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_A,      JOYCODE_OTHER	      },
-	{ "J1 Y",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_Y,      JOYCODE_OTHER	      },
-	{ "J1 X",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_X,      JOYCODE_OTHER	      },
-	{ "J1 L",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_L,      JOYCODE_OTHER	      },
-	{ "J1 R",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_R,      JOYCODE_OTHER	      },
-	{ "J1 L2",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_L2,     JOYCODE_OTHER	      },
-	{ "J1 R2",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_R2,     JOYCODE_OTHER	      },
-	{ "J1 L3",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_L3,     JOYCODE_OTHER	      },
-	{ "J1 R3",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_R3,     JOYCODE_OTHER      },
-	{ "J1 Start",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_START,  JOYCODE_OTHER	      },
-	{ "J1 Sel",	   ((0) * 26) + RETRO_DEVICE_ID_JOYPAD_SELECT, JOYCODE_OTHER	      },
-	{ "M1 B1",	   ((0) * 26) + 16,			      JOYCODE_MOUSE_1_BUTTON1 },
-	{ "M1 B2",	   ((0) * 26) + 17,			      JOYCODE_MOUSE_1_BUTTON2 },
-	{ "J1 AX0 X-",	   (((0) * 26) + 18) | 0x10000,			      JOYCODE_1_LEFT_LEFT     },
-	{ "J1 AX0 X+",	   (((0) * 26) + 19) | 0x10000,			      JOYCODE_1_LEFT_RIGHT    },
-	{ "J1 AX1 Y-",	   (((0) * 26) + 20) | 0x10000,			      JOYCODE_1_LEFT_UP	      },
-	{ "J1 AX1 Y+",	   (((0) * 26) + 21) | 0x10000,			      JOYCODE_1_LEFT_DOWN     },
-	{ "J1 AX2 X-",	   (((0) * 26) + 22) | 0x10000,			      JOYCODE_1_RIGHT_LEFT    },
-	{ "J1 AX2 X+",	   (((0) * 26) + 23) | 0x10000,			      JOYCODE_1_RIGHT_RIGHT   },
-	{ "J1 AX3 Y-",	   (((0) * 26) + 24) | 0x10000,			      JOYCODE_1_RIGHT_UP      },
-	{ "J1 AX3 Y+",	   (((0) * 26) + 25) | 0x10000,			      JOYCODE_1_RIGHT_DOWN    },
+	{ "J1 Left",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_LEFT,	JOYCODE_1_LEFT		},
+	{ "J1 Right",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_RIGHT,	JOYCODE_1_RIGHT		},
+	{ "J1 Up",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_UP,	JOYCODE_1_UP		},
+	{ "J1 Down",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_DOWN,	JOYCODE_1_DOWN		},
+	{ "J1 B",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_B,	JOYCODE_OTHER		},
+	{ "J1 A",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_A,	JOYCODE_OTHER		},
+	{ "J1 Y",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_Y,	JOYCODE_OTHER		},
+	{ "J1 X",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_X,	JOYCODE_OTHER		},
+	{ "J1 L",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L,	JOYCODE_OTHER		},
+	{ "J1 R",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R,	JOYCODE_OTHER		},
+	{ "J1 L2",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L2,	JOYCODE_OTHER		},
+	{ "J1 R2",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R2,	JOYCODE_OTHER		},
+	{ "J1 L3",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L3,	JOYCODE_OTHER		},
+	{ "J1 R3",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R3,	JOYCODE_OTHER		},
+	{ "J1 Start",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_START,	JOYCODE_OTHER		},
+	{ "J1 Sel",	   ((0) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_SELECT,	JOYCODE_OTHER		},
+	{ "M1 B1",	   ((0) * number_of_controls) + 16,				JOYCODE_MOUSE_1_BUTTON1	},
+	{ "M1 B2",	   ((0) * number_of_controls) + 17,				JOYCODE_MOUSE_1_BUTTON2	},
+	{ "J1 LX-",	  (((0) * number_of_controls) + 18) | 0x10000,	 		JOYCODE_1_LEFT_LEFT	},
+	{ "J1 LX+",	  (((0) * number_of_controls) + 19) | 0x10000,			JOYCODE_1_LEFT_RIGHT	},
+	{ "J1 LY-",	  (((0) * number_of_controls) + 20) | 0x10000,			JOYCODE_1_LEFT_UP	},
+	{ "J1 LY+",	  (((0) * number_of_controls) + 21) | 0x10000,			JOYCODE_1_LEFT_DOWN	},
+	{ "J1 RX-",	  (((0) * number_of_controls) + 22) | 0x10000,			JOYCODE_1_RIGHT_LEFT	},
+	{ "J1 RX+",	  (((0) * number_of_controls) + 23) | 0x10000,			JOYCODE_1_RIGHT_RIGHT	},
+	{ "J1 RY-",	  (((0) * number_of_controls) + 24) | 0x10000,			JOYCODE_1_RIGHT_UP	},
+	{ "J1 RY+",	  (((0) * number_of_controls) + 25) | 0x10000,			JOYCODE_1_RIGHT_DOWN	},
+	{ "J1 LT",	  (((0) * number_of_controls) + 26) | 0x10000,			JOYCODE_1_PEDAL2		},
+	{ "J1 RT",	  (((0) * number_of_controls) + 27) | 0x10000,			JOYCODE_1_PEDAL	},
 
-	{ "J2 Left ",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_LEFT,   JOYCODE_2_LEFT	      },
-	{ "J2 Right",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_RIGHT,  JOYCODE_2_RIGHT	      },
-	{ "J2 Up",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_UP,     JOYCODE_2_UP	      },
-	{ "J2 Down",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_DOWN,   JOYCODE_2_DOWN	      },
-	{ "J2 B",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_B,      JOYCODE_OTHER	      },
-	{ "J2 A",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_A,      JOYCODE_OTHER	      },
-	{ "J2 Y",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_Y,      JOYCODE_OTHER	      },
-	{ "J2 X",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_X,      JOYCODE_OTHER	      },
-	{ "J2 L",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_L,      JOYCODE_OTHER	      },
-	{ "J2 R",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_R,      JOYCODE_OTHER	      },
-	{ "J2 L2",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_L2,     JOYCODE_OTHER	      },
-	{ "J2 R2",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_R2,     JOYCODE_OTHER	      },
-	{ "J2 L3",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_L3,     JOYCODE_OTHER	      },
-	{ "J2 R3",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_R3,     JOYCODE_OTHER      },
-	{ "J2 Start",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_START,  JOYCODE_OTHER	      },
-	{ "J2 Select",	   ((1) * 26) + RETRO_DEVICE_ID_JOYPAD_SELECT, JOYCODE_OTHER	      },
-	{ "M2 B1", ((1) * 26) + 16,			      JOYCODE_MOUSE_2_BUTTON1 },
-	{ "M2 B2", ((1) * 26) + 17,			      JOYCODE_MOUSE_2_BUTTON2 },
-	{ "J2 AXIS 0 X-",  (((1) * 26) + 18) | 0x10000,			      JOYCODE_2_LEFT_LEFT     },
-	{ "J2 AXIS 0 X+",  (((1) * 26) + 19) | 0x10000,			      JOYCODE_2_LEFT_RIGHT    },
-	{ "J2 AXIS 1 Y-",  (((1) * 26) + 20) | 0x10000,			      JOYCODE_2_LEFT_UP	      },
-	{ "J2 AXIS 1 Y+",  (((1) * 26) + 21) | 0x10000,			      JOYCODE_2_LEFT_DOWN     },
-	{ "J2 AXIS 2 X-",  (((1) * 26) + 22) | 0x10000,			      JOYCODE_2_RIGHT_LEFT    },
-	{ "J2 AXIS 2 X+",  (((1) * 26) + 23) | 0x10000,			      JOYCODE_2_RIGHT_RIGHT   },
-	{ "J2 AXIS 3 Y-",  (((1) * 26) + 24) | 0x10000,			      JOYCODE_2_RIGHT_UP      },
-	{ "J2 AXIS 3 Y+",  (((1) * 26) + 25) | 0x10000,			      JOYCODE_2_RIGHT_DOWN    },
+	{ "J2 Left",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_LEFT,	JOYCODE_2_LEFT		},
+	{ "J2 Right",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_RIGHT,	JOYCODE_2_RIGHT		},
+	{ "J2 Up",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_UP,	JOYCODE_2_UP		},
+	{ "J2 Down",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_DOWN,	JOYCODE_2_DOWN		},
+	{ "J2 B",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_B,	JOYCODE_OTHER		},
+	{ "J2 A",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_A,	JOYCODE_OTHER		},
+	{ "J2 Y",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_Y,	JOYCODE_OTHER		},
+	{ "J2 X",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_X,	JOYCODE_OTHER		},
+	{ "J2 L",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L,	JOYCODE_OTHER		},
+	{ "J2 R",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R,	JOYCODE_OTHER		},
+	{ "J2 L2",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L2,	JOYCODE_OTHER		},
+	{ "J2 R2",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R2,	JOYCODE_OTHER		},
+	{ "J2 L3",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L3,	JOYCODE_OTHER		},
+	{ "J2 R3",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R3,	JOYCODE_OTHER		},
+	{ "J2 Start",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_START,	JOYCODE_OTHER		},
+	{ "J2 Sel",	   ((1) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_SELECT,	JOYCODE_OTHER		},
+	{ "M2 B1",	   ((1) * number_of_controls) + 16,				JOYCODE_MOUSE_2_BUTTON1	},
+	{ "M2 B2",	   ((1) * number_of_controls) + 17,				JOYCODE_MOUSE_2_BUTTON2	},
+	{ "J2 LX-",	  (((1) * number_of_controls) + 18) | 0x10000,	 		JOYCODE_2_LEFT_LEFT	},
+	{ "J2 LX+",	  (((1) * number_of_controls) + 19) | 0x10000,			JOYCODE_2_LEFT_RIGHT	},
+	{ "J2 LY-",	  (((1) * number_of_controls) + 20) | 0x10000,			JOYCODE_2_LEFT_UP	},
+	{ "J2 LY+",	  (((1) * number_of_controls) + 21) | 0x10000,			JOYCODE_2_LEFT_DOWN	},
+	{ "J2 RX-",	  (((1) * number_of_controls) + 22) | 0x10000,			JOYCODE_2_RIGHT_LEFT	},
+	{ "J2 RX+",	  (((1) * number_of_controls) + 23) | 0x10000,			JOYCODE_2_RIGHT_RIGHT	},
+	{ "J2 RY-",	  (((1) * number_of_controls) + 24) | 0x10000,			JOYCODE_2_RIGHT_UP	},
+	{ "J2 RY+",	  (((1) * number_of_controls) + 25) | 0x10000,			JOYCODE_2_RIGHT_DOWN	},
+	{ "J2 LT",	  (((1) * number_of_controls) + 26) | 0x10000,			JOYCODE_2_PEDAL2		},
+	{ "J2 RT",	  (((1) * number_of_controls) + 27) | 0x10000,			JOYCODE_2_PEDAL	},
 
-	{ "J3 Left ",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_LEFT,   JOYCODE_3_LEFT	      },
-	{ "J3 Right",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_RIGHT,  JOYCODE_3_RIGHT	      },
-	{ "J3 Up",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_UP,     JOYCODE_3_UP	      },
-	{ "J3 Down",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_DOWN,   JOYCODE_3_DOWN	      },
-	{ "J3 B",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_B,      JOYCODE_OTHER	      },
-	{ "J3 A",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_A,      JOYCODE_OTHER	      },
-	{ "J3 Y",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_Y,      JOYCODE_OTHER	      },
-	{ "J3 X",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_X,      JOYCODE_OTHER	      },
-	{ "J3 L",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_L,      JOYCODE_OTHER	      },
-	{ "J3 R",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_R,      JOYCODE_OTHER	      },
-	{ "J3 L2",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_L2,     JOYCODE_OTHER	      },
-	{ "J3 R2",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_R2,     JOYCODE_OTHER	      },
-	{ "J3 L3",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_L3,     JOYCODE_OTHER	      },
-	{ "J3 R3",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_R3,     JOYCODE_OTHER      },
-	{ "J3 Start",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_START,  JOYCODE_OTHER	      },
-	{ "J3 Select",	   ((2) * 26) + RETRO_DEVICE_ID_JOYPAD_SELECT, JOYCODE_OTHER	      },
-	{ "M3 B1", ((2) * 26) + 16 ,			      JOYCODE_MOUSE_3_BUTTON1 },
-	{ "M3 B2", ((2) * 26) + 17 ,			      JOYCODE_MOUSE_3_BUTTON2 },
-	{ "J3 AXIS 0 X-",  (((2) * 26) + 18) | 0x10000,			      JOYCODE_3_LEFT_LEFT     },
-	{ "J3 AXIS 0 X+",  (((2) * 26) + 19) | 0x10000,			      JOYCODE_3_LEFT_RIGHT    },
-	{ "J3 AXIS 1 Y-",  (((2) * 26) + 20) | 0x10000,			      JOYCODE_3_LEFT_UP	      },
-	{ "J3 AXIS 1 Y+",  (((2) * 26) + 21) | 0x10000,			      JOYCODE_3_LEFT_DOWN     },
-	{ "J3 AXIS 2 X-",  (((2) * 26) + 22) | 0x10000,			      JOYCODE_3_RIGHT_LEFT    },
-	{ "J3 AXIS 2 X+",  (((2) * 26) + 23) | 0x10000,			      JOYCODE_3_RIGHT_RIGHT   },
-	{ "J3 AXIS 3 Y-",  (((2) * 26) + 24) | 0x10000,			      JOYCODE_3_RIGHT_UP      },
-	{ "J3 AXIS 3 Y+",  (((2) * 26) + 25) | 0x10000,			      JOYCODE_3_RIGHT_DOWN    },
+	{ "J3 Left",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_LEFT,	JOYCODE_3_LEFT		},
+	{ "J3 Right",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_RIGHT,	JOYCODE_3_RIGHT		},
+	{ "J3 Up",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_UP,	JOYCODE_3_UP		},
+	{ "J3 Down",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_DOWN,	JOYCODE_3_DOWN		},
+	{ "J3 B",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_B,	JOYCODE_OTHER		},
+	{ "J3 A",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_A,	JOYCODE_OTHER		},
+	{ "J3 Y",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_Y,	JOYCODE_OTHER		},
+	{ "J3 X",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_X,	JOYCODE_OTHER		},
+	{ "J3 L",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L,	JOYCODE_OTHER		},
+	{ "J3 R",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R,	JOYCODE_OTHER		},
+	{ "J3 L2",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L2,	JOYCODE_OTHER		},
+	{ "J3 R2",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R2,	JOYCODE_OTHER		},
+	{ "J3 L3",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L3,	JOYCODE_OTHER		},
+	{ "J3 R3",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R3,	JOYCODE_OTHER		},
+	{ "J3 Start",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_START,	JOYCODE_OTHER		},
+	{ "J3 Sel",	   ((2) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_SELECT,	JOYCODE_OTHER		},
+	{ "M3 B1",	   ((2) * number_of_controls) + 16,				JOYCODE_MOUSE_3_BUTTON1	},
+	{ "M3 B2",	   ((2) * number_of_controls) + 17,				JOYCODE_MOUSE_3_BUTTON2	},
+	{ "J3 LX-",	  (((2) * number_of_controls) + 18) | 0x10000,	 		JOYCODE_3_LEFT_LEFT	},
+	{ "J3 LX+",	  (((2) * number_of_controls) + 19) | 0x10000,			JOYCODE_3_LEFT_RIGHT	},
+	{ "J3 LY-",	  (((2) * number_of_controls) + 20) | 0x10000,			JOYCODE_3_LEFT_UP	},
+	{ "J3 LY+",	  (((2) * number_of_controls) + 21) | 0x10000,			JOYCODE_3_LEFT_DOWN	},
+	{ "J3 RX-",	  (((2) * number_of_controls) + 22) | 0x10000,			JOYCODE_3_RIGHT_LEFT	},
+	{ "J3 RX+",	  (((2) * number_of_controls) + 23) | 0x10000,			JOYCODE_3_RIGHT_RIGHT	},
+	{ "J3 RY-",	  (((2) * number_of_controls) + 24) | 0x10000,			JOYCODE_3_RIGHT_UP	},
+	{ "J3 RY+",	  (((2) * number_of_controls) + 25) | 0x10000,			JOYCODE_3_RIGHT_DOWN	},
+	{ "J3 LT",	  (((2) * number_of_controls) + 26) | 0x10000,			JOYCODE_3_PEDAL2		},
+	{ "J3 RT",	  (((2) * number_of_controls) + 27) | 0x10000,			JOYCODE_3_PEDAL	},
 
-	{ "J4 Left ",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_LEFT,   JOYCODE_4_LEFT	      },
-	{ "J4 Right",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_RIGHT,  JOYCODE_4_RIGHT	      },
-	{ "J4 Up",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_UP,     JOYCODE_4_UP	      },
-	{ "J4 Down",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_DOWN,   JOYCODE_4_DOWN	      },
-	{ "J4 B",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_B,      JOYCODE_OTHER	      },
-	{ "J4 A",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_A,      JOYCODE_OTHER	      },
-	{ "J4 Y",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_Y,      JOYCODE_OTHER	      },
-	{ "J4 X",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_X,      JOYCODE_OTHER	      },
-	{ "J4 L",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_L,      JOYCODE_OTHER	      },
-	{ "J4 R",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_R,      JOYCODE_OTHER	      },
-	{ "J4 L2",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_L2,     JOYCODE_OTHER	      },
-	{ "J4 R2",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_R2,     JOYCODE_OTHER	      },
-	{ "J4 L3",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_L3,     JOYCODE_OTHER	      },
-	{ "J4 R3",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_R3,     JOYCODE_OTHER      },
-	{ "J4 Start",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_START,  JOYCODE_OTHER	      },
-	{ "J4 Select",	   ((3) * 26) + RETRO_DEVICE_ID_JOYPAD_SELECT, JOYCODE_OTHER	      },
-	{ "M4 B1", ((3) * 26) + 16,			      JOYCODE_MOUSE_4_BUTTON1 },
-	{ "M4 B1", ((3) * 26) + 17,			      JOYCODE_MOUSE_4_BUTTON2 },
-	{ "J4 AXIS 0 X-",  (((3) * 26) + 18) | 0x10000,			      JOYCODE_4_LEFT_LEFT     },
-	{ "J4 AXIS 0 X+",  (((3) * 26) + 19) | 0x10000,			      JOYCODE_4_LEFT_RIGHT    },
-	{ "J4 AXIS 1 Y-",  (((3) * 26) + 20) | 0x10000,			      JOYCODE_4_LEFT_UP	      },
-	{ "J4 AXIS 1 Y+",  (((3) * 26) + 21) | 0x10000,			      JOYCODE_4_LEFT_DOWN     },
-	{ "J4 AXIS 2 X-",  (((3) * 26) + 22) | 0x10000,			      JOYCODE_4_RIGHT_LEFT    },
-	{ "J4 AXIS 2 X+",  (((3) * 26) + 23) | 0x10000,			      JOYCODE_4_RIGHT_RIGHT   },
-	{ "J4 AXIS 3 Y-",  (((3) * 26) + 24) | 0x10000,			      JOYCODE_4_RIGHT_UP      },
-	{ "J4 AXIS 3 Y+",  (((3) * 26) + 25) | 0x10000,			      JOYCODE_4_RIGHT_DOWN    },
-	{ 0,		   0,						      0			      }
+	{ "J4 Left",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_LEFT,	JOYCODE_4_LEFT		},
+	{ "J4 Right",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_RIGHT,	JOYCODE_4_RIGHT		},
+	{ "J4 Up",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_UP,	JOYCODE_4_UP		},
+	{ "J4 Down",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_DOWN,	JOYCODE_4_DOWN		},
+	{ "J4 B",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_B,	JOYCODE_OTHER		},
+	{ "J4 A",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_A,	JOYCODE_OTHER		},
+	{ "J4 Y",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_Y,	JOYCODE_OTHER		},
+	{ "J4 X",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_X,	JOYCODE_OTHER		},
+	{ "J4 L",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L,	JOYCODE_OTHER		},
+	{ "J4 R",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R,	JOYCODE_OTHER		},
+	{ "J4 L2",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L2,	JOYCODE_OTHER		},
+	{ "J4 R2",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R2,	JOYCODE_OTHER		},
+	{ "J4 L3",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_L3,	JOYCODE_OTHER		},
+	{ "J4 R3",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_R3,	JOYCODE_OTHER		},
+	{ "J4 Start",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_START,	JOYCODE_OTHER		},
+	{ "J4 Sel",	   ((3) * number_of_controls) + RETRO_DEVICE_ID_JOYPAD_SELECT,	JOYCODE_OTHER		},
+	{ "M4 B1",	   ((3) * number_of_controls) + 16,				JOYCODE_MOUSE_4_BUTTON1	},
+	{ "M4 B2",	   ((3) * number_of_controls) + 17,				JOYCODE_MOUSE_4_BUTTON2	},
+	{ "J4 LX-",	  (((3) * number_of_controls) + 18) | 0x10000,	 		JOYCODE_4_LEFT_LEFT	},
+	{ "J4 LX+",	  (((3) * number_of_controls) + 19) | 0x10000,			JOYCODE_4_LEFT_RIGHT	},
+	{ "J4 LY-",	  (((3) * number_of_controls) + 20) | 0x10000,			JOYCODE_4_LEFT_UP	},
+	{ "J4 LY+",	  (((3) * number_of_controls) + 21) | 0x10000,			JOYCODE_4_LEFT_DOWN	},
+	{ "J4 RX-",	  (((3) * number_of_controls) + 22) | 0x10000,			JOYCODE_4_RIGHT_LEFT	},
+	{ "J4 RX+",	  (((3) * number_of_controls) + 23) | 0x10000,			JOYCODE_4_RIGHT_RIGHT	},
+	{ "J4 RY-",	  (((3) * number_of_controls) + 24) | 0x10000,			JOYCODE_4_RIGHT_UP	},
+	{ "J4 RY+",	  (((3) * number_of_controls) + 25) | 0x10000,			JOYCODE_4_RIGHT_DOWN	},
+	{ "J4 LT",	  (((3) * number_of_controls) + 26) | 0x10000,			JOYCODE_4_PEDAL2		},
+	{ "J4 RT",	  (((3) * number_of_controls) + 27) | 0x10000,			JOYCODE_4_PEDAL	},
+	{ 0,		   0,						      0					}
 };
 
 
 int16_t mouse_x[4] = { 0 };
 int16_t mouse_y[4] = { 0 };
-int retroJsState[156] = { 0 };              // initialise to zero - we are only reading 4 players atm map for 6 (4*26)
-int16_t analogjoy[4][4] = { 0 };
+int retroJsState[112] = { 0 };              // initialise to zero - we are only reading 4 players atm map for 6 (4*27)
+int16_t analogjoy[4][6] = { 0 };
 
 int convert_analog_scale(int input);
 void controller_remap(unsigned port, unsigned device);
@@ -193,20 +201,23 @@ void osd_analogjoy_read(int player, int analog_axis[MAX_ANALOG_AXES], InputCode 
 		if (analogjoy_input[i] != CODE_NONE) {
 			code = analogjoy_input[i] &~0x10000;
 
-			if (code == (player * 26) + 18  || code == (player * 26) + 19)
+			if (code == (player * number_of_controls) + 18  || code == (player * number_of_controls) + 19)
 				value = analogjoy[player][0];
 
-			else if (code == (player * 26) + 20 || code == (player * 26) + 21)
+			else if (code == (player * number_of_controls) + 20 || code == (player * number_of_controls) + 21)
 				value = analogjoy[player][1];
 
-			else if (code == (player * 26) + 22 || code == (player * 23) + 23)
+			else if (code == (player * number_of_controls) + 22 || code == (player * number_of_controls) + 23)
 				value = analogjoy[player][2];
 
-			else if (code == (player * 26) + 24 || code == (player * 25) + 25)
+			else if (code == (player * number_of_controls) + 24 || code == (player * number_of_controls) + 25)
 				value = analogjoy[player][3];
+			//this port doesnt support half axis pedal code would need updated do this instead
+			else if (code == (player * number_of_controls) + 26 || code == (player * number_of_controls) + 27)
+				value = analogjoy[player][4];
 
-    if(code%2) value = -value;
-
+			
+    			if(code%2) value = -value;
 			analog_axis[i] = value;
 		}
 	}
@@ -524,36 +535,38 @@ if( port== 3) offset = JOYCODE_4_LEFT;
 
 if (device == 1) // gampad mapping
 {
-		mame_joy_map[(port * 26) + RP_B].standardcode = offset + BUTTON1;
-		mame_joy_map[(port * 26) + RP_A].standardcode = offset + BUTTON2;
-		mame_joy_map[(port * 26) + RP_Y].standardcode = offset + BUTTON3;
-		mame_joy_map[(port * 26) + RP_X].standardcode = offset + BUTTON4;
-		mame_joy_map[(port * 26) + RP_L].standardcode = offset + BUTTON5;
-		mame_joy_map[(port * 26) + RP_R].standardcode = offset + BUTTON6;
-		mame_joy_map[(port * 26) + RP_ST].standardcode = offset + START;
-		mame_joy_map[(port * 26) + RP_SL].standardcode = offset + SELECT;
+		mame_joy_map[(port * number_of_controls) + RP_B].standardcode = offset + BUTTON1;
+		mame_joy_map[(port * number_of_controls) + RP_A].standardcode = offset + BUTTON2;
+		mame_joy_map[(port * number_of_controls) + RP_Y].standardcode = offset + BUTTON3;
+		mame_joy_map[(port * number_of_controls) + RP_X].standardcode = offset + BUTTON4;
+		mame_joy_map[(port * number_of_controls) + RP_L].standardcode = offset + BUTTON5;
+		mame_joy_map[(port * number_of_controls) + RP_R].standardcode = offset + BUTTON6;
+		mame_joy_map[(port * number_of_controls) + RP_L2].standardcode = offset + BUTTON7; 
+		mame_joy_map[(port * number_of_controls) + RP_R2].standardcode = offset + BUTTON8; 
+		mame_joy_map[(port * number_of_controls) + RP_ST].standardcode = offset + START;
+		mame_joy_map[(port * number_of_controls) + RP_SL].standardcode = offset + SELECT;
 }
 
 if (device == 2) // 6 button
 {
-		mame_joy_map[(port * 26) + RP_B].standardcode = offset + BUTTON1;
-		mame_joy_map[(port * 26) + RP_A].standardcode = offset + BUTTON2;
-		mame_joy_map[(port * 26) + RP_Y].standardcode = offset + BUTTON4;
-		mame_joy_map[(port * 26) + RP_X].standardcode = offset + BUTTON5;
-		mame_joy_map[(port * 26) + RP_L].standardcode = offset + BUTTON6;
-		mame_joy_map[(port * 26) + RP_R].standardcode = offset + BUTTON3;
-		mame_joy_map[(port * 26) + RP_ST].standardcode = offset + START;
-		mame_joy_map[(port * 26) + RP_SL].standardcode = offset + SELECT;
+		mame_joy_map[(port * number_of_controls) + RP_B].standardcode = offset + BUTTON1;
+		mame_joy_map[(port * number_of_controls) + RP_A].standardcode = offset + BUTTON2;
+		mame_joy_map[(port * number_of_controls) + RP_Y].standardcode = offset + BUTTON4;
+		mame_joy_map[(port * number_of_controls) + RP_X].standardcode = offset + BUTTON5;
+		mame_joy_map[(port * number_of_controls) + RP_L].standardcode = offset + BUTTON6;
+		mame_joy_map[(port * number_of_controls) + RP_R].standardcode = offset + BUTTON3;
+		mame_joy_map[(port * number_of_controls) + RP_ST].standardcode = offset + START;
+		mame_joy_map[(port * number_of_controls) + RP_SL].standardcode = offset + SELECT;
 }
 
 
 	if (strcmp(Machine->gamedrv->name, "sf2") == 0) {
-		mame_joy_map[(port * 26) + RP_B].standardcode = offset + BUTTON4;
-		mame_joy_map[(port * 26) + RP_A].standardcode = offset + BUTTON5;
-		mame_joy_map[(port * 26) + RP_Y].standardcode = offset + BUTTON1;
-		mame_joy_map[(port * 26) + RP_X].standardcode = offset + BUTTON2;
-		mame_joy_map[(port * 26) + RP_L].standardcode = offset + BUTTON3;
-		mame_joy_map[(port * 26) + RP_R].standardcode = offset + BUTTON6;
+		mame_joy_map[(port * number_of_controls) + RP_B].standardcode = offset + BUTTON4;
+		mame_joy_map[(port * number_of_controls) + RP_A].standardcode = offset + BUTTON5;
+		mame_joy_map[(port * number_of_controls) + RP_Y].standardcode = offset + BUTTON1;
+		mame_joy_map[(port * number_of_controls) + RP_X].standardcode = offset + BUTTON2;
+		mame_joy_map[(port * number_of_controls) + RP_L].standardcode = offset + BUTTON3;
+		mame_joy_map[(port * number_of_controls) + RP_R].standardcode = offset + BUTTON6;
 	}
 
 //this applies to gampads will mess up arcade panels
@@ -562,8 +575,8 @@ if (device == 2) // 6 button
   strcmp(Machine->gamedrv->name, "ddragon") == 0 ||
   strcmp(Machine->gamedrv->name, "pow") == 0 ||
   strcmp(Machine->gamedrv->name, "ddragon2") == 0) && (device == 1) ) {
-		mame_joy_map[(port * 26) + RP_B].standardcode = offset + BUTTON2;
-		mame_joy_map[(port * 26) + RP_A].standardcode = offset + BUTTON3;
-		mame_joy_map[(port * 26) + RP_Y].standardcode = offset + BUTTON1;
+		mame_joy_map[(port * number_of_controls) + RP_B].standardcode = offset + BUTTON2;
+		mame_joy_map[(port * number_of_controls) + RP_A].standardcode = offset + BUTTON3;
+		mame_joy_map[(port * number_of_controls) + RP_Y].standardcode = offset + BUTTON1;
 	}
 }

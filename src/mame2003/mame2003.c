@@ -22,11 +22,11 @@
 extern int16_t mouse_x[4];
 extern int16_t mouse_y[4];
 extern struct JoystickInfo mame_joy_map[];
-extern int retroJsState[156];
-extern int16_t analogjoy[4][4];
+extern int retroJsState[112];
+extern int16_t analogjoy[4][6];
 extern const struct KeyboardInfo retroKeys[];
 extern int retroKeyState[512];
-
+extern const int number_of_controls;
 
 int16_t prev_pointer_x;
 int16_t prev_pointer_y;
@@ -265,7 +265,7 @@ void retro_run(void)
 	bool pointer_pressed;
 	const struct KeyboardInfo *thisInput;
 	bool updated = false;
-
+	int16_t joymask[4];
 	if (running == 0) running = 1;
 	poll_cb();
 
@@ -279,8 +279,9 @@ void retro_run(void)
 		thisInput++;
 	}
 
-	for (i = 0; i < 4; i++) {
-		unsigned int offset = (i * 26);
+	for (i = 0; i < 4; i++) 
+	{
+		unsigned int offset = (i * number_of_controls);
 
 		/* Analog joystick */
 
@@ -288,42 +289,61 @@ void retro_run(void)
 		analogjoy[i][1] = convert_analog_scale( input_cb(i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y ) );
 		analogjoy[i][2] = convert_analog_scale( input_cb(i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X) );
 		analogjoy[i][3] = convert_analog_scale( input_cb(i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y) );
+		analogjoy[i][4] = -convert_analog_scale( input_cb(i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_BUTTON, RETRO_DEVICE_ID_JOYPAD_L2) );
+		analogjoy[i][5] = convert_analog_scale( input_cb(i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_BUTTON, RETRO_DEVICE_ID_JOYPAD_R2) );
+		/* this port dont support half axis so add them together
+		   check the pedal if pedals can be mapped on different axis other analog controls cant
+		*/ 
+		analogjoy[i][4] = analogjoy[i][4] + analogjoy[i][5]; 
 
-		retroJsState[0 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B);
-		retroJsState[1 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y);
-		retroJsState[2 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT);
-		retroJsState[3 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START);
-		retroJsState[4 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP);
-		retroJsState[5 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN);
-		retroJsState[6 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT);
-		retroJsState[7 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT);
-		retroJsState[8 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A);
-		retroJsState[9 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X);
-		retroJsState[10 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L);
-		retroJsState[11 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
-		retroJsState[12 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2);
-		retroJsState[13 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2);
-		retroJsState[14 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3);
-		retroJsState[15 + offset] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R3);
+		
+		if (1) // add check for libretro_supports_bitmasks at some point dont care about backwards stone age compatability just exit if ra is too old :-) )
+		{
+  			joymask[i] = 0;
+      			joymask[i] = input_cb(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+		}
 
-		if (options.mouse_device) {
-			if (options.mouse_device == RETRO_DEVICE_MOUSE) {
+		for(int j = 0;j < 16; j++)
+		{
+			if (joymask[i] & (1 << j)) retroJsState[offset+j] = 1;
+			else     retroJsState[offset+j] = 0;
+		}
+      
+ 		/*
+ 		disable l2 and r2 if analog buttons are pressed pressing lt + rt will set analogjoy[i][4] to zero so account for that
+ 		else digital will kick in because ra button is set when trigger it pressed for analog and digital in RA
+ 		*/
+ 		 	 
+  		if (analogjoy[i][4] || analogjoy[i][5] )
+  		{
+  			retroJsState[offset+RETRO_DEVICE_ID_JOYPAD_L2] = 0;
+  			retroJsState[offset+RETRO_DEVICE_ID_JOYPAD_R2] = 0;
+ 		}
+  		if (options.mouse_device) 
+		{
+			if (options.mouse_device == RETRO_DEVICE_MOUSE) 
+			{
 				retroJsState[16 + offset] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
 				retroJsState[17 + offset] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_RIGHT);
 				mouse_x[i] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
 				mouse_y[i] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
-			} else { /* RETRO_DEVICE_POINTER */
+			} 
+			else 
+			{ /* RETRO_DEVICE_POINTER */
 				pointer_pressed = input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
 				retroJsState[16 + offset] = pointer_pressed;
 				retroJsState[17 + offset] = 0; /* padding */
 				mouse_x[i] = pointer_pressed ? get_pointer_delta(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X), &prev_pointer_x) : 0;
 				mouse_y[i] = pointer_pressed ? get_pointer_delta(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y), &prev_pointer_y) : 0;
 			}
-		} else {
+		}
+		else 
+		{
 			retroJsState[16 + offset] = 0;
 			retroJsState[17 + offset] = 0;
 		}
 
+		
 
 		retroJsState[18 + offset] = 0;
 		retroJsState[19 + offset] = 0;
@@ -333,6 +353,8 @@ void retro_run(void)
 		retroJsState[23 + offset] = 0;
 		retroJsState[24 + offset] = 0;
 		retroJsState[25 + offset] = 0;
+		retroJsState[26 + offset] = 0;
+		retroJsState[27 + offset] = 0;
 
 		if (analogjoy[i][0] < -64)
 			retroJsState[18 + offset] = analogjoy[i][0];
@@ -354,8 +376,15 @@ void retro_run(void)
 
 		if (analogjoy[i][3] < -64)
 			retroJsState[24 + offset] = analogjoy[i][3];
+
 		if (analogjoy[i][3] > 64)
 			retroJsState[25 + offset] = analogjoy[i][3];
+
+		if (analogjoy[i][4] < -64 )
+			retroJsState[26 + offset] = analogjoy[i][4];
+
+		if (analogjoy[i][4] >64 )
+			retroJsState[27 + offset] = analogjoy[i][4];
 	}
 	mame_frame();
 }
