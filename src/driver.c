@@ -1017,6 +1017,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( polaris )	/* PS  (c) 1980 Taito */
 	DRIVER( polarisa )	/* PS  (c) 1980 Taito */
 	DRIVER( ballbomb )	/* TN  (c) 1980 Taito */
+	DRIVER( steelwkr )	/* (c) 1980 Taito */
 	DRIVER( m79amb )
 	DRIVER( alieninv )
 	DRIVER( tst_invd )
@@ -1510,6 +1511,8 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( chukatai )	/* B44 (c) 1988 Taito Corporation Japan (World) */
 	DRIVER( chukatau )	/* B44 (c) 1988 Taito Corporation (US) */
 	DRIVER( chukataj )	/* B44 (c) 1988 Taito Corporation (Japan) */
+  	DRIVER( kabukiz )	  /* B50 (c) 1988 Taito Corporation Japan (World) */
+	DRIVER( kabukizj )	/* B50 (c) 1988 Taito Corporation (Japan) */
 	DRIVER( tnzs )		/* B53?(c) 1988 Taito Corporation (Japan) (new logo) */
 	DRIVER( tnzsb )		/* bootleg but Taito Corporation Japan (World) (new logo) */
 	DRIVER( tnzs2 )		/* B53?(c) 1988 Taito Corporation Japan (World) (old logo) */
@@ -2686,6 +2689,7 @@ V-V                           TP-027
 	DRIVER( wbmlb )		/* bootleg? (S2) */
 	DRIVER( dakkochn )	/* 836-6483? (S2) */
 	DRIVER( ufosensi )	/* 834-6659 (S2) */
+	DRIVER( ufosensb )	/* bootleg (S2) */
 /*
 other System 1 / System 2 games:
 
@@ -3632,10 +3636,11 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( ssrdrabd )	/* GX064 (c) 1991 (Asia) */
 	DRIVER( ssrdrjbd )	/* GX064 (c) 1991 (Japan) */
 	DRIVER( sunsetbl )	/* bootleg */
-	DRIVER( xmen )		/* GX065 (c) 1992 (US) */
-	DRIVER( xmen2p )	/* GX065 (c) 1992 (World) */
-	DRIVER( xmen2pj )	/* GX065 (c) 1992 (Japan) */
-	DRIVER( xmen6p )	/* GX065 (c) 1992 */
+	DRIVER( xmen )		/* GX065 (c) 1992 (US 4 Players) */
+	DRIVER( xmen2p )	/* GX065 (c) 1992 (World 2 Players) */
+	DRIVER( xmen2pj )	/* GX065 (c) 1992 (Japan 2 Players) */
+	DRIVER( xmen6p )	/* GX065 (c) 1992 (Euro 6 Players) */
+	DRIVER( xmen6pu )	/* GX065 (c) 1992 (US 6 Players) */
 	DRIVER( xexex )		/* GX067 (c) 1991 (World) */
 	DRIVER( xexexj )	/* GX067 (c) 1991 (Japan) */
 	DRIVER( asterix )	/* GX068 (c) 1992 (World) */
@@ -3702,6 +3707,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( tkmmpzdm )	/* GX515 (c) 1995 (Japan) */
 	DRIVER( salmndr2 )	/* GX521 (c) 1996 (Japan) */
 	DRIVER( sexyparo )	/* GX533 (c) 1996 (Japan) */
+  	DRIVER( sexyparoa )	/* GX533 (c) 1996 (Asia) */  
 	DRIVER( daiskiss )	/* GX535 (c) 1996 (Japan) */
 	DRIVER( tokkae )	/* GX615 (c) 1996 (Japan) */
 	DRIVER( winspike )	/* GX705 */
@@ -5329,7 +5335,8 @@ Other Sun games
 	DRIVER( starcrus )	/* [1977 Ramtek] */
 
 	/* Omori games */
-	DRIVER( battlex )	/* (c) 1982 Omori E. Co., Ltd. */
+	DRIVER( battlex )	/* (c) 1982 Omori Electric Co., Ltd. */
+	DRIVER( dodgeman )	/* (c) 1983 Omori Electric Co., Ltd. */
 	DRIVER( carjmbre )	/* (c) 1983 Omori Electric Co., Ltd. */
 	DRIVER( popper )	/* (c) 1983 Omori Electric Co., Ltd. */
 
@@ -5773,7 +5780,12 @@ Other Sun games
 	/* Sega Model 1 Hardware */	
 	DRIVER( vf )
     
-  DRIVER( 1945kiii )	/* (c) 2000 Oriental */
+  	/* Oriental Soft */  
+ 	DRIVER( 1945kiii )	/* (c) 2000 Oriental */
 	DRIVER( flagrall )  /* (c) 1996 Promat? */
+
+  	/* Current Tech */
+	DRIVER( mirax )	  /* (c) Current Technologies */
+	DRIVER( miraxa )  /* (c) Current Technologies */
 
 #endif	/* DRIVER_RECURSIVE */

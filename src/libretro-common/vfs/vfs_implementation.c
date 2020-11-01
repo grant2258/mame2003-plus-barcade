@@ -446,7 +446,14 @@ libretro_vfs_implementation_file *retro_vfs_file_open_impl(
        */
       /* TODO: this is only useful for a few platforms, 
        * find which and add ifdef */
-#if !defined(PSP)
+#if defined(_3DS)
+      if (stream->scheme != VFS_SCHEME_CDROM)
+      {
+         stream->buf = (char*)calloc(1, 0x10000);
+         if (stream->fp)
+            setvbuf(stream->fp, stream->buf, _IOFBF, 0x10000);
+      }
+#elif !defined(PSP)
       if (stream->scheme != VFS_SCHEME_CDROM)
       {
          stream->buf = (char*)calloc(1, 0x4000);
@@ -968,6 +975,40 @@ int retro_vfs_stat_impl(const char *path, int32_t *size)
       *size = (int32_t)buf.st_size;
 
    is_dir = (file_info & FILE_ATTRIBUTE_DIRECTORY);
+
+#elif defined(GEKKO)
+   /* On GEKKO platforms, paths cannot have
+    * trailing slashes - we must therefore
+    * remove them */
+   char *path_buf = NULL;
+   int stat_ret   = -1;
+   struct stat stat_buf;
+   size_t len;
+
+   if (string_is_empty(path))
+      return 0;
+
+   path_buf = strdup(path);
+   if (!path_buf)
+      return 0;
+
+   len = strlen(path_buf);
+   if (len > 0)
+      if (path_buf[len - 1] == '/')
+         path_buf[len - 1] = '\0';
+
+   stat_ret = stat(path_buf, &stat_buf);
+   free(path_buf);
+
+   if (stat_ret < 0)
+      return 0;
+
+   if (size)
+      *size             = (int32_t)stat_buf.st_size;
+
+   is_dir               = S_ISDIR(stat_buf.st_mode);
+   is_character_special = S_ISCHR(stat_buf.st_mode);
+
 #else
    /* Every other platform */
    struct stat buf;
@@ -1017,6 +1058,28 @@ int retro_vfs_mkdir_impl(const char *dir)
    int ret = orbisMkdir(dir, 0755);
 #elif defined(__QNX__)
    int ret = mkdir(dir, 0777);
+#elif defined(GEKKO)
+   /* On GEKKO platforms, mkdir() fails if
+    * the path has a trailing slash. We must
+    * therefore remove it. */
+   int ret = -1;
+   if (!string_is_empty(dir))
+   {
+      char *dir_buf = strdup(dir);
+
+      if (dir_buf)
+      {
+         size_t len = strlen(dir_buf);
+
+         if (len > 0)
+            if (dir_buf[len - 1] == '/')
+               dir_buf[len - 1] = '\0';
+
+         ret = mkdir(dir_buf, 0750);
+
+         free(dir_buf);
+      }
+   }
 #else
    int ret = mkdir(dir, 0750);
 #endif

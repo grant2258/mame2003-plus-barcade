@@ -35,6 +35,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Deer Hunting
 * Diet Go Go
 * Digger (CVS)
+* Dodge Man
 * DoDonPachi Dai-Ou-Jou
 * Doki Doki Penguin Land
 * Double Wings
@@ -66,6 +67,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Inca
 * Joe & Mac Returns
 * Jump Kun
+* Kabuki-Z (World)
 * Ketsui: Kizuna Jigoku Tachi
 * Knightmare
 * Last Hope
@@ -76,6 +78,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Metal Slug 4
 * Metal Slug 5
 * Mighty Warriors
+* Mirax
 * Mobile Suit Gundam Final Shooting
 * Mouse Shooter GoGo
 * Multi Champ Deluxe
@@ -113,6 +116,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Space Launcher
 * Squash
 * Star Fire 2
+* Steel Worker
 * Super Bishi Bashi Championship (ver JAA, 2 Players)
 * Super Rider
 * Super Trio
@@ -133,6 +137,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Trophy Hunting Bear & Moose
 * Turkey Hunting
 * Tylz
+* Ufo Senshi Yohko Chan (not encrypted)
 * Varia Metal
 * Vasara 2
 * Virtua Bowling
@@ -161,16 +166,20 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Hacha Mecha Fighter (bootleg)
 * Hook (Japan Version)
 * Ikari III - The Rescue (World, 8-Way Joystick)
+* Kabuki-Z (Japan)
 * Knuckle Bash 2
 * Magical Drop
 * Magical Drop Plus 1
+* Mirax (set 2)
 * Progear No Arashi
 * Renegade (US, Bootleg)
+* Sexy Parodius (Ver AAA)
 * Super Bishi Bashi Championship (ver KAA, 3 Players)
 * Tetris the Absolute The Grand Master 2 Plus
 * The Great Ragtime Show
 * The King of Fighters 10th Anniversary
 * Undercover Cops (Alpha Renewal Version)
+* X-men (6 Players ver UCB)
 * World Cup Volley 95 Extra Version
 
 ## New Hacks
@@ -196,6 +205,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Avengers In Galactic Storm US - Romset: `avengrgs`
 * Avengers In Galactic Storm Japan - Romset: `avengrgsj`
 * Avenging Spirit - Romset `avspirit`
+* Battle Cross - Romset `battlex`
 * B.C. Story - Romset `bcstry`
 * B-Rap Boys - Romset: `brapboys` - Playable with minor remaining graphical issues
 * B-Rap Boys Special - Romset `brapboysj` - Playable with minor remaining graphical issues
@@ -263,12 +273,16 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Task Force Harrier - Romsets `tharrier` and `tharierj`
 * Timber - Romset `timber`
 * Thunder Dragon - Romset `tdragon` - Minor sound issues remaining
+* Thunder Cross - Romset `thunderx` - Fixed collison 
 * Tri-Sports - Romset `trisport`
 * Tron - Romset `tron`
 * Turbo Tag - Romset `turbotag`
 * Twin Eagle 2 - Romsets `twineagl` and `twineag2`
 * Two Tigers - Romset `twotiger`
+* Wonder Boy in Monster Land (Japan New Ver.) - Romset `wbml`
+* Wonder Boy in Monster Land (Japan Old Ver.) - Romset `wbmljo`
 * Xenophobe - Romset `xenophob`
+* X-men (6 players) - Romset `xmen6p` and `xmen6pu`
 * Wacko - Romset `wacko`
 * Zwackery - Romset `zwackery`
 
@@ -330,6 +344,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Gaplus
 * Grobda
 * Libble Rabble
+* Lunar Rescue - (Added lrescue.zip sample support)
 * Mappy
 * Mortal Kombat - Added OST soundtrack (via KMFDManic)
 * Motos
@@ -358,6 +373,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Cosmic Alien
 * Frogs
 * Ghox (Toaplan Samples)
+* Lunar Rescue - lrescue
 * Sasuke Vs Commander 
 * Space Firebird
 * Teki Paki (Toaplan Samples)
@@ -368,6 +384,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Donkey Kong
 * Donkey Kong JR
 * Fantasy
+* Lunar Rescue
 * Pioneer Balloon
 * Vanguard
 
