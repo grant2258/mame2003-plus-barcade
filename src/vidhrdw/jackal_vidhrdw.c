@@ -26,9 +26,6 @@ PALETTE_INIT( jackal )
 	for (i = 0;i < TOTAL_COLORS(0);i++)
 	{
 		COLOR(0,i) = (i & 0xff) + 256;
-		/* this is surely wrong - is there a PROM missing? */
-		if (i & 0x0f)
-			COLOR(0,i) |= i/256;
 	}
 	for (i = 0;i < TOTAL_COLORS(1);i++)
 	{
@@ -37,7 +34,7 @@ PALETTE_INIT( jackal )
 	}
 	for (i = 0;i < TOTAL_COLORS(3);i++)
 	{
-		COLOR(3,i) = (*color_prom & 0x0f) + 16;
+		COLOR(3,i) = (*color_prom & 0x0f) | 0x10;
 		color_prom++;
 	}
 }

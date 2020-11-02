@@ -166,6 +166,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Hacha Mecha Fighter (bootleg)
 * Hook (Japan Version)
 * Ikari III - The Rescue (World, 8-Way Joystick)
+* Jackal (World, Rotary Joystick)
 * Kabuki-Z (Japan)
 * Knuckle Bash 2
 * Magical Drop
@@ -238,6 +239,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Hyper Duel - Romsets `hyprduel`, and `hyprdelj`
 * Ironhorse - Romset `ironhors`
 * Journey - Romset `journey`
+* Jackal (World, Rotary Joystick) - Romset `jackal` fixed video flipping and palette issues
 * Juno First - Romset `junofrst`
 * Kick - Romset `kick`
 * Kozmik Kroozr - Romset `kroozr`

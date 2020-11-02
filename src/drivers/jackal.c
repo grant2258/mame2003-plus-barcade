@@ -13,7 +13,6 @@ Notes:
   necessarily mean anything.
 
 TODO:
-- The high score table colors are wrong, are there proms missing?
 - Sprite lag
 - Coin counters don't work correctly, because the register is overwritten by
   other routines and the coin counter bits rapidly toggle between 0 and 1.
@@ -52,7 +51,7 @@ static int irq_enable;
 
 static READ_HANDLER( topgunbl_rotary_r )
 {
-	return (1 << (readinputport(5) * 8 / 256)) ^ 0xff;
+	return (1 << (readinputport(5 + offset) * 8 / 256)) ^ 0xff;
 }
 
 
@@ -529,8 +528,8 @@ ROM_END
 
 
 
-GAMEX( 1986, jackal,   0,      jackal, jackal,   0, ROT90, "Konami", "Jackal (World, 8-way Joystick)", GAME_IMPERFECT_COLORS  )
-GAMEX( 1986, jackalr,  jackal, jackal, topgunbl, 0, ROT90, "Konami", "Jackal (World, Rotary Joystick)", GAME_IMPERFECT_COLORS )
-GAMEX( 1986, topgunr,  jackal, jackal, jackal,   0, ROT90, "Konami", "Top Gunner (US, 8-way Joystick)", GAME_IMPERFECT_COLORS )
-GAMEX( 1986, jackalj,  jackal, jackal, jackal,   0, ROT90, "Konami", "Tokushu Butai Jackal (Japan, 8-way Joystick)", GAME_IMPERFECT_COLORS )
-GAMEX( 1986, topgunbl, jackal, jackal, topgunbl, 0, ROT90, "bootleg", "Top Gunner (bootleg)", GAME_IMPERFECT_COLORS )
+GAMEX( 1986, jackal,   0,      jackal, jackal,   0, ROT90, "Konami", "Jackal (World, 8-way Joystick)", 0  )
+GAMEX( 1986, jackalr,  jackal, jackal, topgunbl, 0, ROT90, "Konami", "Jackal (World, Rotary Joystick)", 0 )
+GAMEX( 1986, topgunr,  jackal, jackal, jackal,   0, ROT90, "Konami", "Top Gunner (US, 8-way Joystick)", 0 )
+GAMEX( 1986, jackalj,  jackal, jackal, jackal,   0, ROT90, "Konami", "Tokushu Butai Jackal (Japan, 8-way Joystick)", 0 )
+GAMEX( 1986, topgunbl, jackal, jackal, topgunbl, 0, ROT90, "bootleg", "Top Gunner (bootleg)", 0 )
