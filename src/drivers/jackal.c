@@ -43,24 +43,20 @@ WRITE_HANDLER( jackal_commonram1_w );
 WRITE_HANDLER( jackal_voram_w );
 WRITE_HANDLER( jackal_spriteram_w );
 
-PALETTE_INIT( jackal );
-VIDEO_UPDATE( jackal );
+extern PALETTE_INIT( jackal );
+extern VIDEO_START( jackal );
+extern VIDEO_UPDATE( jackal );
+
+static int irq_enable;
 
 
-
-static READ_HANDLER( rotary_0_r )
+static READ_HANDLER( topgunbl_rotary_r )
 {
 	return (1 << (readinputport(5) * 8 / 256)) ^ 0xff;
 }
 
-static READ_HANDLER( rotary_1_r )
-{
-	return (1 << (readinputport(6) * 8 / 256)) ^ 0xff;
-}
 
-static int irq_enable;
-
-static WRITE_HANDLER( ctrl_w )
+static WRITE_HANDLER( jackal_flipscreen_w )
 {
 	irq_enable = data & 0x02;
 	flip_screen_set(data & 0x08);
@@ -79,8 +75,7 @@ static MEMORY_READ_START( jackal_readmem )
 	{ 0x0011, 0x0011, input_port_1_r },
 	{ 0x0012, 0x0012, input_port_2_r },
 	{ 0x0013, 0x0013, input_port_3_r },
-	{ 0x0014, 0x0014, rotary_0_r },
-	{ 0x0015, 0x0015, rotary_1_r },
+	{ 0x0014, 0x0015, topgunbl_rotary_r },
 	{ 0x0018, 0x0018, input_port_4_r },
 	{ 0x0020, 0x005f, jackal_zram_r },	/* MAIN   Z RAM,SUB    Z RAM */
 	{ 0x0060, 0x1fff, jackal_commonram_r },	/* M COMMON RAM,S COMMON RAM */
@@ -92,14 +87,15 @@ MEMORY_END
 
 static MEMORY_WRITE_START( jackal_writemem )
 	{ 0x0000, 0x0003, MWA_RAM, &jackal_videoctrl },	/* scroll + other things */
-	{ 0x0004, 0x0004, ctrl_w },
-	{ 0x0019, 0x0019, MWA_NOP },	/* possibly watchdog reset */
+	{ 0x0004, 0x0004, jackal_flipscreen_w },
+	{ 0x0019, 0x0019, watchdog_reset_w },	
 	{ 0x001c, 0x001c, jackal_rambank_w },
 	{ 0x0020, 0x005f, jackal_zram_w },
 	{ 0x0060, 0x1fff, jackal_commonram_w },
 	{ 0x2000, 0x2fff, jackal_voram_w },
 	{ 0x3000, 0x3fff, jackal_spriteram_w },
-	{ 0x4000, 0xffff, MWA_ROM },
+	{ 0x4000, 0xbfff, MWA_BANK1 },
+	{ 0xC000, 0xffff, MWA_ROM },
 MEMORY_END
 
 static MEMORY_READ_START( jackal_sound_readmem )
@@ -188,8 +184,12 @@ INPUT_PORTS_START( jackal )
 	PORT_DIPNAME( 0x20, 0x20, DEF_STR( Flip_Screen ) )
 	PORT_DIPSETTING(    0x20, DEF_STR( Off ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
-	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_DIPNAME( 0x40, 0x00, "Sound Adjustment" )
+	PORT_DIPSETTING(    0x00, DEF_STR( Upright ) )
+	PORT_DIPSETTING(    0x40, DEF_STR( Cocktail ) )
+	PORT_DIPNAME( 0x80, 0x00, "Sound Mode" )
+	PORT_DIPSETTING(    0x80, "Mono" )
+	PORT_DIPSETTING(    0x00, "Stereo" )
 
 	PORT_START	/* DSW2 */
 	PORT_DIPNAME( 0x03, 0x02, DEF_STR( Lives ) )
@@ -197,19 +197,17 @@ INPUT_PORTS_START( jackal )
 	PORT_DIPSETTING(    0x02, "3" )
 	PORT_DIPSETTING(    0x01, "4" )
 	PORT_DIPSETTING(    0x00, "7" )
-	PORT_DIPNAME( 0x04, 0x04, DEF_STR( Unknown ) )
-	PORT_DIPSETTING(    0x04, DEF_STR( Off ) )
-	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_DIPNAME( 0x18, 0x18, DEF_STR( Bonus_Life ) )
-	PORT_DIPSETTING(    0x18, "30000 150000" )
-	PORT_DIPSETTING(    0x10, "50000 200000" )
-	PORT_DIPSETTING(    0x08, "30000" )
-	PORT_DIPSETTING(    0x00, "50000" )
-	PORT_DIPNAME( 0x60, 0x60, DEF_STR( Difficulty ) )
+	PORT_DIPSETTING(    0x18, "30K 150K" )
+	PORT_DIPSETTING(    0x10, "50K 200K" )
+	PORT_DIPSETTING(    0x08, "30K" )
+	PORT_DIPSETTING(    0x00, "50K" )
+	PORT_DIPNAME( 0x60, 0x40, DEF_STR( Difficulty ) )
 	PORT_DIPSETTING(    0x60, "Easy" )
-	PORT_DIPSETTING(    0x40, "Medium" )
-	PORT_DIPSETTING(    0x20, "Hard" )
-	PORT_DIPSETTING(    0x00, "Hardest" )
+	PORT_DIPSETTING(    0x40, "Normal" )
+	PORT_DIPSETTING(    0x20, "Difficult" )
+	PORT_DIPSETTING(    0x00, "Very Difficult" )
 	PORT_DIPNAME( 0x80, 0x00, DEF_STR( Demo_Sounds ) )
 	PORT_DIPSETTING(    0x80, DEF_STR( Off ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
@@ -353,14 +351,14 @@ static struct GfxLayout spritelayout8 =
 	32*8
 };
 
-static struct GfxDecodeInfo jackal_gfxdecodeinfo[] =
+static struct GfxDecodeInfo gfxdecodeinfo[] =
 {
-	{ REGION_GFX1, 0x00000, &charlayout,               0, 16 },	/* colors 256-511 with lookup */
-	{ REGION_GFX1, 0x20000, &spritelayout,        256*16, 16 },	/* colors   0- 15 with lookup */
-	{ REGION_GFX1, 0x20000, &spritelayout8,       256*16, 16 },	/* to handle 8x8 sprites */
-	{ REGION_GFX1, 0x60000, &spritelayout,  256*16+16*16, 16 },	/* colors  16- 31 with lookup */
-	{ REGION_GFX1, 0x60000, &spritelayout8, 256*16+16*16, 16 },	/* to handle 8x8 sprites */
-	{ -1 } /* end of array */
+	{ REGION_GFX1, 0x00000, &charlayout,               0, 16 },	// colors 256-511 with lookup
+	{ REGION_GFX1, 0x20000, &spritelayout,        256*16, 16 },	// colors   0- 15 with lookup
+	{ REGION_GFX1, 0x20000, &spritelayout8,       256*16, 16 },	// to handle 8x8 sprites
+	{ REGION_GFX1, 0x60000, &spritelayout,  256*16+16*16, 16 },	// colors  16- 31 with lookup
+	{ REGION_GFX1, 0x60000, &spritelayout8, 256*16+16*16, 16 },	// to handle 8x8 sprites
+	{ -1 }
 };
 
 
@@ -394,7 +392,7 @@ static MACHINE_DRIVER_START( jackal )
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
 	MDRV_SCREEN_SIZE(32*8, 32*8)
 	MDRV_VISIBLE_AREA(1*8, 31*8-1, 2*8, 30*8-1)
-	MDRV_GFXDECODE(jackal_gfxdecodeinfo)
+	MDRV_GFXDECODE(gfxdecodeinfo)
 	MDRV_PALETTE_LENGTH(512)
 	MDRV_COLORTABLE_LENGTH(256*16+16*16+16*16)
 
@@ -531,8 +529,8 @@ ROM_END
 
 
 
-GAMEX( 1986, jackal,   0,      jackal, jackal,   0, ROT90, "Konami", "Jackal (World, 8-way Joystick)", GAME_IMPERFECT_COLORS | GAME_NO_COCKTAIL )
-GAMEX( 1986, jackalr,  jackal, jackal, topgunbl, 0, ROT90, "Konami", "Jackal (World, Rotary Joystick)", GAME_IMPERFECT_COLORS | GAME_NO_COCKTAIL )
-GAMEX( 1986, topgunr,  jackal, jackal, jackal,   0, ROT90, "Konami", "Top Gunner (US, 8-way Joystick)", GAME_IMPERFECT_COLORS | GAME_NO_COCKTAIL )
-GAMEX( 1986, jackalj,  jackal, jackal, jackal,   0, ROT90, "Konami", "Tokushu Butai Jackal (Japan, 8-way Joystick)", GAME_IMPERFECT_COLORS | GAME_NO_COCKTAIL )
-GAMEX( 1986, topgunbl, jackal, jackal, topgunbl, 0, ROT90, "bootleg", "Top Gunner (bootleg)", GAME_IMPERFECT_COLORS | GAME_NO_COCKTAIL )
+GAMEX( 1986, jackal,   0,      jackal, jackal,   0, ROT90, "Konami", "Jackal (World, 8-way Joystick)", GAME_IMPERFECT_COLORS  )
+GAMEX( 1986, jackalr,  jackal, jackal, topgunbl, 0, ROT90, "Konami", "Jackal (World, Rotary Joystick)", GAME_IMPERFECT_COLORS )
+GAMEX( 1986, topgunr,  jackal, jackal, jackal,   0, ROT90, "Konami", "Top Gunner (US, 8-way Joystick)", GAME_IMPERFECT_COLORS )
+GAMEX( 1986, jackalj,  jackal, jackal, jackal,   0, ROT90, "Konami", "Tokushu Butai Jackal (Japan, 8-way Joystick)", GAME_IMPERFECT_COLORS )
+GAMEX( 1986, topgunbl, jackal, jackal, topgunbl, 0, ROT90, "bootleg", "Top Gunner (bootleg)", GAME_IMPERFECT_COLORS )

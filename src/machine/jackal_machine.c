@@ -13,10 +13,11 @@
 #include "vidhrdw/generic.h"
 #include "cpu/m6809/m6809.h"
 
-extern unsigned char jackal_interrupt_enable;
+extern UINT8 jackal_interrupt_enable;
+extern void jackal_mark_tile_dirty(int offset);
 
-unsigned char *jackal_rambank = 0;
-unsigned char *jackal_spritebank = 0;
+UINT8 *jackal_rambank = 0;
+UINT8 *jackal_spritebank = 0;
 
 
 MACHINE_INIT( jackal )
@@ -34,6 +35,17 @@ READ_HANDLER( jackal_zram_r )
 }
 
 
+READ_HANDLER( jackal_voram_r )
+{
+	return jackal_rambank[0x2000+offset];
+}
+
+READ_HANDLER( jackal_spriteram_r )
+{
+	return jackal_spritebank[0x3000+offset];
+}
+
+
 READ_HANDLER( jackal_commonram_r )
 {
 	return jackal_rambank[0x0060+offset];
@@ -43,18 +55,6 @@ READ_HANDLER( jackal_commonram_r )
 READ_HANDLER( jackal_commonram1_r )
 {
 	return (memory_region(REGION_CPU1))[0x0060+offset];
-}
-
-
-READ_HANDLER( jackal_voram_r )
-{
-	return jackal_rambank[0x2000+offset];
-}
-
-
-READ_HANDLER( jackal_spriteram_r )
-{
-	return jackal_spritebank[0x3000+offset];
 }
 
 
@@ -92,7 +92,7 @@ WRITE_HANDLER( jackal_voram_w )
 {
 	if ((offset & 0xF800) == 0)
 	{
-		dirtybuffer[offset & 0x3FF] = 1;
+		jackal_mark_tile_dirty(offset & 0x3ff);
 	}
 	jackal_rambank[0x2000+offset] = data;
 }

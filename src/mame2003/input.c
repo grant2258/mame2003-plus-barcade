@@ -128,10 +128,10 @@ struct JoystickInfo mame_joy_map[] =
 };
 
 
-int16_t mouse_x[4] = { 0 };
-int16_t mouse_y[4] = { 0 };
+int16_t mouse_x[8] = { 0 };
+int16_t mouse_y[8] = { 0 };
 int retroJsState[112] = { 0 };              // initialise to zero - we are only reading 4 players atm map for 6 (4*27)
-int16_t analogjoy[4][6] = { 0 };
+int16_t analogjoy[8][6] = { 0 };
 
 int convert_analog_scale(int input);
 void controller_remap(unsigned port, unsigned device);
