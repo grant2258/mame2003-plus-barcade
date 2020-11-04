@@ -22,4 +22,14 @@ Developer documentation can be found in **[the MAME 2003-Plus wiki](https://gith
 
 ## Why is this port here
 
-** So I can actually use it on my barcade and have some auto mapping to gamepads and panels as well as fully user flexibility of the way mame was originally set up as well without the libreto intrustions that dont need to be there imho. As its for personal use I cant see any real issues. 
+** So I can actually use it on my barcade and have some auto mapping to gamepads and panels.
+
+** Im also trying to bring back fully user flexibility of the way mame was originally set up as well and restore the functionaltiy libretro removed and never replaced with anything functional.
+
+** examples are the on screen display  to set volues brightness and gamma also when loading a non working rom it brings up an informations screen that was removed both have been put back in this core.
+
+** retropad remapping from the libretro frontend has been remove as well its not felxible enough to cater for mame is very basic cant handle dynamic mappping across controllers.
+
+** On a personal note. I never wanted these libretro changes maybe mark will finish his vision one day. I cant see libretro being able to hande what the mame ui does at all. 
+
+** Plus is very difficult for new users but i had to do my best to keep the old usage active thats why the dual input system was added thats also been removed from this port it back to basics use mame menu for your inputa the way it should be.
