@@ -113,20 +113,21 @@ const char ipdn_defaultstrings[][MAX_DEFSTR_LEN] =
 
 struct ipd inputport_defaults[] =
 {
-   { IPT_UI_CONFIGURE,         "Config Menu",    SEQ_DEF_3(KEYCODE_TAB,   CODE_OR, JOYCODE_1_BUTTON9) },
-   { IPT_UI_SHOW_GFX,          "Show Gfx",       SEQ_DEF_0 },
-   { IPT_UI_TOGGLE_CHEAT,      "Toggle Cheat",   SEQ_DEF_0 },
-   { IPT_UI_UP,                "UI Up",          SEQ_DEF_5(KEYCODE_UP,    CODE_OR, JOYCODE_1_UP,     CODE_OR,   JOYCODE_1_LEFT_UP)    },
-   { IPT_UI_DOWN,              "UI Down",        SEQ_DEF_5(KEYCODE_DOWN,  CODE_OR, JOYCODE_1_DOWN,   CODE_OR,   JOYCODE_1_LEFT_DOWN)  },
-   { IPT_UI_LEFT,              "UI Left",        SEQ_DEF_5(KEYCODE_LEFT,  CODE_OR, JOYCODE_1_LEFT,   CODE_OR,   JOYCODE_1_LEFT_LEFT)  },
-   { IPT_UI_RIGHT,             "UI Right",       SEQ_DEF_5(KEYCODE_RIGHT, CODE_OR, JOYCODE_1_RIGHT,  CODE_OR,   JOYCODE_1_LEFT_RIGHT)  },
-   { IPT_UI_SELECT,            "UI Select",      SEQ_DEF_3(KEYCODE_ENTER, CODE_OR, JOYCODE_1_BUTTON1) },
-   { IPT_UI_CANCEL,            "UI Cancel",      SEQ_DEF_3(KEYCODE_ESC,   CODE_OR, JOYCODE_1_BUTTON2) },
-   { IPT_UI_ADD_CHEAT,         "Add Cheat",      SEQ_DEF_0 },
-   { IPT_UI_DELETE_CHEAT,      "Delete Cheat",   SEQ_DEF_0 },
-   { IPT_UI_SAVE_CHEAT,        "Save Cheat",     SEQ_DEF_0 },
-   { IPT_UI_WATCH_VALUE,       "Watch Value",    SEQ_DEF_0 },
-   { IPT_UI_EDIT_CHEAT,        "Edit Cheat",     SEQ_DEF_0 },
+   { IPT_UI_CONFIGURE,         "Config Menu",       SEQ_DEF_3(KEYCODE_TAB,   CODE_OR, JOYCODE_1_BUTTON9) },
+   { IPT_UI_ON_SCREEN_DISPLAY, "On Screen Display", SEQ_DEF_3(KEYCODE_TILDE, CODE_OR, KEYCODE_BACKQUOTE) }, //us keyboard uses TIDLE UK keyboard uses ` below the escape button
+   { IPT_UI_SHOW_GFX,          "Show Gfx",          SEQ_DEF_0 },
+   { IPT_UI_TOGGLE_CHEAT,      "Toggle Cheat",      SEQ_DEF_0 },
+   { IPT_UI_UP,                "UI Up",             SEQ_DEF_5(KEYCODE_UP,    CODE_OR, JOYCODE_1_UP,     CODE_OR,   JOYCODE_1_LEFT_UP)    },
+   { IPT_UI_DOWN,              "UI Down",           SEQ_DEF_5(KEYCODE_DOWN,  CODE_OR, JOYCODE_1_DOWN,   CODE_OR,   JOYCODE_1_LEFT_DOWN)  },
+   { IPT_UI_LEFT,              "UI Left",           SEQ_DEF_5(KEYCODE_LEFT,  CODE_OR, JOYCODE_1_LEFT,   CODE_OR,   JOYCODE_1_LEFT_LEFT)  },
+   { IPT_UI_RIGHT,             "UI Right",          SEQ_DEF_5(KEYCODE_RIGHT, CODE_OR, JOYCODE_1_RIGHT,  CODE_OR,   JOYCODE_1_LEFT_RIGHT)  },
+   { IPT_UI_SELECT,            "UI Select",         SEQ_DEF_3(KEYCODE_ENTER, CODE_OR, JOYCODE_1_BUTTON1) },
+   { IPT_UI_CANCEL,            "UI Cancel",         SEQ_DEF_3(KEYCODE_ESC,   CODE_OR, JOYCODE_1_BUTTON2) },
+   { IPT_UI_ADD_CHEAT,         "Add Cheat",         SEQ_DEF_0 },
+   { IPT_UI_DELETE_CHEAT,      "Delete Cheat",      SEQ_DEF_0 },
+   { IPT_UI_SAVE_CHEAT,        "Save Cheat",        SEQ_DEF_0 },
+   { IPT_UI_WATCH_VALUE,       "Watch Value",       SEQ_DEF_0 },
+   { IPT_UI_EDIT_CHEAT,        "Edit Cheat",        SEQ_DEF_0 },
 
    { IPT_START1, "P1 Start", SEQ_DEF_1(JOYCODE_1_START) },
    { IPT_START2, "P2 Start", SEQ_DEF_1(JOYCODE_2_START) },
@@ -675,6 +676,8 @@ struct ik input_keywords[] =
 	{ "KEYCODE_LWIN",		IKT_STD,		KEYCODE_LWIN },
 	{ "KEYCODE_RWIN",		IKT_STD,		KEYCODE_RWIN },
 	{ "KEYCODE_MENU",		IKT_STD,		KEYCODE_MENU },
+	{ "KEYCODE_BACKQUOTE",		IKT_STD,		KEYCODE_BACKQUOTE },
+	
 
 	{ "JOYCODE_1_LEFT",		IKT_STD,		JOYCODE_1_LEFT },
 	{ "JOYCODE_1_RIGHT",	  	IKT_STD,		JOYCODE_1_RIGHT },

@@ -75,6 +75,7 @@ static int uirotwidth, uirotheight;
 int uirotcharwidth, uirotcharheight;
 
 static int setup_selected;
+static int osd_selected;
 static int setup_via_menu = 0;
 
 UINT8 ui_dirty;
@@ -757,11 +758,69 @@ void ui_drawbox(struct mame_bitmap *bitmap, int leftx, int topy, int width, int 
 	ui_markdirty(&bounds);
 }
 
+/*-------------------------------------------------
+	drawbar - draw a thermometer bar
+-------------------------------------------------*/
 
-#if 0
-#pragma mark -
-#pragma mark BOXES & LINES
-#endif
+static void drawbar(struct mame_bitmap *bitmap, int leftx, int topy, int width, int height, int percentage, int default_percentage)
+{
+	struct rectangle bounds, tbounds;
+	UINT32 black, white;
+
+	/* make a rect and orient/clip it */
+	bounds.min_x = uirotbounds.min_x + leftx;
+	bounds.min_y = uirotbounds.min_y + topy;
+	bounds.max_x = bounds.min_x + width - 1;
+	bounds.max_y = bounds.min_y + height - 1;
+	sect_rect(&bounds, &uirotbounds);
+
+	/* pick colors from the colortable */
+	black = uirotfont->colortable[0];
+	white = uirotfont->colortable[1];
+
+	/* draw the top default percentage marker */
+	tbounds = bounds;
+	tbounds.min_x += (width - 1) * default_percentage / 100;
+	tbounds.max_x = tbounds.min_x;
+	tbounds.max_y = tbounds.min_y + height / 8;
+	ui_rot2raw_rect(&tbounds);
+	fillbitmap(bitmap, white, &tbounds);
+
+	/* draw the bottom default percentage marker */
+	tbounds = bounds;
+	tbounds.min_x += (width - 1) * default_percentage / 100;
+	tbounds.max_x = tbounds.min_x;
+	tbounds.min_y = tbounds.max_y - height / 8;
+	ui_rot2raw_rect(&tbounds);
+	fillbitmap(bitmap, white, &tbounds);
+
+	/* draw the top line of the bar */
+	tbounds = bounds;
+	tbounds.min_y += height / 8;
+	tbounds.max_y = tbounds.min_y;
+	ui_rot2raw_rect(&tbounds);
+	fillbitmap(bitmap, white, &tbounds);
+
+	/* draw the bottom line of the bar */
+	tbounds = bounds;
+	tbounds.max_y -= height / 8;
+	tbounds.min_y = tbounds.max_y;
+	ui_rot2raw_rect(&tbounds);
+	fillbitmap(bitmap, white, &tbounds);
+
+	/* fill in the percentage */
+	tbounds = bounds;
+	tbounds.max_x = tbounds.min_x + (width - 1) * percentage / 100;
+	tbounds.min_y += height / 8;
+	tbounds.max_y -= height / 8;
+	ui_rot2raw_rect(&tbounds);
+	fillbitmap(bitmap, white, &tbounds);
+
+	/* mark things dirty */
+	ui_rot2raw_rect(&bounds);
+	ui_markdirty(&bounds);
+}
+
 
 void ui_displaymenu(struct mame_bitmap *bitmap,const char **items,const char **subitems,char *flag,int selected,int arrowize_subitem)
 {
@@ -3127,13 +3186,469 @@ static int setup_menu(struct mame_bitmap *bitmap, int selected)
 	return sel + 1;
 }
 
-
 /*********************************************************************
-
-  end of On Screen Display handling
-
+  start of On Screen Display handling
 *********************************************************************/
 
+static void displayosd(struct mame_bitmap *bitmap,const char *text,int percentage,int default_percentage)
+{
+	struct DisplayText dt[2];
+	int avail;
+
+
+	avail = (uirotwidth / uirotcharwidth) * 19 / 20;
+
+	ui_drawbox(bitmap,(uirotwidth - uirotcharwidth * avail) / 2,
+			(uirotheight - 7*uirotcharheight/2),
+			avail * uirotcharwidth,
+			3*uirotcharheight);
+
+	avail--;
+
+	drawbar(bitmap,(uirotwidth - uirotcharwidth * avail) / 2,
+			(uirotheight - 3*uirotcharheight),
+			avail * uirotcharwidth,
+			uirotcharheight,
+			percentage,default_percentage);
+
+	dt[0].text = text;
+	dt[0].color = UI_COLOR_NORMAL;
+	dt[0].x = (uirotwidth - uirotcharwidth * strlen(text)) / 2;
+	dt[0].y = (uirotheight - 2*uirotcharheight) + 2;
+	dt[1].text = 0; /* terminate array */
+	displaytext(bitmap,dt);
+}
+
+/* K.Wilkins Feb2003 Additional of Disrete Sound System ADJUSTMENT sliders */
+/* #if HAS_DISCRETE*/
+#if 0 /*Discreet module has been update code needs changed */
+static void onscrd_discrete(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	int ourval,initial;
+	char buf[40];
+	struct discrete_sh_adjuster adjuster;
+
+	ourval=0;
+	initial=0;
+	strcpy(buf,"ADJUSTER ERROR");
+
+	/* Use ARG to select correct DISCRETE_ADJUST in sound subsystem */
+	if(discrete_sh_adjuster_get(arg,&adjuster)==-1)
+	{
+		/* Serious error, init has setup a non-existant slider, should NEVER happen */
+		logerror("onscrd_discrete() - osd_menu_init has setup invalid slider No %d",arg);
+	}
+	else
+	{
+		if(adjuster.islogscale)
+		{
+			double loginc,logspan,logval,logmin,loginit;
+			logspan=log10(adjuster.max)-log10(adjuster.min);
+			loginit=log10(adjuster.initial);
+			logmin=log10(adjuster.min);
+			logval=log10(adjuster.value);
+			loginc=(logspan/100)*increment;
+			logval+=loginc;
+			adjuster.value=pow(10,logval);
+
+			/* Keep within sensible bounds */
+			if(adjuster.value > adjuster.max)
+			{
+				adjuster.value=adjuster.max;
+				ourval=100;
+			}
+			if(adjuster.value < adjuster.min)
+			{
+				adjuster.value=adjuster.min;
+				ourval=0;
+			}
+
+			ourval=(int) (100.0*((logval-logmin)/logspan));
+			initial=(int) (100.0*((loginit-logmin)/logspan));
+		}
+		else
+		{
+			double finc;
+			finc=((adjuster.max-adjuster.min)/100)*increment;
+			adjuster.value+=finc;
+
+			/* Keep within sensible bounds */
+			if(adjuster.value > adjuster.max) adjuster.value=adjuster.max;
+			if(adjuster.value < adjuster.min) adjuster.value=adjuster.min;
+
+			ourval=(int) (100.0*((adjuster.value-adjuster.min)/(adjuster.max-adjuster.min)));
+			initial=(int) (100.0*((adjuster.initial-adjuster.min)/(adjuster.max-adjuster.min)));
+		}
+
+		/* Update the system */
+		discrete_sh_adjuster_set(arg,&adjuster);
+
+		sprintf(buf,"%s %d%%",adjuster.name,ourval);
+	}
+	displayosd(bitmap,buf,ourval,initial);
+}
+#endif /* HAS_DISCRETE */
+/* K.Wilkins Feb2003 Additional of Disrete Sound System ADJUSTMENT sliders */
+
+/* Why did libretro remove these functions oh thats right it doesnt let the core set the volume lol*/
+int dummy_volume=0; // add this in case we want to hook it up one day
+ 
+int osd_get_mastervolume(void)
+{
+	return dummy_volume;
+}
+
+void osd_set_mastervolume(int dvol)
+{
+	dummy_volume=dvol;
+}
+
+static void onscrd_volume(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	char buf[20];
+	int attenuation;
+
+	if (increment)
+	{
+		attenuation = osd_get_mastervolume();
+		attenuation += increment;
+		if (attenuation > 0) attenuation = 0;
+		if (attenuation < -32) attenuation = -32;
+		osd_set_mastervolume(attenuation);
+	}
+	attenuation = osd_get_mastervolume();
+
+	sprintf(buf,"%s %3ddB", ui_getstring (UI_volume), attenuation);
+	displayosd(bitmap,buf,100 * (attenuation + 32) / 32,100);
+}
+
+static void onscrd_mixervol(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	static void *driver = 0;
+	char buf[40];
+	int volume,ch;
+	int doallchannels = 0;
+	int proportional = 0;
+
+
+	if (code_pressed(KEYCODE_LSHIFT) || code_pressed(KEYCODE_RSHIFT))
+		doallchannels = 1;
+	if (!code_pressed(KEYCODE_LCONTROL) && !code_pressed(KEYCODE_RCONTROL))
+		increment *= 5;
+	if (code_pressed(KEYCODE_LALT) || code_pressed(KEYCODE_RALT))
+		proportional = 1;
+
+	if (increment)
+	{
+		if (proportional)
+		{
+			static int old_vol[MIXER_MAX_CHANNELS];
+			float ratio = 1.0;
+			int overflow = 0;
+
+			if (driver != Machine->drv)
+			{
+				driver = (void *)Machine->drv;
+				for (ch = 0; ch < MIXER_MAX_CHANNELS; ch++)
+					old_vol[ch] = mixer_get_mixing_level(ch);
+			}
+
+			volume = mixer_get_mixing_level(arg);
+			if (old_vol[arg])
+				ratio = (float)(volume + increment) / (float)old_vol[arg];
+
+			for (ch = 0; ch < MIXER_MAX_CHANNELS; ch++)
+			{
+				if (mixer_get_name(ch) != 0)
+				{
+					volume = ratio * old_vol[ch];
+					if (volume < 0 || volume > 100)
+						overflow = 1;
+				}
+			}
+
+			if (!overflow)
+			{
+				for (ch = 0; ch < MIXER_MAX_CHANNELS; ch++)
+				{
+					volume = ratio * old_vol[ch];
+					mixer_set_mixing_level(ch,volume);
+				}
+			}
+		}
+		else
+		{
+			driver = 0; /* force reset of saved volumes */
+
+			volume = mixer_get_mixing_level(arg);
+			volume += increment;
+			if (volume > 100) volume = 100;
+			if (volume < 0) volume = 0;
+
+			if (doallchannels)
+			{
+				for (ch = 0;ch < MIXER_MAX_CHANNELS;ch++)
+					mixer_set_mixing_level(ch,volume);
+			}
+			else
+				mixer_set_mixing_level(arg,volume);
+		}
+	}
+	volume = mixer_get_mixing_level(arg);
+
+	if (proportional)
+		sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allchannels), ui_getstring (UI_relative), volume);
+	else if (doallchannels)
+		sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allchannels), ui_getstring (UI_volume), volume);
+	else
+		sprintf(buf,"%s %s %3d%%",mixer_get_name(arg), ui_getstring (UI_volume), volume);
+	displayosd(bitmap,buf,volume,mixer_get_default_mixing_level(arg));
+}
+
+static void onscrd_brightness(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	char buf[20];
+	double brightness;
+
+
+	if (increment)
+	{
+		brightness = palette_get_global_brightness();
+		brightness += 0.05 * increment;
+		if (brightness < 0.1) brightness = 0.1;
+		if (brightness > 1.0) brightness = 1.0;
+		palette_set_global_brightness(brightness);
+	}
+	brightness = palette_get_global_brightness();
+
+	sprintf(buf,"%s %3d%%", ui_getstring (UI_brightness), (int)(brightness * 100));
+	displayosd(bitmap,buf,brightness*100,100);
+}
+
+static void onscrd_gamma(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	char buf[20];
+	double gamma_correction;
+
+	if (increment)
+	{
+		gamma_correction = palette_get_global_gamma();
+
+		gamma_correction += 0.05 * increment;
+		if (gamma_correction < 0.5) gamma_correction = 0.5;
+		if (gamma_correction > 2.0) gamma_correction = 2.0;
+
+		palette_set_global_gamma(gamma_correction);
+	}
+	gamma_correction = palette_get_global_gamma();
+
+	sprintf(buf,"%s %1.2f", ui_getstring (UI_gamma), gamma_correction);
+	displayosd(bitmap,buf,100*(gamma_correction-0.5)/(2.0-0.5),100*(1.0-0.5)/(2.0-0.5));
+}
+
+static void onscrd_vector_flicker(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	char buf[1000];
+	float flicker_correction;
+
+	if (!code_pressed(KEYCODE_LCONTROL) && !code_pressed(KEYCODE_RCONTROL))
+		increment *= 5;
+
+	if (increment)
+	{
+		flicker_correction = vector_get_flicker();
+
+		flicker_correction += increment;
+		if (flicker_correction < 0.0) flicker_correction = 0.0;
+		if (flicker_correction > 100.0) flicker_correction = 100.0;
+
+		vector_set_flicker(flicker_correction);
+	}
+	flicker_correction = vector_get_flicker();
+
+	sprintf(buf,"%s %1.2f", ui_getstring (UI_vectorflicker), flicker_correction);
+	displayosd(bitmap,buf,flicker_correction,0);
+}
+
+static void onscrd_vector_intensity(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	char buf[30];
+	float intensity_correction;
+
+	if (increment)
+	{
+		intensity_correction = vector_get_intensity();
+
+		intensity_correction += 0.05 * increment;
+		if (intensity_correction < 0.5) intensity_correction = 0.5;
+		if (intensity_correction > 3.0) intensity_correction = 3.0;
+
+		vector_set_intensity(intensity_correction);
+	}
+	intensity_correction = vector_get_intensity();
+
+	sprintf(buf,"%s %1.2f", ui_getstring (UI_vectorintensity), intensity_correction);
+	displayosd(bitmap,buf,100*(intensity_correction-0.5)/(3.0-0.5),100*(1.5-0.5)/(3.0-0.5));
+}
+
+
+static void onscrd_overclock(struct mame_bitmap *bitmap,int increment,int arg)
+{
+	char buf[30];
+	double overclock;
+	int cpu, doallcpus = 0, oc;
+
+	if (code_pressed(KEYCODE_LSHIFT) || code_pressed(KEYCODE_RSHIFT))
+		doallcpus = 1;
+	if (!code_pressed(KEYCODE_LCONTROL) && !code_pressed(KEYCODE_RCONTROL))
+		increment *= 5;
+	if( increment )
+	{
+		overclock = timer_get_overclock(arg);
+		overclock += 0.01 * increment;
+		if (overclock < 0.01) overclock = 0.01;
+		if (overclock > 2.0) overclock = 2.0;
+		if( doallcpus )
+			for( cpu = 0; cpu < cpu_gettotalcpu(); cpu++ )
+				timer_set_overclock(cpu, overclock);
+		else
+			timer_set_overclock(arg, overclock);
+	}
+
+	oc = 100 * timer_get_overclock(arg) + 0.5;
+
+	if( doallcpus )
+		sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allcpus), ui_getstring (UI_overclock), oc);
+	else
+		sprintf(buf,"%s %s%d %3d%%", ui_getstring (UI_overclock), ui_getstring (UI_cpu), arg, oc);
+	displayosd(bitmap,buf,oc/2,100/2);
+}
+
+#define MAX_OSD_ITEMS 30
+static void (*onscrd_fnc[MAX_OSD_ITEMS])(struct mame_bitmap *bitmap,int increment,int arg);
+static int onscrd_arg[MAX_OSD_ITEMS];
+static int onscrd_total_items;
+
+static void onscrd_init(void)
+{
+	int item,ch;
+#if HAS_DISCRETE
+	int soundnum;
+#endif /* HAS_DISCRETE */
+
+
+	item = 0;
+
+	if (Machine->sample_rate)
+	{
+		onscrd_fnc[item] = onscrd_volume;
+		onscrd_arg[item] = 0;
+		item++;
+
+		for (ch = 0;ch < MIXER_MAX_CHANNELS;ch++)
+		{
+			if (mixer_get_name(ch) != 0)
+			{
+				onscrd_fnc[item] = onscrd_mixervol;
+				onscrd_arg[item] = ch;
+				item++;
+			}
+		}
+
+		/* K.Wilkins Feb2003 Additional of Disrete Sound System ADJUSTMENT sliders */
+		/* #if HAS_DISCRETE*/
+		#if 0 /*Discreet module has been update code needs changed */
+		/* See if there is a discrete sound sub-system present */
+		for (soundnum = 0; soundnum < MAX_SOUND; soundnum++)
+		{
+			if (Machine->drv->sound[soundnum].sound_type == SOUND_DISCRETE)
+			{
+				/* For each DISCRETE_ADJUST node then there is a slider, there can only be one SOUND_DISCRETE */
+				/* in the machinbe sound delcaration so this WONT trigger more than once                      */
+				{
+					int count;
+					count=discrete_sh_adjuster_count((struct discrete_sound_block*)Machine->drv->sound[soundnum].sound_interface);
+
+					for(ch=0;ch<count;ch++)
+					{
+						onscrd_fnc[item] = onscrd_discrete;
+						onscrd_arg[item] = ch;
+						item++;
+					}
+				}
+			}
+		}
+#endif /* HAS_DISCRETE */
+		/* K.Wilkins Feb2003 Additional of Disrete Sound System ADJUSTMENT sliders */
+	}
+
+	
+	for (ch = 0;ch < cpu_gettotalcpu();ch++)
+	{
+		onscrd_fnc[item] = onscrd_overclock;
+		onscrd_arg[item] = ch;
+		item++;
+	}
+	
+	onscrd_fnc[item] = onscrd_brightness;
+	onscrd_arg[item] = 0;
+	item++;
+
+	onscrd_fnc[item] = onscrd_gamma;
+	onscrd_arg[item] = 0;
+	item++;
+	/* this code change as well 
+	if (Machine->drv->video_attributes & VIDEO_TYPE_VECTOR)
+	{
+		onscrd_fnc[item] = onscrd_vector_flicker;
+		onscrd_arg[item] = 0;
+		item++;
+
+		onscrd_fnc[item] = onscrd_vector_intensity;
+		onscrd_arg[item] = 0;
+		item++;
+	}
+	*/
+	onscrd_total_items = item;
+}
+
+static int on_screen_display(struct mame_bitmap *bitmap, int selected)
+{
+	int increment,sel;
+	static int lastselected = 0;
+
+
+	if (selected == -1)
+		sel = lastselected;
+	else sel = selected - 1;
+
+	increment = 0;
+	if (input_ui_pressed_repeat(IPT_UI_LEFT,8))
+		increment = -1;
+	if (input_ui_pressed_repeat(IPT_UI_RIGHT,8))
+		increment = 1;
+	if (input_ui_pressed_repeat(IPT_UI_DOWN,8))
+		sel = (sel + 1) % onscrd_total_items;
+	if (input_ui_pressed_repeat(IPT_UI_UP,8))
+		sel = (sel + onscrd_total_items - 1) % onscrd_total_items;
+
+	(*onscrd_fnc[sel])(bitmap,increment,onscrd_arg[sel]);
+
+	lastselected = sel;
+
+	if (input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY))
+	{
+		sel = -1;
+
+		schedule_full_refresh();
+	}
+
+	return sel + 1;
+}
+
+/*********************************************************************
+  end of On Screen Display handling
+*********************************************************************/
 
 static void displaymessage(struct mame_bitmap *bitmap,const char *text)
 {
@@ -3188,40 +3703,47 @@ int handle_user_interface(struct mame_bitmap *bitmap)
 	DoCheat(bitmap);	/* This must be called once a frame */
 
 	if (setup_selected == 0)
-  {
-    if(input_ui_pressed(IPT_UI_CONFIGURE))
-    {
-      setup_selected = -1;
-    }
-    else if(options.display_setup)
-    {
-      setup_selected = -1;
-      setup_via_menu = 1;
-	    setup_menu_init();
-    }
-  }
+	{
+		if(input_ui_pressed(IPT_UI_CONFIGURE))
+			setup_selected = -1;
+   
+    		else if(options.display_setup)
+    		{
+			setup_selected = -1;
+			setup_via_menu = 1;
+			setup_menu_init();
+		}
+	}
 
 	if (setup_selected && setup_via_menu && !options.display_setup)
-  {
-    setup_selected = 0;
-    setup_via_menu = 0;
-    setup_menu_init();
-    schedule_full_refresh();
-  }
-  else if(setup_selected)
-  {
-    setup_selected = setup_menu(bitmap, setup_selected);
-  }
+	{
+		setup_selected = 0;
+		setup_via_menu = 0;
+		setup_menu_init();
+		schedule_full_refresh();
+	}
 
-#ifdef MAME_DEBUG
-	if (!mame_debug)
-#endif
+	else if(setup_selected)
+	{
+		setup_selected = setup_menu(bitmap, setup_selected);
+	}
 
+
+	if (osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY))
+	{
+		osd_selected = -1;
+		if (setup_selected != 0)
+		{
+			setup_selected = 0; /* disable setup menu */
+			schedule_full_refresh();
+		}
+	}
+	if (osd_selected != 0) osd_selected = on_screen_display(bitmap, osd_selected);
+	
 	/* show popup message if any */
 	if (messagecounter > 0)
 	{
-      displaymessage(bitmap, messagetext);
-
+		displaymessage(bitmap, messagetext);
 		if (--messagecounter == 0)
 			schedule_full_refresh();
 	}
@@ -3241,9 +3763,10 @@ void init_user_interface(void)
 	/* clear the input memory */
 	while (code_read_async() != CODE_NONE) {};
 
+	onscrd_init();
 	setup_menu_init();
 	setup_selected = 0;
-
+	
 }
 
 int setup_active(void)
