@@ -4481,4 +4481,3 @@ unsigned z80_dasm( char *buffer, unsigned pc )
 	return 1;
 #endif
 }
-
