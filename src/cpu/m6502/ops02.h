@@ -740,3 +740,4 @@ extern	UINT8	*RAM;
 #define TYA 													\
 	A = Y;														\
 	SET_NZ(A)
+

@@ -288,3 +288,4 @@ ROM_START( mainsnk)
 ROM_END
 
 GAME( 1984, mainsnk,      0,          mainsnk, mainsnk, 0,          ROT0, "SNK", "Main Event (1984)")
+

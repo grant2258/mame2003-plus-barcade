@@ -1045,3 +1045,4 @@ ROM_END
 
 /*    YEAR, NAME,   PARENT, MACHINE, INPUT, INIT,  MNTR, COMPANY,  FULLNAME, FLAGS */
 GAME( 1989, djboy,  0,      djboy,   djboy, djboy, ROT0, "Kaneko", "DJ Boy" ) /* Sammy & Williams logos in FG ROM*/
+

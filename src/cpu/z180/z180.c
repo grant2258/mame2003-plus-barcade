@@ -2520,3 +2520,4 @@ unsigned z180_dasm( char *buffer, unsigned pc )
 	return 1;
 #endif
 }
+

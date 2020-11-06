@@ -9338,3 +9338,4 @@ static void JR(void)
 	PC += offs;
 	change_pc16(PCD);
 }
+

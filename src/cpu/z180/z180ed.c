@@ -294,3 +294,4 @@ OP(ed,fc) { illegal_2();											} /* DB   ED		  */
 OP(ed,fd) { illegal_2();											} /* DB   ED		  */
 OP(ed,fe) { illegal_2();											} /* DB   ED		  */
 OP(ed,ff) { illegal_2();											} /* DB   ED		  */
+

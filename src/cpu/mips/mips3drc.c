@@ -5830,3 +5830,4 @@ unsigned mips3_dasm(char *buffer, unsigned pc)
 	return 4;
 #endif
 }
+

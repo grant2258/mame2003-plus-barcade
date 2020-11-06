@@ -1731,3 +1731,4 @@ unsigned Dasm34020(char *buff, UINT32 pc)
 {
 	return Dasm340x0(buff, pc, 1);
 }
+

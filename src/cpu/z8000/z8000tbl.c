@@ -590,3 +590,4 @@ void z8000_deinit(void)
 	free( z8000_exec );
 	z8000_exec = 0;
 }
+

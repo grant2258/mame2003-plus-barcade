@@ -740,3 +740,4 @@ unsigned z8000_dasm(char *buffer, unsigned pc)
 	return 2;
 #endif
 }
+

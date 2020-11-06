@@ -1338,3 +1338,4 @@ static INLINE void fetch_effective_address( void )
 
 	hd6309_ICount -= index_cycle[postbyte];
 }
+

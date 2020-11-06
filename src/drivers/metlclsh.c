@@ -462,3 +462,4 @@ ROM_START( metlclsh )
 ROM_END
 
 GAME( 1985, metlclsh, 0, metlclsh, metlclsh, 0, ROT0, "Data East", "Metal Clash (Japan)" )
+

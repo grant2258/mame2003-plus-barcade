@@ -114,3 +114,5 @@ static struct {
 	unsigned src = FETCHOP; 				\
 	unsigned dst = I.regs.w[AX];			\
     src += (FETCH << 8)
+
+

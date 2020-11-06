@@ -738,3 +738,4 @@ static DRIVER_INIT( dblewing )
 
 
 GAMEX(1993, dblewing, 0,  dblewing, dblewing, dblewing,  ROT90, "Mitchell", "Double Wings", GAME_UNEMULATED_PROTECTION | GAME_IMPERFECT_SOUND )
+

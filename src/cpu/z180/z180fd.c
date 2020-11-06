@@ -288,3 +288,4 @@ OP(fd,fc) { illegal_1(); op_fc();									} /* DB   FD		  */
 OP(fd,fd) { illegal_1(); op_fd();									} /* DB   FD		  */
 OP(fd,fe) { illegal_1(); op_fe();									} /* DB   FD		  */
 OP(fd,ff) { illegal_1(); op_ff();									} /* DB   FD		  */
+

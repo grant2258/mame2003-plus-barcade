@@ -720,3 +720,4 @@ static DRIVER_INIT( lethalen )
 }
 
 GAMEX( 1992, lethalen, 0, lethalen, lethalen, lethalen, ORIENTATION_FLIP_Y, "Konami", "Lethal Enforcers (ver UAE)", GAME_IMPERFECT_GRAPHICS)
+

@@ -312,3 +312,4 @@ ROM_END
 
 
 GAMEX( 1981, stactics, 0, stactics, stactics, 0, ROT0, "Sega", "Space Tactics", GAME_NO_SOUND )
+

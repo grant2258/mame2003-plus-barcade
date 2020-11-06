@@ -524,3 +524,4 @@ static void take_interrupt(int irq)
 		z180_change_pc(_PCD);
 	}
 }
+

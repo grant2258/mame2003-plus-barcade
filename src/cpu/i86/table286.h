@@ -528,3 +528,4 @@ static void (*PREFIX286(_instruction)[256])(void) =
 #else
 #define TABLE286 PREFIX286(_instruction)[FETCHOP]();
 #endif
+
