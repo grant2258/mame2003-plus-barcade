@@ -110,6 +110,8 @@ enum { IPT_END=1,IPT_PORT,
 	/* 8 player support */
 	IPT_START5, IPT_START6, IPT_START7, IPT_START8,
 	IPT_COIN5, IPT_COIN6, IPT_COIN7, IPT_COIN8,
+  	/* Analog adjuster support */
+	IPT_ADJUSTER,
 	__ipt_max
 };
 
@@ -254,7 +256,7 @@ enum { IPT_END=1,IPT_PORT,
 
 #define MAX_DEFSTR_LEN 20
 extern const char ipdn_defaultstrings[][MAX_DEFSTR_LEN];
-#define PORT_ADJUSTER(default,name) 
+#define PORT_ADJUSTER(default,name)
 
 /* this must match the ipdn_defaultstrings list in inptport.c */
 enum {
@@ -422,15 +424,15 @@ extern int num_ik;
 void seq_set_string(InputSeq* a, const char *buf);
 const char *generic_ctrl_label(int input);
 
-/* 
+/*
  * void reset_default_inputs(void)
- * repopulate mappings from the defaults specified in the inptport source 
+ * repopulate mappings from the defaults specified in the inptport source
  */
 void reset_default_inputs(void);
 
-/* 
+/*
  * void reset_default_keys(void)
- * repopulate mappings from the defaults specified in the driver source 
+ * repopulate mappings from the defaults specified in the driver source
  */
 void reset_driver_inputs(void);
 
