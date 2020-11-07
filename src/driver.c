@@ -144,7 +144,7 @@ const struct GameDriver *test_drivers[] =
 	/* Epos games */
 	DRIVER( megadon )	/* (c) 1982 */
 	DRIVER( catapult )	/* (c) 1982 */
-  DRIVER( eeekk )     /* (c) 1983 */
+	DRIVER( eeekk )		/* (c) 1983 */
 	DRIVER( suprglob )	/* (c) 1983 */
 	DRIVER( theglob )	/* (c) 1983 */
 	DRIVER( theglob2 )	/* (c) 1983 */
@@ -1242,10 +1242,10 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( bbmanwj )	/* (c) 1992 Irem (Japan) */
 	DRIVER( atompunk )	/* (c) 1992 Irem America (US) */
 	DRIVER( quizf1 )	/* (c) 1992 Irem (Japan) */
-  DRIVER( riskchal )  /* (c) 1993 Irem (World) */
-  DRIVER( gussun )    /* (c) 1993 Irem (Japan) */
+	DRIVER( riskchal )  /* (c) 1993 Irem (World) */
+	DRIVER( gussun )    /* (c) 1993 Irem (Japan) */
 	DRIVER( matchit2 )  /* (c) 1993 Irem (World) */
-  DRIVER( shisen2 )   /* (c) 1992 Irem (Japan) */
+	DRIVER( shisen2 )   /* (c) 1992 Irem (Japan) */
 	/* M92 */
 	DRIVER( gunforce )	/* (c) 1991 Irem (World) */
 	DRIVER( gunforcu )	/* (c) 1991 Irem America (US) */
@@ -1390,7 +1390,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( flstoryj )	/* A45 (c) 1985 Taito Corporation (Japan) */
 	DRIVER( onna34ro )	/* A52 (c) 1985 Taito Corporation (Japan) */
 	DRIVER( onna34ra )	/* A52 (c) 1985 Taito Corporation (Japan) */
-  DRIVER( rumba )	    /* ??? (c) 1984 Taito Corporation (Japan) */
+	DRIVER( rumba )	    /* ??? (c) 1984 Taito Corporation (Japan) */
 	DRIVER( gladiatr )	/* ??? (c) 1986 Taito America Corporation (US) */
 	DRIVER( ogonsiro )	/* ??? (c) 1986 Taito Corporation (Japan) */
 	DRIVER( nycaptor )	/* A50 (c) 1985 Taito Corporation */
@@ -1478,6 +1478,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( slapshot )	/* D71 (c) 1994 Taito Corporation (Japan) */
 	DRIVER( opwolf3 )	/* D74 (c) 1994 Taito */
 	DRIVER( opwolf3u )	/* D74 (c) 1994 Taito */
+	DRIVER( scessjoe )	/* ??? (c) 1990 Wave / Taito */
 	DRIVER( ashnojoe )	/* ??? (c) 1990 Wave / Taito */
 
 	/* Taito multi-screen games */
@@ -2160,8 +2161,11 @@ V-V                           TP-027
 	DRIVER( megaman )	/* 06/10/1995 (c) 1995 (Asia)  */
 	DRIVER( rockmanj )	/* 22/09/1995 (c) 1995 (Japan) */
 
-    /* Capcom CPS Changer */
-    DRIVER( wofch )		/* 31/10/1992 (c) 1992 (Japan) (CPS1 + QSound) */
+  /* CPS Prototype */
+	DRIVER( gulunpa )   /* (c) 1993 (prototype) */  
+		
+  /* Capcom CPS Changer */
+	DRIVER( wofch )		/* 31/10/1992 (c) 1992 (Japan) (CPS1 + QSound) */
 
 	/* Capcom CPS2 games */
 	/* list completed by CPS2Shock */
@@ -2510,7 +2514,7 @@ V-V                           TP-027
 	DRIVER( sftmj )		/* (c) 1995 Capcom/Incredible Technologies */
 	DRIVER( shufshot )	/* (c) Strata/Incredible Technologies */
 	DRIVER( sshot137 )	/* (c) Strata/Incredible Technologies */
-  DRIVER( gt3d )      /* (c) 1995 Incredible Technologies */
+	DRIVER( gt3d )      /* (c) 1995 Incredible Technologies */
 	DRIVER( gt97 )      /* (c) 1997 Incredible Technologies */
 	DRIVER( gt98 )      /* (c) 1998 Incredible Technologies */
 	DRIVER( gt99 )      /* (c) 1999 Incredible Technologies */
@@ -2971,7 +2975,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( columns2 )	/* (c) 1990 Sega */
 
 	/* System C-2 games */
-  DRIVER( ssonicbr )  /* Sega, Unreleased */
+	DRIVER( ssonicbr )  /* Sega, Unreleased */
 	DRIVER( borench )	/* (c) 1990 Sega */
 	DRIVER( tfrceac )	/* (c) 1990 Sega / Technosoft */
 	DRIVER( tfrceacj )	/* (c) 1990 Sega / Technosoft */
@@ -3475,10 +3479,10 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( dairesya )	/* GX560 (c) 1986 (Japan) */
 	DRIVER( farwest )
 	DRIVER( jackal )	/* GX631 (c) 1986 (World) */
-  DRIVER( jackalr )
+	DRIVER( jackalr )
 	DRIVER( topgunr )	/* GX631 (c) 1986 (US) */
 	DRIVER( jackalj )	/* GX631 (c) 1986 (Japan) */
-	DRIVER( topgunbl )	/* bootleg */
+	DRIVER( topgunbl)	/* bootleg */
 	DRIVER( ddribble )	/* GX690 (c) 1986 */
 	DRIVER( contra )	/* GX633 (c) 1987 */
 	DRIVER( contrab )	/* bootleg */
@@ -5603,7 +5607,7 @@ Other Sun games
 	DRIVER( ssideki )	/* 0052 (c) 1992 SNK */
 	DRIVER( wh1 )		/* 0053 (c) 1992 Alpha Denshi Co. */
 	DRIVER( wh1h )		/* 0053 (c) 1992 Alpha Denshi Co. */
-	/* 0054 Crossed Swords 2  (CD only? not confirmed, MVS might exist) */
+	DRIVER( crswd2bl )  /* 0054 Crossed Swords 2  (CD only? not confirmed, MVS might exist) */
 	DRIVER( kof94 )		/* 0055 (c) 1994 SNK */
 	DRIVER( aof2 )		/* 0056 (c) 1994 SNK */
 	DRIVER( wh2 )		/* 0057 (c) 1993 ADK */
@@ -5621,8 +5625,8 @@ Other Sun games
 	DRIVER( gururin )	/* 0067 (c) 1994 Face */
 	DRIVER( pspikes2 )	/* 0068 (c) 1994 Video System Co. */
 	DRIVER( fatfury3 )	/* 0069 (c) 1995 SNK */
-	/* 0070 Zupapa - released in 2001 */
-	/* 0071 Bang Bang Busters (prototype) 1994 Visco */
+	DRIVER( zupapa )	/* 0070 (c) SNK */
+	DRIVER( bbbuster )  /* 0071 Bang Bang Busters 1994 Visco */
 	/* 0072 Last Odyssey Pinball Fantasia (prototype) 1995 Monolith */
 	DRIVER( panicbom )	/* 0073 (c) 1994 Eighting / Hudson */
 	DRIVER( aodk )		/* 0074 (c) 1994 ADK / SNK */
@@ -5664,7 +5668,7 @@ Other Sun games
 	DRIVER( sdodgeb )	/* 0208 (c) 1996 Technos */
 	DRIVER( goalx3 )	/* 0209 (c) 1995 Visco */
 	/* 0210 Karate Ninja Sho (prototype) 1995 Yumekobo */
-	/* 0211 Oshidashi Zintrick (CD only? not confirmed, MVS might exist) 1996 SNK/ADK */
+	DRIVER( zintrckb )	/* 0211 hack - this is not a genuine MVS proto, its a bootleg made from the CD version */
 	DRIVER( overtop )	/* 0212 (c) 1996 ADK */
 	DRIVER( neodrift )	/* 0213 (c) 1996 Visco */
 	DRIVER( kof96 )		/* 0214 (c) 1996 SNK */
@@ -5674,7 +5678,7 @@ Other Sun games
 	DRIVER( ninjamas )	/* 0217 (c) 1996 ADK / SNK */
 	DRIVER( ragnagrd )	/* 0218 (c) 1996 Saurus */
 	DRIVER( pgoal )		/* 0219 (c) 1996 Saurus */
-	/* 0220 Choutetsu Brikin'ger - iron clad (MVS existance seems to have been confirmed) */
+	DRIVER( ironclad )  /* 0220 Choutetsu Brikin'ger - iron clad (prototype) 1996 Saurus */
 	DRIVER( magdrop2 )	/* 0221 (c) 1996 Data East Corporation */
 	DRIVER( samsho4 )	/* 0222 (c) 1996 SNK */
 	DRIVER( rbffspec )	/* 0223 (c) 1996 SNK */
@@ -5682,7 +5686,7 @@ Other Sun games
 	DRIVER( wakuwak7 )	/* 0225 (c) 1996 Sunsoft */
 	/* 0226 Pair Pair Wars (prototype) 1996 Sunsoft? */
 	DRIVER( stakwin2 )	/* 0227 (c) 1996 Saurus */
-	/* 0228 GhostLop (prototype) 1996? Data East */
+	DRIVER( ghostlop )	/* 0228 GhostLop (prototype) 1996? Data East */
 	/* 0229 King of Fighters '96 CD Collection (CD only) */
 	DRIVER( breakers )	/* 0230 (c) 1996 Visco */
 	DRIVER( miexchng )	/* 0231 (c) 1997 Face */
@@ -5700,7 +5704,7 @@ Other Sun games
 	DRIVER( rbff2 )		/* 0240 (c) 1998 SNK */
 	DRIVER( rbff2a )	/* 0240 (c) 1998 SNK */
 	DRIVER( mslug2 )	/* 0241 (c) 1998 SNK */
-  DRIVER( mslug2t )	/* 0941 (c) 2015 Trap15 Hack */
+	DRIVER( mslug2t )	/* 0941 (c) 2015 Trap15 Hack */
 	DRIVER( kof98 )		/* 0242 (c) 1998 SNK */
 	DRIVER( kof98n )	/* 0242 (c) 1998 SNK */
 	DRIVER( lastbld2 )	/* 0243 (c) 1998 SNK */
@@ -5728,25 +5732,19 @@ Other Sun games
 	DRIVER( kof2000n )	/* 0257 (c) 2000 SNK */
 	DRIVER( bangbead )	/* 0259 (c) 2000 Visco */
 	DRIVER( nitd )		/* 0260 (c) 2000 Eleven / Gavaking */
-	DRIVER( bbbuster )      /* 0071 Bang Bang Busters 1994 Visco */
-	DRIVER( ghostlop )	/* 0228 GhostLop (prototype) 1996? Data East */
-	DRIVER( ironclad )      /* 0220 Choutetsu Brikin'ger - iron clad (prototype) 1996 Saurus */
-  DRIVER( sengoku3 )	/* 0261 (c) 2001 SNK */
-  DRIVER( zupapa )	/* 0070 (c) SNK */
+	DRIVER( sengoku3 )	/* 0261 (c) 2001 SNK */
 	DRIVER( kof2001 )	/* 0262 (c) 2001 Eolith */
-	DRIVER( kof2002 )	/* 0265 (c) 2002 Eolith */
 	DRIVER( mslug4 )	/* 0263 (c) 2001 Mega Enterprises */
 	DRIVER( rotd )		/* 0264 (c) 2002 Evoga Entertainment */
+	DRIVER( kof2002 )	/* 0265 (c) 2002 Eolith */
 	DRIVER( matrim )	/* 0266 (c) 2002 Atlus / Noise Factory */
 	DRIVER( pnyaa )		/* 0267 (c) 2003 Aiky / Taito */
+	DRIVER( mslug5 )	/* 0268 (c) 2003 SNK Playmore */
 	DRIVER( svcboot )	/* 0269 (c) 2003 Bootleg */
 	DRIVER( samsho5 )	/* 0270 (c) 2003 Yuki Enterprises */
 	DRIVER( samsh5sp )	/* 0270 (c) 2003 Yuki Enterprises */
-	DRIVER( mslug5 )	/* 0268 (c) 2003 SNK Playmore */
 	DRIVER( kof2003d)	/* 0271 (c) 2003 SNK Playmore */
 	DRIVER( kof10th )       /* 2005 SNK Playmore */
-	DRIVER( crswd2bl )      /* 0054 Crossed Swords 2  (CD only? not confirmed, MVS might exist) */
-	DRIVER( zintrckb )	/* 0211 hack - this is not a genuine MVS proto, its a bootleg made from the CD version */
 	DRIVER( lasthope )      /* (c) 2005 NG:DEV.TEAM */
 
 	/* SemiCom 68020 based hardware */

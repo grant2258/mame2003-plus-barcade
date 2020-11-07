@@ -56,6 +56,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Golden Tee '99 (v1.00)
 * Golden Tee 2K (v1.00)
 * Golden Tee Classic (v1.00)
+* Gulun.Pa! 
 * Gunbarich
 * GunMaster
 * Hang Zo
@@ -117,6 +118,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Squash
 * Star Fire 2
 * Steel Worker
+* Success Joe
 * Super Bishi Bashi Championship (ver JAA, 2 Players)
 * Super Rider
 * Super Trio
@@ -334,6 +336,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 
 ## Games now with improved sound
 
+* Ashita no Joe
 * Asterix
 * Bandito
 * Bosconian
@@ -346,6 +349,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Gaplus
 * Grobda
 * Libble Rabble
+* Legion
 * Lunar Rescue - (Added lrescue.zip sample support)
 * Mappy
 * Mortal Kombat - Added OST soundtrack (via KMFDManic)
@@ -392,6 +396,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 
 
 ## Changes
+* video fixes for Various Video System Co. games using the C7-01 GGA, VS8803, VS8904, VS8905 Video chips. 
 * Added sound support to Fire Shark and Vimana
 * Added sound sample support for Cosmic Alien
 * Added BritneysPAIRS improved sample support to Donkey Kong and Donkey kong JR
@@ -473,3 +478,8 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added Bryan McPhail's C-Chip simulation code for Operation Wolf from MAME98 and MAME176 respectively [arcadez]
 * Fixed graphical problems in GunNail and better balanced the sound for the games using the NMK004 [arcadez]
 * Removed imperfect MCU simulation code and hooked the proper M68705 MCU's for Renegade and Nekketsu Kouha Kunio-kun [dink, arcadez]
+* Hooked up x-men 6 players [arcadez, mahoneyt944, KMFDManic]
+* Ashita no Joe sound fixes / CPU clock frequencies [arcadez]
+* Success Joe new game support added [mahoneyt944]
+* Ported mirax.c across to MAME2003+ [arcadez, dink]
+* Fixed battlex to current mame standards / added dodgeman support [mahoneyt944, arcadez]

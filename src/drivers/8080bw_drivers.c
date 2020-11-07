@@ -3914,7 +3914,8 @@ ROM_END
 	  GAMEX(1980, polaris,  0,        polaris,  polaris,  polaris,  ROT270, "Taito", "Polaris (set 1)", GAME_IMPERFECT_SOUND )
 	  GAMEX(1980, polarisa, polaris,  polaris,  polaris,  polaris,  ROT270, "Taito", "Polaris (set 2)", GAME_IMPERFECT_SOUND )
 	  GAMEX(1980, ballbomb, 0,        ballbomb, ballbomb, invadpt2, ROT270, "Taito", "Balloon Bomber", GAME_NO_SOUND | GAME_IMPERFECT_GRAPHICS )	/* missing clouds and blue background */
-	  GAME( 1980, steelwkr, 0,        steelwkr, steelwkr, invadpt2, ROT0,   "Taito", "Steel Worker" )
+    GAME( 1980, steelwkr, 0,        steelwkr, steelwkr, invadpt2, ROT0,   "Taito", "Steel Worker" )
+	  
 
 /* Misc. manufacturers */
 

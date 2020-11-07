@@ -369,7 +369,7 @@ int ADPCM_sh_start(const struct MachineSound *msound)
 	else
 	{
 		num_voices = intf->num;
-		#ifdef MAME_DEBUG
+		#ifdef VERBOSE
 		if (num_voices > MAX_ADPCM)
 		{
 			logerror("ERROR: too many ADPCM voices: %d vs. MAX_ADPCM %d\n", num_voices, MAX_ADPCM);
