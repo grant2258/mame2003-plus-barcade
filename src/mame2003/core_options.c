@@ -442,7 +442,7 @@ void set_content_flags(void)
 	}
 
 	/************ DRIVERS WITH ALTERNATE SOUNDTRACKS ************/
-	while (ost_drivers[i]) {
+	while (ost_drivers[i] && game_driver->name) {
 		if (strcmp(ost_drivers[i], game_driver->name) == 0) {
 			options.content_flags[CONTENT_ALT_SOUND] = true;
 			log_cb(RETRO_LOG_INFO, LOGPRE "Content has an alternative audio option controlled via core option.\n");
