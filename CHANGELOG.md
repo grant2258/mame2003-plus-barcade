@@ -159,6 +159,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Cannon Dancer
 * Crystal Castles (Joystick Version)
 * DoDonPachi Dai-Ou-Jou (Black Label)
+* Double Dragon (World Set 2)
 * Double Dragon 3 - The Rosetta Stone (Japan)
 * Dunk Dream '95
 * Escape Kids (Asia 4 Players)
@@ -182,6 +183,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * The Great Ragtime Show
 * The King of Fighters 10th Anniversary
 * Undercover Cops (Alpha Renewal Version)
+* Thunder Strike (Older)
 * X-men (6 Players ver UCB)
 * World Cup Volley 95 Extra Version
 
@@ -278,6 +280,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Timber - Romset `timber`
 * Thunder Dragon - Romset `tdragon` - Minor sound issues remaining
 * Thunder Cross - Romset `thunderx` - Fixed collison 
+* Thunder Strike (Newer) Romset `tstrike` 
 * Tri-Sports - Romset `trisport`
 * Tron - Romset `tron`
 * Turbo Tag - Romset `turbotag`
@@ -483,3 +486,4 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Success Joe new game support added [mahoneyt944]
 * Ported mirax.c across to MAME2003+ [arcadez, dink]
 * Fixed battlex to current mame standards / added dodgeman support [mahoneyt944, arcadez]
+* Fixed double dragon sprite issue in attract mode and and the end of the game

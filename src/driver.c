@@ -4336,6 +4336,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( ddungeon )	/* Game Room */
 	DRIVER( darktowr )	/* Game Room */
 	DRIVER( tstrike )	/* Game Room */
+	DRIVER( tstrikea )	/* Game Room */
 	DRIVER( ctribe )	/* TA-0028 (c) 1990 (US) */
 	DRIVER( ctribeb )	/* bootleg */
 	DRIVER( blockout )	/* TA-0029 (c) 1989 + California Dreams */
