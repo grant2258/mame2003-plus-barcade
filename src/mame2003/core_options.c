@@ -350,7 +350,7 @@ void update_variables(bool first_time)
 					options.translucency = 0;
 				break;
 			case OPT_VECTOR_FLICKER:
-				options.vector_flicker = (int)(2.55 * atof(var.value)); /* why 2.55? must be an old family recipe */
+				options.vector_flicker = atof(var.value);
 				break;
 			case OPT_VECTOR_INTENSITY:
 				options.vector_intensity_correction = atof(var.value); /* float: vector beam intensity */
