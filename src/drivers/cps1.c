@@ -4830,8 +4830,7 @@ static MACHINE_DRIVER_START( ffight_hack )
 
 	/* Lets add our Final Fight music sample packs.*/
 	MDRV_SOUND_ATTRIBUTES(SOUND_SUPPORTS_STEREO)
-	MDRV_SOUND_ADD(SAMPLES, ff_samples)
-	/*MDRV_SOUND_ADD(SAMPLES, ff_samplesR)*/
+	MDRV_SOUND_ADD_TAG("OST Samples", SAMPLES, ff_samples)
 MACHINE_DRIVER_END
 
 
@@ -4850,12 +4849,8 @@ static MACHINE_DRIVER_START( sf2 )
 	/* basic machine hardware */
 	MDRV_IMPORT_FROM(cps1)
 	MDRV_CPU_REPLACE("main", M68000, 12000000)
-// add a check for the game name here if you don want samples to be use in all sf2 clones
-	if(strcmp(Machine->gamedrv->name, "sf2") == 0)
-	{
-		MDRV_SOUND_ATTRIBUTES(SOUND_SUPPORTS_STEREO)
-		MDRV_SOUND_ADD(SAMPLES, sf2_samples)
-	}
+	MDRV_SOUND_ATTRIBUTES(SOUND_SUPPORTS_STEREO)
+	MDRV_SOUND_ADD_TAG("OST Samples", SAMPLES, sf2_samples)
 MACHINE_DRIVER_END
 
 
