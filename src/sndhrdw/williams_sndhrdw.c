@@ -1625,7 +1625,7 @@ void williams_adpcm_data_w(int data)
 				sample_set_stereo_volume(0, 100, 0);
 				sample_set_stereo_volume(1, 0, 100);
 			}
-			else if( ( sample_playing(0) == 0 && sample_playing(1) == 0)  || mk_do_nothing == false) { /* No sample playing, revert to the default sound.*/
+			else if( ( sample_playing(0) == 0 && sample_playing(1) == 0)  || mk_do_nothing == false || nba_jam_do_nothing ) { /* No sample playing, revert to the default sound.*/
 				sa_play_original = false;
 				soundlatch_w(0, data & 0xff);
 			}
