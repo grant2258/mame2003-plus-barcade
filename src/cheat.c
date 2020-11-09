@@ -8241,7 +8241,7 @@ static void LoadCheatFile(char * fileName)
 	char		formatString[256];
 	char		oldFormatString[256];
 	char		buf[2048];
-	int			recordNames = 0;
+	int		recordNames = 0;
 
 	theFile = mame_fopen(NULL, fileName, FILETYPE_CHEAT, 0);
 
@@ -8260,9 +8260,8 @@ static void LoadCheatFile(char * fileName)
 		int			address;
 		int			data;
 		int			extendData;
-		char		name[256];
-		char		description[256];
-
+		char			name[256];
+		char			description[512]; // mk desciption causes a overflow for being too long
 		int			argumentsMatched;
 
 		CheatEntry	* entry;

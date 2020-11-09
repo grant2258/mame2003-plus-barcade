@@ -764,14 +764,13 @@ static MACHINE_DRIVER_START( nbajam )
 	nba_jam_in_game = false;
 	nba_jam_boot_up	= true;
 	nba_jam_playing_title_music = false;
-	
+
 	m_nba_last_offset = 0;
 	m_nba_start_counter = 0;
-	
+
 	/* basic machine hardware */
 	MDRV_IMPORT_FROM(tunit_core)
 	MDRV_IMPORT_FROM(williams_adpcm_sound)
-
 	/* Lets add our NBA Jam music sample packs.*/
 	MDRV_SOUND_ATTRIBUTES(SOUND_SUPPORTS_STEREO)
 	MDRV_SOUND_ADD_TAG("OST Samples", SAMPLES, nba_jam_samples_tunit)
