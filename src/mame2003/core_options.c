@@ -425,7 +425,7 @@ void set_content_flags(void)
 	/************ DRIVERS WITH ALTERNATE SOUNDTRACKS ************/
 	for( i = 0; Machine->drv->sound[i].sound_type && i < MAX_SOUND; i++ ){
 			if (Machine->drv->sound[i].tag)
-			if (strcmp("OST Samples" ,  Machine->drv->sound[i].tag) !=0){
+			if (strcmp("OST Samples" ,  Machine->drv->sound[i].tag) ==0){
 				options.content_flags[CONTENT_ALT_SOUND] = true;
 				log_cb(RETRO_LOG_INFO, LOGPRE "Content has an alternative audio option controlled via core option.\n");
 			}
