@@ -610,17 +610,22 @@ static READ_HANDLER( adpcm_command_r )
 
 void williams_adpcm_data_w(int data)
 {
+
+	bool nba_jam_do_nothing = false;
+	bool sa_play_sample = false;
+	bool sa_play_original = false;
+	bool nba_jam_stop_samples = false;
+	bool nba_jam_play_default = false;
+
+	int sa_left = 0;
+	int sa_right = 1;
+	bool sa_loop = 1; /* --> 1 == loop, 0 == do not loop.		*/
+
+	bool mk_do_nothing = false;
+	bool mk_stop_samples = false;
+
 	if(nba_jam_playing == true) {
-		int a = 0;
-		bool nba_jam_do_nothing = false;
-		bool sa_play_sample = false;
-		bool sa_play_original = false;
-		bool nba_jam_stop_samples = false;
-		bool nba_jam_play_default = false;
 		
-		int sa_left = 0;
-		int sa_right = 1;
-		bool sa_loop = 1; /* --> 1 == loop, 0 == do not loop.		*/
 
 		switch (data) {
 			case 0x8C:
@@ -848,24 +853,20 @@ void williams_adpcm_data_w(int data)
 
 				/* Time to stop the NBA Jam music samples.*/
 				if(data == 0x0 && nba_jam_title_screen == false) {
-					a = 0;
-					
+										
 					/* Lets stop the NBA Jam sample music as we are starting up a new sample to play.*/
-					for(a = 0; a <= 13; a++) {
-						sample_stop(a);
-					}
+					sample_stop(0);
+					sample_stop(1);
 				}
 				
 				break;
 		}
 
 		if(sa_play_sample == true) {
-			a = 0;
-
+			
 			/* Lets stop the NBA Jam sample music as we are starting up a new sample to play.*/
-			for(a = 0; a <= 13; a++) {
-				sample_stop(a);
-			}
+			sample_stop(0);
+			sample_stop(1);
 
 			sample_start(0, sa_left, sa_loop);
 			sample_start(1, sa_right, sa_loop);
@@ -893,12 +894,11 @@ void williams_adpcm_data_w(int data)
 			/* --> Do nothing.*/
 		}
 		else if(nba_jam_stop_samples == true) {
-			a = 0;
 
 			/* Lets stop the NBA Jam sample music as we are starting up a new sample to play.*/
-			for(a = 0; a <= 13; a++) {
-				sample_stop(a);
-			}
+			sample_stop(0);
+			sample_stop(1);
+
 
 			/* Now play the default sound.*/
 			soundlatch_w(0, data & 0xff);
@@ -908,16 +908,7 @@ void williams_adpcm_data_w(int data)
 
 		m_nba_last_offset = data;
 	}
-	else if(mk_playing_mortal_kombat == true || mk_playing_mortal_kombat_t == true) {
-		int a = 0;
-		bool mk_do_nothing = false;
-		bool sa_play_sample = false;
-		bool sa_play_original = false;
-		bool mk_stop_samples = false;
-		
-		int sa_left = 0;
-		int sa_right = 1;
-		bool sa_loop = 1; /* --> 1 == loop, 0 == do not loop.*/
+	else if(mk_playing_mortal_kombat == true || mk_playing_mortal_kombat_t == true || nba_jam_do_nothing == true) {
 
 		/* If we are playing the T-Unit version of Mortal Kombat.*/
 		if(mk_playing_mortal_kombat_t == true) {
@@ -1177,12 +1168,11 @@ void williams_adpcm_data_w(int data)
 
 					/* Time to stop the Mortal Kombat music samples.*/
 					if(data == 0x0) {
-						a = 0;
-						
+											
 						/* Lets stop the Mortal Kombat sample music as we are starting up a new sample to play.*/
-						for(a = 0; a <= 55; a++) {
-							sample_stop(a);
-						}
+					sample_stop(0);
+					sample_stop(1);
+
 					}
 					
 					break;
@@ -1602,12 +1592,11 @@ void williams_adpcm_data_w(int data)
 
 					/* Time to stop the Mortal Kombat music samples.*/
 					if(data == 0xFD00 || data == 0xFF00) {
-						a = 0;
-
+						
 						/* Lets stop the Mortal Kombat sample music as we are starting up a new sample to play.*/
-						for(a = 0; a <= 55; a++) {
-							sample_stop(a);
-						}
+						sample_stop(0);
+						sample_stop(1);
+
 					}
 					
 					break;
@@ -1615,12 +1604,12 @@ void williams_adpcm_data_w(int data)
 		}
 
 		if(sa_play_sample == true) {
-			a = 0;
-
+			
 			/* Lets stop the Mortal Kombat sample music as we are starting up a new sample to play.*/
-			for(a = 0; a <= 55; a++) {
-				sample_stop(a);
-			}
+
+			sample_stop(0);
+			sample_stop(1);
+
 
 			sample_start(0, sa_left, sa_loop);
 			sample_start(1, sa_right, sa_loop);
@@ -1636,7 +1625,7 @@ void williams_adpcm_data_w(int data)
 				sample_set_stereo_volume(0, 100, 0);
 				sample_set_stereo_volume(1, 0, 100);
 			}
-			else if(sample_playing(0) == 0 && sample_playing(1) == 0 && mk_do_nothing == false) { /* No sample playing, revert to the default sound.*/
+			else if( ( sample_playing(0) == 0 && sample_playing(1) == 0)  || mk_do_nothing == false) { /* No sample playing, revert to the default sound.*/
 				sa_play_original = false;
 				soundlatch_w(0, data & 0xff);
 			}
@@ -1645,12 +1634,9 @@ void williams_adpcm_data_w(int data)
 				soundlatch_w(0, data & 0xff);
 		}
 		else if(mk_stop_samples == true) {
-			a = 0;
-
 			/* Lets stop the Mortal Kombat sample music as we are starting up a new sample to play.*/
-			for(a = 0; a <= 55; a++) {
-				sample_stop(a);
-			}
+			sample_stop(0);
+			sample_stop(1);
 
 			/* Now play the default sound.*/
 			soundlatch_w(0, data & 0xff);
