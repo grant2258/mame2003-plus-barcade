@@ -1591,6 +1591,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( spacegun )	/* C57 (c) 1990 Taito Corporation Japan (World) */
 	DRIVER( dblaxle )	/* C78 (c) 1991 Taito America Corporation (US) */
 	DRIVER( pwheelsj )	/* C78 (c) 1991 Taito Corporation (Japan) */
+	DRIVER( racingb )	/* C84 (c) 1991 Taito Coropration (Japan) */
 
 	/* Taito Air System games */
 	DRIVER( topland )	/* B62 (c) 1988 Taito Coporation Japan (World) */
@@ -2635,9 +2636,9 @@ V-V                           TP-027
 	/* Sega System 1 / System 2 games */
 	DRIVER( starjack )	/* 834-5191 (c) 1983 (S1) */
 	DRIVER( starjacs )	/* (c) 1983 Stern (S1) */
-	DRIVER( regulus )	/* 834-5328 (c) 1983 (S1) */
-	DRIVER( reguluso )	/* 834-5328 (c) 1983 (S1) */
-	DRIVER( regulusu )	/* 834-5328 (c) 1983 (S1) */
+	DRIVER( regulus )	/* 834-5328 (c) 1983 (S1) */
+	DRIVER( reguluso )	/* 834-5328 (c) 1983 (S1) */
+	DRIVER( regulusu )	/* 834-5328 (c) 1983 (S1) */
 	DRIVER( upndown )	/* (c) 1983 (S1) */
 	DRIVER( upndownu )	/* (c) 1983 (S1) */
 	DRIVER( mrviking )	/* 834-5383 (c) 1984 (S1) */
@@ -2707,8 +2708,11 @@ DokiDoki Penguin Land *not confirmed
 	DRIVER( transfrm )	/* 834-5803 (c) 1986 */
 	DRIVER( astrofl )	/* 834-5803 (c) 1986 */
 	DRIVER( ridleofp )	/* (c) 1986 Sega / Nasco */
+	DRIVER( opaopa )    /* (c) 1987 */
+	DRIVER( opaopan )   /* (c) 1987 */
+	DRIVER( tetrisse )  /* (c) 1988 */
+	DRIVER( slapshtr )  /* (c) 1986 */
 	DRIVER( fantzn2 )
-	DRIVER( opaopa )
 
 	/* other Sega 8-bit games */
 	DRIVER( turbo )		/* (c) 1981 Sega */
@@ -2883,7 +2887,8 @@ Sep.1994 Quiz Ghost Hunter
 	DRIVER( spideyj )	/* (c) 1991 (Japan) */
 	DRIVER( arabfgt )	/* (c) 1991 */
 	DRIVER( arescue )	/* (c) 1992 */
-	DRIVER( f1lap )
+	DRIVER( f1lap )     /* (c) 1993 (World) */
+	DRIVER( f1lapj )    /* (c) 1993 (Japan) */
 	DRIVER( dbzvrvs )
 	DRIVER( darkedge )
 	DRIVER( slipstrm )	/* Capcom */
@@ -3672,6 +3677,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( viostrmj )	/* GX168 (c) 1993 (Japan) */
 	DRIVER( viostrma )	/* GX168 (c) 1993 (Asia) */
 	DRIVER( dadandrn )  /* GX170 (c) 1993 (Japan) */
+	DRIVER( mmaulers )  /* GX170 (c) 1993 (Europe) */
 	DRIVER( metamrph )  /* GX224 (c) 1993 (US) */
 	DRIVER( metamrpj )  /* GX224 (c) 1993 (Japan) */
 	DRIVER( mtlchamp )  /* GX234 (c) 1993 (World) */
@@ -4209,6 +4215,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( aso )		/*            (c) 1985 */
 	DRIVER( tnk3 )		/* A5001      (c) 1985 */
 	DRIVER( tnk3j )		/* A5001      (c) 1985 */
+	DRIVER( tnk3b )		/* bootleg    (c) 1985 */    
 	DRIVER( athena )	/*       'UP' (c) 1986 */
 	DRIVER( fitegolf )	/*       'GU' (c) 1988 */
 	DRIVER( fitegol2 )	/*       'GU' (c) 1988 */
@@ -5122,6 +5129,7 @@ Other Sun games
 	DRIVER( gulfstr2 )	/* (c) 1991 Dooyong + distributed by Media Shoji */
 	DRIVER( pollux )	/* (c) 1991 Dooyong */
 	DRIVER( polluxa )	/* (c) 1991 Dooyong */
+	DRIVER( flytiger )	/* (c) 1992 Dooyong */
 	DRIVER( bluehawk )	/* (c) 1993 Dooyong */
 	DRIVER( bluehawn )	/* (c) 1993 NTC */
 	DRIVER( sadari )	/* (c) 1993 NTC */
@@ -5213,7 +5221,11 @@ Other Sun games
 
 	/* Yun Sung games */
 	DRIVER( paradise )	/* (c) >1994 Yun Sung */
-	DRIVER( tgtball )	/* (c) 199? Yun Sung */
+	DRIVER( tgtball )	/* (c) 1995 Yun Sung */
+	DRIVER( tgtballa )	/* (c) 1995 Yun Sung */
+	DRIVER( torus ) 	/* (c) 1996 Yun Sung */
+	DRIVER( madball )	/* (c) 1998 Yun Sung */
+	DRIVER( madballn )	/* (c) 1997 Yun Sung */
 	DRIVER( cannball )	/* (c) 1995 Yun Sung / Soft Visio */
 	DRIVER( magix )		/* (c) 1995 Yun Sung */
 	DRIVER( magicbub )	/* (c) Yun Sung */

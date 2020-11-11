@@ -2393,7 +2393,7 @@ static MACHINE_DRIVER_START( blockgal )
 
 	/* video hardware */
 	MDRV_VIDEO_UPDATE(blockgal)
-
+	
 MACHINE_DRIVER_END
 
 static MACHINE_DRIVER_START( ufosensi )
@@ -4083,6 +4083,7 @@ ROM_START( ufosensb )
 	ROM_LOAD( "pr11654.8",    0x0200, 0x0100, CRC(ba624305) SHA1(eb1d0dde60f81ff510ac8c1212e0ed5703febaf3) ) /* palette blue component */
 	ROM_LOAD( "pr5317.28",    0x0300, 0x0100, CRC(648350b8) SHA1(c7986aa9127ef5b50b845434cb4e81dff9861cd2) ) /* timing? (not used) */
 ROM_END
+
 ROM_START( noboranb )
 	ROM_REGION( 0x20000, REGION_CPU1, 0 )
 	ROM_LOAD( "nobo-t.bin", 0x00000, 0x8000, CRC(176fd168) SHA1(f262521f07e5340f175019e2a06a54120a4aa3b7) )
@@ -4129,6 +4130,7 @@ static DRIVER_INIT( wboy )		{ astrofl_decode(); }
 static DRIVER_INIT( wboy2 )		{ wboy2_decode(); }
 static DRIVER_INIT( gardia )	{ gardia_decode(); }
 static DRIVER_INIT( gardiab )	{ gardiab_decode(); }
+
 /* wbml decryption ripped from mc8123.c */
 
 
@@ -5190,8 +5192,8 @@ GAMEX(1987, blckgalb, blockgal, blockgal, blockgal, bootleg,  ROT90,  "bootleg",
 GAMEX(1987, tokisens, 0,        wbml,     tokisens, 0,        ROT90,  "Sega", 			 	   "Toki no Senshi - Chrono Soldier", GAME_NO_COCKTAIL )
 GAMEX(1987, wbml,     0,        wbml,     wbml,     wbml,     ROT0,   "Sega / Westone",  "Wonder Boy in Monster Land (Japan New Ver.)", GAME_NO_COCKTAIL )
 GAMEX(1987, wbmljo,   wbml,     wbml,     wbml,     wbml,     ROT0,   "Sega / Westone",  "Wonder Boy in Monster Land (Japan Old Ver.)", GAME_NO_COCKTAIL )
-GAMEX(1987, wbmljb,   wbml,     wbml,     wbml,     bootleg,  ROT0,   "bootleg", 		   "Wonder Boy in Monster Land (Japan not encrypted)", GAME_NO_COCKTAIL )
-GAMEX(1987, wbmlb,    wbml,     wbml,     wbml,     bootleg,  ROT0,   "bootleg", 		   "Wonder Boy in Monster Land", GAME_NO_COCKTAIL )
+GAMEX(1987, wbmljb,   wbml,     wbml,     wbml,     bootleg,  ROT0,   "bootleg", 		     "Wonder Boy in Monster Land (Japan not encrypted)", GAME_NO_COCKTAIL )
+GAMEX(1987, wbmlb,    wbml,     wbml,     wbml,     bootleg,  ROT0,   "bootleg", 		     "Wonder Boy in Monster Land", GAME_NO_COCKTAIL )
 GAMEX(2009, wbmlvc,   wbml,     wbml,     wbml,     bootleg,  ROT0,   "Sega / Westone",  "Wonder Boy in Monster Land (English, Virtual Console)", GAME_NO_COCKTAIL )
 GAMEX(1987, dakkochn, 0,        chplft,   chplft,   0,        ROT0,   "Sega", 			 	   "DakkoChan Jansoh", GAME_NOT_WORKING | GAME_NO_COCKTAIL )
 GAMEX(1988, ufosensi, 0,        ufosensi, ufosensi, 0,        ROT0,   "Sega", 			 	   "Ufo Senshi Yohko Chan", GAME_NOT_WORKING | GAME_NO_COCKTAIL )
