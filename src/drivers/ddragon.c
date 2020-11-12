@@ -130,7 +130,7 @@ const char *const ddragon_samples_set_names[] =
 static struct Samplesinterface ddragon_samples_set =
 {
 	2,	// 2 channels
-	100, // volume
+	39, // volume
 	ddragon_samples_set_names
 };
 

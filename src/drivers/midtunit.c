@@ -95,7 +95,7 @@ const char *const mk_sample_names_tunit[] =
 static struct Samplesinterface mk_samples_tunit =
 {
 	2,	/* 2 channels*/
-	100, /* volume*/
+	39, /* volume*/
 	mk_sample_names_tunit
 };
 
@@ -122,7 +122,7 @@ const char *const nba_jam_sample_names_tunit[] =
 static struct Samplesinterface nba_jam_samples_tunit =
 {
 	2,	/* 2 channels*/
-	100, /* volume*/
+	39, /* volume*/
 	nba_jam_sample_names_tunit
 };
 
@@ -746,7 +746,7 @@ MACHINE_DRIVER_END
 
 static MACHINE_DRIVER_START( mk )
 	mk_playing_mortal_kombat_t = true; /* --> Let the sound hardware know we are playing Mortal Kombat.*/
-	
+
 	/* basic machine hardware */
 	MDRV_IMPORT_FROM(tunit_core)
 	MDRV_IMPORT_FROM(williams_adpcm_sound)

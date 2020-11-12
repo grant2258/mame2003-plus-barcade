@@ -78,11 +78,11 @@ const char *const moonwalker_samples_set_names[] =
 	"bad-01",
 	"bad-02",
 	"smoothcriminal-01",
-	"smoothcriminal-02",	
+	"smoothcriminal-02",
 	"beatit-01",
 	"beatit-02",
 	"thriller-01",
-	"thriller-02",	
+	"thriller-02",
 	"billiejean-01",
 	"billiejean-02",
 	"title-01",
@@ -93,7 +93,7 @@ const char *const moonwalker_samples_set_names[] =
 static struct Samplesinterface moonwalker_samples_set =
 {
 	2,	// 2 channels
-	100, // volume
+	39, // volume
 	moonwalker_samples_set_names
 };
 
@@ -371,7 +371,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 					moonwalker_stop_samples = true;
 					mj_current_music = 0;
 					moon_diddy = false;
-					
+
 					break;
 
 				// Title screen stuff.
@@ -394,7 +394,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						moonwalker_do_nothing = true;
 					else
 						sa_play_original = true;
-						
+
 					break;
 
 				// Title screen magic.
@@ -403,9 +403,9 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						moonwalker_do_nothing = true;
 					else
 						sa_play_original = true;
-						
+
 					break;
-										
+
 				// Stage 1 and Stage 5. Bad.
 				case 0x81:
 					if(mj_current_music != 81) {
@@ -428,7 +428,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						sa_right = 3;
 					}
 					else
-						moonwalker_do_nothing = true;						
+						moonwalker_do_nothing = true;
 					break;
 
 				// Stage 3. Beat It.
@@ -440,7 +440,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						sa_right = 5;
 					}
 					else
-						moonwalker_do_nothing = true;						
+						moonwalker_do_nothing = true;
 					break;
 
 				// Stage 4. Thriller.
@@ -452,7 +452,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						sa_right = 7;
 					}
 					else
-						moonwalker_do_nothing = true;						
+						moonwalker_do_nothing = true;
 					break;
 
 				// Ending. Billie Jean.
@@ -464,7 +464,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						sa_right = 9;
 					}
 					else
-						moonwalker_do_nothing = true;						
+						moonwalker_do_nothing = true;
 					break;
 
 				// First boss music
@@ -480,8 +480,8 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 				// Third boss music
 				case 0x8E:
 						moonwalker_do_nothing = true;
-					break;										
-							
+					break;
+
 				// Special move music diddy.
 				case 0xFA:
 						moonwalker_play_default = true;
@@ -515,7 +515,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						else if(sample_playing(0) == 1 && sample_playing(1) == 1) {
 							sample_set_stereo_volume(0, mj_fade, 0);
 							sample_set_stereo_volume(1, 0, mj_fade);
-						}						
+						}
 					break;
 
 				// Special move music diddy.
@@ -533,13 +533,13 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 						else if(sample_playing(0) == 1 && sample_playing(1) == 1) {
 							sample_set_stereo_volume(0, mj_fade, 0);
 							sample_set_stereo_volume(1, 0, mj_fade);
-						}						
-					break;									
+						}
+					break;
 
 				// Special move "owww" sound effect. This plays after the special move has always finished.
 				case 0xC3:
 						moonwalker_play_default = true;
-						
+
 						if(moon_diddy == true) {
 							moon_diddy = false;
 
@@ -553,10 +553,10 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 							else if(sample_playing(0) == 1 && sample_playing(1) == 1) {
 								sample_set_stereo_volume(0, 100, 0);
 								sample_set_stereo_volume(1, 0, 100);
-							}							
-						}						
+							}
+						}
 					break;
-				
+
 				default:
 					soundlatch_w( 0,data&0xff );
 					cpu_set_nmi_line(1, PULSE_LINE);
@@ -566,14 +566,14 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 
 			if(sa_play_sample == true) {
 				a = 0;
-					
+
 				for(a = 0; a <= o_max_samples; a++) {
 					sample_stop(a);
 				}
-				
+
 				sample_start(0, sa_left, sa_loop);
 				sample_start(1, sa_right, sa_loop);
-				
+
 				// Determine how we should mix these samples together.
 				if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
 					sample_set_stereo_volume(1, 100, 100);
@@ -617,7 +617,7 @@ static WRITE16_HANDLER( sound_command_nmi_w ){
 				mj_current_music = 0;
 				soundlatch_w( 0,data&0xff );
 				cpu_set_nmi_line(1, PULSE_LINE);
-			}			
+			}
 		}
 		else {
 			soundlatch_w( 0,data&0xff );

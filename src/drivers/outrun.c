@@ -43,7 +43,7 @@ const char *const outrun_samples_set_names[] =
 	"title-cut-01",
 	"title-cut-02",
 	"map-01",
-	"map-02",	
+	"map-02",
 	"track1-01",
 	"track1-02",
 	"track3-01",
@@ -56,7 +56,7 @@ const char *const outrun_samples_set_names[] =
 static struct Samplesinterface outrun_samples_set =
 {
 	2,	// 2 channels
-	100, // volume
+	39, // volume
 	outrun_samples_set_names
 };
 
@@ -744,7 +744,7 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 		bool outrun_do_nothing = false;
 		bool outrun_stop_samples = false;
 		bool outrun_play_default = false;
-				
+
 		if(outrun_start == true) {
 			sa_play_sample = true;
 			sa_left = 0;
@@ -753,7 +753,7 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 			outrun_diddy = true;
 			outrun_lastwave = false;
 		}
-			
+
 		switch (data) {
 			case 0x0:
 				if(outrun_diddy == true) {
@@ -783,11 +783,11 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 					sa_left = 0;
 					sa_right = 1;
 					outrun_start_counter = 1;
-					
+
 					outrun_lastwave = false;
 				}
 				break;
-				
+
 			// 2. --> Passing Breeze
 			case 0x81:
 				outrun_diddy = false;
@@ -795,9 +795,9 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 				outrun_lastwave = false;
 				sa_play_sample = true;
 				sa_left = 8;
-				sa_right = 9;				
+				sa_right = 9;
 				break;
-						
+
 			// 1. --> Splash wave
 			case 0x82:
 				outrun_diddy = false;
@@ -805,7 +805,7 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 				outrun_lastwave = false;
 				sa_play_sample = true;
 				sa_left = 10;
-				sa_right = 11;				
+				sa_right = 11;
 				break;
 
 			// 3 --> Magical Sound Shower
@@ -815,7 +815,7 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 				outrun_lastwave = false;
 				sa_play_sample = true;
 				sa_left = 6;
-				sa_right = 7;				
+				sa_right = 7;
 				break;
 
 			// --> Last Wave
@@ -845,7 +845,7 @@ static WRITE16_HANDLER( outrun_sound_write_w )
 
 			sample_start(0, sa_left, sa_loop);
 			sample_start(1, sa_right, sa_loop);
-			
+
 			// Determine how we should mix these samples together.
 			if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
 				sample_set_stereo_volume(1, 100, 100);

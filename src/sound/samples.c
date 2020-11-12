@@ -71,38 +71,50 @@ void sample_set_freq(int channel,int freq)
 	if (Machine->samples == 0) return;
 	if (channel >= numchannels)
 	{
-		log_cb(RETRO_LOG_DEBUG, LOGPRE"error: sample_adjust() called with channel = %d, but only %d channels allocated\n",channel,numchannels);
+		log_cb(RETRO_LOG_INFO, LOGPRE"error: sample_set_freq called with channel = %d, but only %d channels allocated\n",channel,numchannels);
 		return;
 	}
 
 	mixer_set_sample_frequency(channel + firstchannel,freq);
 }
 
-// Set sample volume by speaker.
+/* Set sample volume by speaker.
+this is not the mixer volume it has nothing to do with the sound interface settings in drivers
+todo add volume checks for set volume;
+*/
+
+int max_sample_volume=100;
+
+
 void sample_set_stereo_volume(int channel,int volume_left, int volume_right)
 {
+
 	if (Machine->sample_rate == 0) return;
 	if (Machine->samples == 0) return;
 	if (channel >= numchannels)
 	{
-		log_cb(RETRO_LOG_DEBUG, LOGPRE"error: sample_adjust() called with channel = %d, but only %d channels allocated\n",channel,numchannels);
+		log_cb(RETRO_LOG_INFO, LOGPRE"error: sample_set_stereo_volume called with channel = %d, but only %d channels allocated\n",channel,numchannels);
 		return;
 	}
+  /*old code was setting volume level from 255 to a percentage we need to set this properly here
+   the mixer volume is set else where its completely unreayed to this.
+  */
 
-	mixer_set_stereo_volume(channel + firstchannel,volume_left * 100 / 255, volume_right * 100 / 255);
+	mixer_set_stereo_volume(channel + firstchannel,volume_left * max_sample_volume / 100, volume_right * max_sample_volume / 100);
 }
 
 void sample_set_volume(int channel,int volume)
 {
+  //old code was setting volume level from 255 to a percentage we need to set this properly here as the mixer volume is set else where
 	if (Machine->sample_rate == 0) return;
 	if (Machine->samples == 0) return;
 	if (channel >= numchannels)
 	{
-		log_cb(RETRO_LOG_DEBUG, LOGPRE"error: sample_adjust() called with channel = %d, but only %d channels allocated\n",channel,numchannels);
+		log_cb(RETRO_LOG_INFO, LOGPRE"error: sample_setvolume() called with channel = %d, but only %d channels allocated\n",channel,numchannels);
 		return;
 	}
-
-	mixer_set_volume(channel + firstchannel,volume * 100 / 255);
+		log_cb(RETRO_LOG_INFO, LOGPRE"sample_adjust % d\n",volume);
+	mixer_set_volume(channel + firstchannel,volume * max_sample_volume / 100);
 }
 
 void sample_stop(int channel)
@@ -117,7 +129,7 @@ void sample_stop(int channel)
 	if (Machine->sample_rate == 0) return;
 	if (channel >= numchannels)
 	{
-		log_cb(RETRO_LOG_DEBUG, LOGPRE"error: sample_stop() called with channel = %d, but only %d channels allocated\n",channel,numchannels);
+		log_cb(RETRO_LOG_INFO, LOGPRE"error: sample_stop() called with channel = %d, but only %d channels allocated\n",channel,numchannels);
 		return;
 	}
 

@@ -186,14 +186,14 @@ const char *const sf2_sample_names[] =
 static struct Samplesinterface ff_samples =
 {
 	2,	/* 2 channels*/
-	100, /* volume*/
+	39, /* volume*/
 	ffight_sample_names
 };
 
 static struct Samplesinterface sf2_samples =
 {
 	2, // 2 channels
-	100, // volume
+	39, // volume
 	sf2_sample_names
 };
 
@@ -4608,7 +4608,7 @@ INPUT_PORTS_START( gulunpa )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_START2 )
 	PORT_SERVICE( 0x40, IP_ACTIVE_LOW )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	
+
 	PORT_START
 	PORT_DIPNAME( 0x07, 0x07, DEF_STR( Coinage ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( 4C_1C ) )
@@ -4633,7 +4633,7 @@ INPUT_PORTS_START( gulunpa )
 	PORT_DIPNAME( 0x80, 0x80, DEF_STR( Unknown ) )
 	PORT_DIPSETTING(    0x80, DEF_STR( Off ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
-	
+
 	PORT_START
 	PORT_DIPNAME( 0x07, 0x07, DEF_STR( Difficulty ) )
 	PORT_DIPSETTING(    0x07, "1 Easiest" )
@@ -4660,7 +4660,7 @@ INPUT_PORTS_START( gulunpa )
 	PORT_DIPNAME( 0x80, 0x80, DEF_STR( Unknown ) )
 	PORT_DIPSETTING(    0x80, DEF_STR( Off ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
-	
+
 	PORT_START
 	PORT_DIPNAME( 0x01, 0x01, DEF_STR( Unknown ) )
 	PORT_DIPSETTING(    0x01, DEF_STR( Off ) )
@@ -4704,8 +4704,8 @@ INPUT_PORTS_START( gulunpa )
 	PORT_BIT( 0x2000, IP_ACTIVE_LOW, IPT_BUTTON2 | IPF_PLAYER2 )
 	PORT_BIT( 0x4000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x8000, IP_ACTIVE_LOW, IPT_UNKNOWN )
-INPUT_PORTS_END                                        
-                                        
+INPUT_PORTS_END
+
 
 static struct GfxLayout layout8x8 =
 {
@@ -8509,8 +8509,8 @@ ROM_START( rockmanj )
 	ROM_LOAD( "rcm_18.rom",    0x00000, 0x20000, CRC(80f1f8aa) SHA1(4a5b7b2a6941ad68da7472c63362c7bcd353fa54) )
 	ROM_LOAD( "rcm_19.rom",    0x20000, 0x20000, CRC(f257dbe1) SHA1(967def6b6f93039dbc46373caabeb3301577be75) )
 ROM_END
-         
-/* CPS Prototype */                                        
+
+/* CPS Prototype */
 
 ROM_START( gulunpa )
 	ROM_REGION( CODE_SIZE, REGION_CPU1, 0 )      /* 68000 code */
@@ -8523,10 +8523,10 @@ ROM_START( gulunpa )
 	ROMX_LOAD( "3",     0x000004, 0x080000, CRC(36c3951a) SHA1(74edaca2c78dd6a304ea702091a9f0b7f6036e41) , ROM_GROUPWORD | ROM_SKIP(6) )
 	ROMX_LOAD( "4",     0x000006, 0x080000, CRC(ff0cb826) SHA1(fec7833652e6789e886a1ec7b4680a608ddbbe20) , ROM_GROUPWORD | ROM_SKIP(6) )
   ROM_FILL(0x000006, 1, 0xff)
-	
+
 	ROM_REGION( 0x8000, REGION_GFX2, 0 )
 	ROM_COPY( REGION_GFX1, 0x000000, 0x000000, 0x8000 )	/* stars */
-	
+
 	ROM_REGION( 0x18000, REGION_CPU2, 0 ) /* 64k for the audio CPU (+banks) */
 	ROM_LOAD( "9",      0x00000, 0x08000, CRC(15afd06f) SHA1(1a4ff3e11e55266e7c93743b6564c226eaaba142) )
 	ROM_CONTINUE(       0x10000, 0x08000 )
@@ -8534,8 +8534,8 @@ ROM_START( gulunpa )
 	ROM_REGION( 0x40000, REGION_SOUND1, 0 )	/* Samples */
 	ROM_LOAD( "18",     0x00000, 0x20000, CRC(9997a34f) SHA1(8e107d6413836c48fc57e4a9b89ae99a9e381e8b) )
 	ROM_LOAD( "19",     0x20000, 0x20000, CRC(e95270ac) SHA1(dc684abfa1ea276a00ec541ab8f3f9f131375faa) )
-ROM_END                                        
-                                        
+ROM_END
+
 /* Home 'CPS Changer' Unit  */
 
 /* B-Board 91635B-2 */
@@ -8737,10 +8737,10 @@ GAME( 1994, pnickj,   0,        cps1,     pnickj,   cps1,     ROT0,   "Compile (
 GAME( 1995, pang3,    0,        pang3,    pang3,    cps1,     ROT0,   "Mitchell", "Pang! 3 (Euro 950511)" )
 GAME( 1995, pang3j,   pang3,    pang3,    pang3,    pang3,    ROT0,   "Mitchell", "Pang! 3 (Japan 950511)" )
 
-                                        
+
 /* CPS Prototype */
 GAME( 1993, gulunpa,  0,        cps1,     gulunpa,  cps1,     ROT0,   "Capcom", "Gulun.Pa! (Japan 931220 L Prototype)" )
-                                        			
+
 /* CPS Changer */
 GAME( 1994, wofch,    0,        qsound,   wofch,    wof,      ROT0,   "Capcom", "Tenchi wo Kurau II: Sekiheki no Tatakai (CPS Changer, Japan 921031)" )
 
