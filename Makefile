@@ -98,14 +98,14 @@ ifeq ($(platform), unix)
    TARGET = $(TARGET_NAME).so
    fpic = -fPIC
    CFLAGS += $(fpic)
-   LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T
+   LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T 
 
 else ifeq ($(platform), linux-portable)
    TARGET = $(TARGET_NAME).so
    fpic = -fPIC -nostdlib
    CFLAGS += $(fpic)
    LIBS =
-   LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T
+   LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T -z,defs
 
 else ifeq ($(platform), osx)
    TARGET = $(TARGET_NAME).dylib
