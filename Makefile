@@ -105,7 +105,7 @@ else ifeq ($(platform), linux-portable)
    fpic = -fPIC -nostdlib
    CFLAGS += $(fpic)
    LIBS =
-   LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T -z,defs
+   LDFLAGS += $(fpic) -shared -Wl,--version-script=link.T
 
 else ifeq ($(platform), osx)
    TARGET = $(TARGET_NAME).dylib
