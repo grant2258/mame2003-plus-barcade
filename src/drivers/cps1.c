@@ -22,6 +22,10 @@ bool	ff_provision_alt_song;
 bool	ff_play_alternate_song;
 bool	ff_playing_final_fight;
 
+bool	sf2_playing_street_fighter;
+bool 	fadingMusic;
+float fadeMusicVolume;
+
 /* in machine/kabuki.c */
 void wof_decode(void);
 void dino_decode(void);
