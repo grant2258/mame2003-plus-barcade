@@ -2,7 +2,7 @@
 
 static int counter,vector_reg,imr_status;
 static data16_t es5510_dsp_ram[0x200];
-static data32_t	es5510_gpr[0xc0];
+static data32_t	es5510_gpr[0xff];
 static data32_t   es5510_dram[1<<16];
 static data32_t   es5510_dol_latch;
 static data32_t   es5510_dil_latch;
