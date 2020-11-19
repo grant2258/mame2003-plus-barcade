@@ -56,7 +56,7 @@ data16_t *hd68k_slapstic_base;
 data16_t *st68k_sloop_alt_base;
 
 data16_t *hdgsp_protection;
-data16_t *stmsp_sync[2];
+data16_t *stmsp_sync[3];
 
 data16_t *hdgsp_speedup_addr[2];
 offs_t hdgsp_speedup_pc;
@@ -1897,8 +1897,8 @@ READ16_HANDLER( stmsp_speedup_r )
 		stmsp_sync[0][5] == 0 && 		/* 80060 */
 		stmsp_sync[0][6] == 0 && 		/* 80070 */
 		stmsp_sync[1][0] == 0 && 		/* 99680 */
-		stmsp_sync[2][0] == 0xffff && 	/* 99d30 */
-		stmsp_sync[2][1] == 0xffff && 	/* 99d40 */
+		stmsp_sync[2][0] == 0xffff && 		/* 99d30 */
+		stmsp_sync[2][1] == 0xffff && 		/* 99d40 */
 		stmsp_sync[2][2] == 0 &&	 	/* 99d50 */
 		activecpu_get_pc() == 0x3c0)
 	{
