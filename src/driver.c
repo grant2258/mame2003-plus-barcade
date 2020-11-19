@@ -1604,6 +1604,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( undrfire )	/* D67 (c) 1993 Taito Coporation Japan (World) */
 	DRIVER( undrfiru )	/* D67 (c) 1993  Taito America Corporation (US) */
 	DRIVER( undrfirj )	/* D67 (c) 1993 Taito Coporation (Japan) */
+	DRIVER( cbombers )	/* D?? (c) 1994 Taito Coporation Japan (World) */
 
 	/* Taito F2 games */
 	DRIVER( finalb )	/* B82 (c) 1988 Taito Corporation Japan (World) */
@@ -4594,7 +4595,8 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( sbagman )	/* (c) 1984 */
 	DRIVER( sbagmans )	/* (c) 1984 + Stern license */
 	DRIVER( pickin )	/* (c) 1983 */
-	DRIVER( botanic )	/* (c) 1985 */
+	DRIVER( botanic )	/* (c) 1983 */
+	DRIVER( botanicf )	/* (c) 1984 */
 	DRIVER( tankbust )	/* (c) 1985 */
 
 	/* Seibu Denshi / Seibu Kaihatsu games */
@@ -4856,6 +4858,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	/* the name "Orca" */
 	DRIVER( vastar )	/* (c) 1983 Sesame Japan */
 	DRIVER( vastar2 )	/* (c) 1983 Sesame Japan */
+	DRIVER( pprobe )  /* (c) 1985 Crux / Kyugo */
 /*
    other Orca games:
    82 Battle Cross                         Kit 2P

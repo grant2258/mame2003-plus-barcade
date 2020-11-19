@@ -82,8 +82,8 @@ static void tape_set_audio( int track, int bOn )
 
 static void tape_set_motor( int bOn )
 {
-	if( bOn )
-	{
+  if( bOn )
+  {
     // Start if not playing
     if (!sample_playing( kTalkTrack ))
       sample_start( 0, kTalkTrack, 1 );
@@ -97,13 +97,14 @@ static void tape_set_motor( int bOn )
 
     // Resume
     sample_set_pause( kCrashTrack, 0 );
-	}
-	else
-	{
+
+  }
+  else
+  {
     // Pause
     sample_set_pause( kTalkTrack, 1 );
     sample_set_pause( kCrashTrack, 1 );
-	}
+  }
 }
 
 /***********************************************************/
