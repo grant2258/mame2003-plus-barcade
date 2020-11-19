@@ -1967,4 +1967,3 @@ GAME( 1992, darktowr,  0,        darktowr,  darktowr,  0, ROT0, "Game Room", "Da
 GAME( 1993, toffy,  0, toffy, toffy, toffy, ROT0, "Midas",                 "Toffy" )
 GAME( 1994, stoffy, 0, toffy, toffy, toffy, ROT0, "Midas (Unico license)", "Super Toffy" )
 
-// GAME(YEAR, NAME, PARENT, MACHINE, INPUT, INIT, MONITOR, COMPANY, FULLNAME)  \
