@@ -120,7 +120,10 @@ void mame2003_video_init_orientation(void)
 
 	/* Do a 90 degree CCW rotation for vertical games in TATE mode */
 	if (tate_mode && (orientation & ORIENTATION_SWAP_XY))
-		orientation = reverse_orientation(orientation) ^ ROT270;
+	{
+		if (tate_mode == 1 ) orientation = reverse_orientation(orientation) ^ ROT270;
+		if (tate_mode == 2 ) orientation = reverse_orientation(orientation) ^ ROT90;
+   	}
 
 	/* Try to reset libretro orientation */
 	rotate_mode = 0;

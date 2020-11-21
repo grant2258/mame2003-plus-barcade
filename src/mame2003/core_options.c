@@ -39,7 +39,7 @@ void init_core_options(void)
 	init_default(&default_options[OPT_STV_BIOS], APPNAME "_stv_bios", "Specify Sega ST-V BIOS (Restart core); default|japan|japana|us|japan_b|taiwan|europe");
 	init_default(&default_options[OPT_USE_ALT_SOUND], APPNAME "_use_alt_sound", "Use CD soundtrack (Restart core); enabled|disabled");
 	init_default(&default_options[OPT_SHARE_DIAL], APPNAME "_dialsharexy", "Share 2 player dial controls across one X/Y device; disabled|enabled");
-	init_default(&default_options[OPT_TATE_MODE], APPNAME "_tate_mode", "TATE Mode - Rotating display (Restart core); disabled|enabled");
+	init_default(&default_options[OPT_TATE_MODE], APPNAME "_tate_mode", "TATE Mode - Rotate vertical display ; disabled|ccw|cw");
 	init_default(&default_options[OPT_VECTOR_RESOLUTION], APPNAME "_vector_resolution", "Vector resolution (Restart core); 1024x768|640x480|1280x960|1440x1080|1600x1200|original");
 	init_default(&default_options[OPT_VECTOR_ANTIALIAS], APPNAME "_vector_antialias", "Vector antialiasing; enabled|disabled");
 	init_default(&default_options[OPT_VECTOR_BEAM], APPNAME "_vector_beam_width", "Vector beam width (only with antialiasing); 2|1|1.2|1.4|1.6|1.8|2.5|3|4|5|6|7|8|9|10|11|12");
@@ -305,8 +305,10 @@ void update_variables(bool first_time)
 				}
 
 			case OPT_TATE_MODE:
-				if (strcmp(var.value, "enabled") == 0)
+				if(strcmp(var.value, "ccw") == 0)
 					options.tate_mode = 1;
+    				else if(strcmp(var.value, "cw") == 0)
+					options.tate_mode = 2;
 				else
 					options.tate_mode = 0;
 				break;
