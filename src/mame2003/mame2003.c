@@ -49,7 +49,6 @@ retro_audio_sample_batch_t audio_batch_cb = NULL;
 retro_set_led_state_t led_state_cb = NULL;
 int convert_analog_scale(int input);
 int16_t get_pointer_delta(int16_t coord, int16_t *prev_coord);
-
 /******************************************************************************
 *
 *  private function prototypes
@@ -85,6 +84,47 @@ void frontend_message_cb(const char *message_string, unsigned frames_to_display)
 *  implementation of key libretro functions
 *
 ******************************************************************************/
+
+bool retro_audio_buff_active        = false;
+unsigned retro_audio_buff_occupancy = 0;
+bool retro_audio_buff_underrun      = false;
+
+int frameskip_init_status            = 0;
+
+static void retro_audio_buff_status_cb(bool active, unsigned occupancy, bool underrun_likely)
+{
+   retro_audio_buff_active    = active;
+   retro_audio_buff_occupancy = occupancy;
+   retro_audio_buff_underrun  = underrun_likely;
+}
+
+void retro_set_audio_buff_status_cb(void)
+{
+   if (options.frameskip)
+   {
+      struct retro_audio_buffer_status_callback buf_status_cb;
+
+      buf_status_cb.callback = retro_audio_buff_status_cb;
+      if (!environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
+            &buf_status_cb))
+      {
+         if (log_cb)
+            log_cb(RETRO_LOG_WARN, "Frameskip disabled - frontend does not support audio buffer status monitoring.\n");
+
+         retro_audio_buff_active    = false;
+         retro_audio_buff_occupancy = 0;
+         retro_audio_buff_underrun  = false;
+         frameskip_init_status = -1;
+      }
+      else
+      log_cb(RETRO_LOG_INFO, "Frameskip Enabled\n");
+   }
+   else
+      environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
+            NULL);
+	if (frameskip_init_status != -1)   frameskip_init_status = options.frameskip;
+}
+
 void retro_init(void)
 {
 	struct retro_log_callback log;

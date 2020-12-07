@@ -10,14 +10,15 @@ void   init_default(struct retro_variable_default *option, const char *key, cons
 static void   set_variables(bool first_time);
 static struct retro_variable_default *spawn_effective_option(int option_index);
 
-
 extern const struct GameDriver *game_driver;
 extern retro_set_led_state_t led_state_cb;
+extern int frameskip_init_status;
 /* static void init_core_options(void)
  *
  * Note that core options are not presented in order they are initialized here,
  * but rather by their order in the OPT_ enum
  */
+void retro_set_audio_buff_status_cb(void);
 
 void init_core_options(void)
 {
@@ -50,7 +51,7 @@ void init_core_options(void)
 	init_default(&default_options[OPT_SAMPLE_RATE], APPNAME "_sample_rate", "Sample Rate (KHz); 48000|8000|11025|22050|30000|44100|");
 	init_default(&default_options[OPT_DCS_SPEEDHACK], APPNAME "_dcs_speedhack", "DCS Speedhack; enabled|disabled");
 	init_default(&default_options[OPT_INPUT_INTERFACE], APPNAME "_input_interface", "Input interface; simultaneous|retropad|keyboard");
-	init_default(&default_options[OPT_FRAMESKIP], APPNAME "_frameskip", "Frameskip; 0|1|2|3|4|5");
+	init_default(&default_options[OPT_FRAMESKIP], APPNAME "_frameskip", "Auto Frameskip; disabled|enabled");
 	init_default(&default_options[OPT_CORE_SYS_SUBFOLDER], APPNAME "_core_sys_subfolder", "Locate system files within a subfolder; enabled|disabled");      /* This should be probably handled by the frontend and not by cores per discussions in Fall 2018 but RetroArch for example doesn't provide this as an option. */
 	init_default(&default_options[OPT_CORE_SAVE_SUBFOLDER], APPNAME "_core_save_subfolder", "Locate save files within a subfolder; enabled|disabled");      /* This is already available as an option in RetroArch although it is left enabled by default as of November 2018 for consistency with past practice. At least for now.*/
 	init_default(&default_options[OPT_Cheat_Input_Ports], APPNAME "_cheat_input_ports", "Dip switch/Cheat input ports; disabled|enabled");
@@ -225,38 +226,6 @@ void update_variables(bool first_time)
 				if (!first_time)
 					palette_set_global_gamma(options.gamma);
 				break;
-
-			/* TODO: Add overclock option. Below is the code from the old MAME osd to help process the core option.*/
-			/*
-			 *
-			 * double overclock;
-			 * int cpu, doallcpus = 0, oc;
-			 *
-			 * if (code_pressed(KEYCODE_LSHIFT) || code_pressed(KEYCODE_RSHIFT))
-			 * doallcpus = 1;
-			 * if (!code_pressed(KEYCODE_LCONTROL) && !code_pressed(KEYCODE_RCONTROL))
-			 * increment *= 5;
-			 * if( increment :
-			 * overclock = timer_get_overclock(arg);
-			 * overclock += 0.01 * increment;
-			 * if (overclock < 0.01) overclock = 0.01;
-			 * if (overclock > 2.0) overclock = 2.0;
-			 * if( doallcpus )
-			 *  for( cpu = 0; cpu < cpu_gettotalcpu(); cpu++ )
-			 *    timer_set_overclock(cpu, overclock);
-			 * else
-			 *  timer_set_overclock(arg, overclock);
-			 * }
-			 *
-			 * oc = 100 * timer_get_overclock(arg) + 0.5;
-			 *
-			 * if( doallcpus )
-			 * sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allcpus), ui_getstring (UI_overclock), oc);
-			 * else
-			 * sprintf(buf,"%s %s%d %3d%%", ui_getstring (UI_overclock), ui_getstring (UI_cpu), arg, oc);
-			 * displayosd(bitmap,buf,oc/2,100/2);
-			 */
-
 			case OPT_ARTWORK:
 				if (strcmp(var.value, "enabled") == 0)
 					options.use_artwork = ARTWORK_USE_ALL;
@@ -267,7 +236,6 @@ void update_variables(bool first_time)
 			case OPT_ART_RESOLUTION:
 				options.artwork_res = atoi(var.value);
 				break;
-
 			case OPT_STV_BIOS:
 				if (!options.content_flags[CONTENT_STV])
 					break;
@@ -276,13 +244,11 @@ void update_variables(bool first_time)
 				else
 					options.bios = (strcmp(var.value, "default") == 0) ? NULL : var.value;
 				break;
-
 			case OPT_NEOGEO_BIOS:
 				if (!options.content_flags[CONTENT_NEOGEO])
 					break;
 				options.bios = (strcmp(var.value, "default") == 0) ? NULL : var.value;
 				break;
-
 			case OPT_USE_ALT_SOUND:
 				if (options.content_flags[CONTENT_ALT_SOUND]) {
 					if (strcmp(var.value, "enabled") == 0)
@@ -291,7 +257,6 @@ void update_variables(bool first_time)
 						options.use_samples = false;
 				}
 				break;
-
 			case OPT_SHARE_DIAL:
 				if (options.content_flags[CONTENT_DIAL]) {
 					if (strcmp(var.value, "enabled") == 0)
@@ -303,7 +268,6 @@ void update_variables(bool first_time)
 					options.dial_share_xy = 0;
 					break;
 				}
-
 			case OPT_TATE_MODE:
 				if(strcmp(var.value, "ccw") == 0)
 					options.tate_mode = 1;
@@ -312,7 +276,6 @@ void update_variables(bool first_time)
 				else
 					options.tate_mode = 0;
 				break;
-
 			case OPT_VECTOR_RESOLUTION:
 				if (strcmp(var.value, "640x480") == 0) {
 					options.vector_width = 640;
@@ -340,11 +303,9 @@ void update_variables(bool first_time)
 				else
 					options.antialias = 0;
 				break;
-
 			case OPT_VECTOR_BEAM:
 				options.beam = atof(var.value); /* float: vector beam width */
 				break;
-
 			case OPT_VECTOR_TRANSLUCENCY:
 				if (strcmp(var.value, "enabled") == 0)
 					options.translucency = 1; /* integer: 1 to enable translucency on vectors */
@@ -373,9 +334,13 @@ void update_variables(bool first_time)
 					options.activate_dcs_speedhack = 0;
 				break;
 			case OPT_FRAMESKIP:
-				options.frameskip = atoi(var.value);
+				if(strcmp(var.value, "enabled") == 0)
+					options.frameskip = 1;
+				else
+					options.frameskip = 0;
+				if (frameskip_init_status !=- 1 && options.frameskip != frameskip_init_status)
+					retro_set_audio_buff_status_cb();
 				break;
-
 			case OPT_CORE_SYS_SUBFOLDER:
 				if (strcmp(var.value, "enabled") == 0)
 					options.system_subfolder = true;
