@@ -390,11 +390,6 @@ int osd_skip_this_frame(void)
 	return 0;
 }
 
-extern bool retro_audio_buff_underrun;
-extern bool retro_audio_buff_active;
-extern unsigned retro_audio_buff_occupancy;
-extern void (*pause_action)(void);
-
 void osd_update_video_and_audio(struct mame_display *display)
 {
 	RETRO_PERFORMANCE_INIT(perf_cb, update_video_and_audio);
