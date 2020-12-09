@@ -418,15 +418,22 @@ static void print_game_rom(FILE* out, const struct GameDriver* game)
 	}
 
 }
-
+static int ost;
 static int sampleof;
 static void print_game_sampleof(FILE* out, const struct GameDriver* game)
 {
 sampleof =0;
+ost = 0;
 #if (HAS_SAMPLES)
 	struct InternalMachineDriver drv;
 	int i=0;
 	expand_machine_driver(game->drv, &drv);
+
+for( i = 0; drv.sound[i].sound_type && i < MAX_SOUND; i++ ){
+	if (drv.sound[i].tag)
+		if (strcmp("OST Samples",  drv.sound[i].tag) == 0)
+			ost = 1;
+}
 
 	for( i = 0; drv.sound[i].sound_type && i < MAX_SOUND; i++ )	{
 		const char **samplenames = NULL;
@@ -453,8 +460,7 @@ static void print_game_sample(FILE* out, const struct GameDriver* game)
 	struct InternalMachineDriver drv;
 	int i=0;
 
-  if (!sampleof){
-
+	if (!sampleof ){
 		expand_machine_driver(game->drv, &drv);
 
 		for( i = 0; drv.sound[i].sound_type && i < MAX_SOUND; i++ )
