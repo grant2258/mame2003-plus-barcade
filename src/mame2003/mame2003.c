@@ -47,6 +47,7 @@ static retro_input_poll_t poll_cb = NULL;
 static retro_input_state_t input_cb = NULL;
 retro_audio_sample_batch_t audio_batch_cb = NULL;
 retro_set_led_state_t led_state_cb = NULL;
+struct retro_audio_buffer_status_callback buf_status_cb;
 int convert_analog_scale(int input);
 int16_t get_pointer_delta(int16_t coord, int16_t *prev_coord);
 /******************************************************************************
@@ -102,9 +103,6 @@ void retro_set_audio_buff_status_cb(void)
 {
    if (options.frameskip)
    {
-      struct retro_audio_buffer_status_callback buf_status_cb;
-
-      buf_status_cb.callback = retro_audio_buff_status_cb;
       if (!environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
             &buf_status_cb))
       {
@@ -134,6 +132,7 @@ void retro_init(void)
 	else
 		log_cb = NULL;
 
+	buf_status_cb.callback = retro_audio_buff_status_cb;
 #ifdef LOG_PERFORMANCE
 	environ_cb(RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb);
 #endif
