@@ -4849,6 +4849,13 @@ MACHINE_DRIVER_END
 
 
 static MACHINE_DRIVER_START( sf2 )
+	/* basic machine hardware */
+	MDRV_IMPORT_FROM(cps1)
+	MDRV_CPU_REPLACE("main", M68000, 12000000)
+	MDRV_SOUND_ATTRIBUTES(SOUND_SUPPORTS_STEREO)
+MACHINE_DRIVER_END
+
+static MACHINE_DRIVER_START( sf2_ost )
 	sf2_playing_street_fighter = true;
 	/* basic machine hardware */
 	MDRV_IMPORT_FROM(cps1)
@@ -8664,7 +8671,7 @@ GAME( 1990, cawingu,  cawing,   cps1,     cawing,   cps1,     ROT0,   "Capcom", 
 GAME( 1990, cawingj,  cawing,   cps1,     cawing,   cps1,     ROT0,   "Capcom", "U.S. Navy (Japan 901012)" )
 GAME( 1990, nemo,     0,        cps1,     nemo,     cps1,     ROT0,   "Capcom", "Nemo (World 901130)" )						/* ETC */
 GAME( 1990, nemoj,    nemo,     cps1,     nemo,     cps1,     ROT0,   "Capcom", "Nemo (Japan 901120)" )
-GAMEC(1991, sf2,      0,        sf2,      sf2,      cps1,     ROT0,   "Capcom", "Street Fighter II - The World Warrior (World 910522)", &sf2_ctrl, NULL )	/* ETC*/
+GAMEC(1991, sf2,      0,        sf2_ost,  sf2,      cps1,     ROT0,   "Capcom", "Street Fighter II - The World Warrior (World 910522)", &sf2_ctrl, NULL )	/* ETC*/
 GAMEC(1991, sf2eb,    sf2,      sf2,      sf2,      cps1,     ROT0,   "Capcom", "Street Fighter II - The World Warrior (World 910214)", &sf2_ctrl, NULL )	/* ETC*/
 GAMEC(1991, sf2ua,    sf2,      sf2,      sf2,      cps1,     ROT0,   "Capcom", "Street Fighter II - The World Warrior (US 910206)", &sf2_ctrl, NULL )
 GAMEC(1991, sf2ub,    sf2,      sf2,      sf2,      cps1,     ROT0,   "Capcom", "Street Fighter II - The World Warrior (US 910214)", &sf2_ctrl, NULL )
