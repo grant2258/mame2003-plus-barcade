@@ -897,17 +897,17 @@ static WRITE16_HANDLER( cps1_sound_command_w )
 		}
 
 		// Determine how we should mix these samples together.
-		if(sample_playing(0) == 0 && sample_playing(1) == 1 && fadingMusic == false) { // Right channel only. Lets make it play in both speakers.
+		if(sample_playing(0) == 0 && sample_playing(1) == 1 ) { // Right channel only. Lets make it play in both speakers.
 			sample_set_stereo_volume(1, 100, 100);
 		}
-		else if(sample_playing(0) == 1 && sample_playing(1) == 0 && fadingMusic == false) { // Left channel only. Lets make it play in both speakers.
+		else if(sample_playing(0) == 1 && sample_playing(1) == 0 ) { // Left channel only. Lets make it play in both speakers.
 			sample_set_stereo_volume(0, 100, 100);
 		}
-		else if(sample_playing(0) == 1 && sample_playing(1) == 1 && fadingMusic == false) { // Both left and right channels. Lets make them play in there respective speakers.
+		else if(sample_playing(0) == 1 && sample_playing(1) == 1 ) { // Both left and right channels. Lets make them play in there respective speakers.
 			sample_set_stereo_volume(0, 100, 0);
 			sample_set_stereo_volume(1, 0, 100);
 		}
-		else if(sample_playing(0) == 0 && sample_playing(1) == 0 && fadingMusic == false) { // No sample playing, revert to the default sound.
+		else if(sample_playing(0) == 0 && sample_playing(1) == 0 ) { // No sample playing, revert to the default sound.
 			if(ACCESSING_LSB) {
 				soundlatch_w(0,data & 0xff);
 			}
