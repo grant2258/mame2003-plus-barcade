@@ -121,7 +121,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Sengoku 3
 * Skull Fang
 * Slap Shooter
-* Snk Vs Capcom : Svc Chaos (bootleg)
+* Snk Vs Capcom : Svc Chaos (MVS)
 * Sonic Boom
 * Space Fever High Splitter
 * Space Launcher
@@ -139,9 +139,9 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Tetris (Sega System E)
 * Tetris The Absolute The Grand Master 2
 * The Killing Blade
-* The King Of Fighters 2001
-* The King Of Fighters 2002
-* The King Of Fighters 2003 (Decrypted)
+* The King of Fighters 2001
+* The King of Fighters 2002
+* The King of Fighters 2003
 * The Lost Castle In Darkmist
 * Torus * Mature *
 * Touch & Go (Korea, unprotected)
@@ -194,11 +194,27 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Progear No Arashi
 * Renegade (US, Bootleg)
 * Sexy Parodius (Ver AAA) * Mature *
+* Snk Vs Capcom : Svc Chaos (bootleg)
 * Super Bishi Bashi Championship (ver KAA, 3 Players)
 * Target Ball (Romset `tgtballa` - family friendly version)
 * Tetris the Absolute The Grand Master 2 Plus
 * The Great Ragtime Show
+* The King of Fighters '97 Plus
+* The King of Fighters '98 (Korean board, set 1)
 * The King of Fighters 10th Anniversary
+* The King of Fighters 10th Anniversary 2005 Unique
+* The King of Fighters 10th Anniversary Extra Plus
+* The King of Fighters 2001 (NGH-2621)
+* The King of Fighters 2002 Magic Plus
+* The King of Fighters 2002 Magic Plus II
+* The King of Fighters 2002 Plus
+* The King of Fighters 2002 Plus (bootleg set 2)
+* The King of Fighters 2003 (bootleg set 1)
+* The King of Fighters 2003 (bootleg set 2)
+* The King of Fighters 2003 (Decrypted)
+* The King of Fighters 2004 Plus / Hero
+* The King of Fighters 2004 Ultra Plus
+* The King of Fighters Special Edition 2004
 * Undercover Cops (Alpha Renewal Version)
 * Thunder Strike (Older)
 * X-men (6 Players ver UCB)
@@ -522,6 +538,7 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Removed imperfect MCU simulation code and hooked the proper M68705 MCU's for Renegade and Nekketsu Kouha Kunio-kun [dink, arcadez]
 * Hooked up the sepways.wav sample for journey in mcr2.c [mahoneyt944, grant2258, arcadez]
 * Fixed mcr3 game saving
+* Added three more games to the Sega System E driver and ported across from FBN some required video fixes and code for Opa Opa and Slap Shooter [dink, arcadez]
 * Added support for Monster Maulers - `mmaulers` romset [mahoneyt944]
 * Added support for uni-bios_4_0.rom for neogeo titles [mahoneyt944]
 * Hooked up x-men 6 players [arcadez, mahoneyt944, KMFDManic]
@@ -559,3 +576,7 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added support for the American Sammy hunting games to the seta2.c driver [iq_132, BritneysPAIRS, arcadez]
 * Improved the gfx and hooked up the sound in Fire Barrel game now playable [BritneysPAIRS, arcadez]
 * Added support for the Golden tee 3D golf games to itech32.c [arcadez]
+* Added encrypted KOF 2003 + clones for other KOF games [odarknighto]
+* Added support for Snk Vs Capcom  - Svc Chaos (MVS) and hooked it up to use the new m1 decryption [arcadez]
+* Ported NeoGeo M1 decrypted program from MAME128, benefiting kof2000, kof2000n, kof2001, kof2001h, kof2002, kf2k2pls, kf2kpla, kf2k2mp, kf2k2mp2, kof2003, mslug4, rotd, matrim, pnyaa, samsho5, samsh5sp, mslug5, svc [odarknighto]
+
