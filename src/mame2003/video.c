@@ -371,22 +371,41 @@ int osd_skip_this_frame(void)
 {
 
 	static unsigned frameskip_counter = 0;
+	bool skip_frame;
 
 	if (pause_action)  return 0;  // dont skip pause action hack (rendering mame info screens or you wont see them and not know to press a key)
 
-	if ( retro_audio_buff_active && retro_audio_buff_underrun && options.frameskip == 1) // only doing autoframeskip for now
+
+
+	if ( retro_audio_buff_active && retro_audio_buff_underrun && options.frameskip ) 
 	{
-		frameskip_counter ++;
-		if (frameskip_counter < 30)
+		switch ( options.frameskip)
 		{
-			return 1;
+			case 1: /* auto */
+				skip_frame = retro_audio_buff_underrun;
+			break;
+			case 2: /* aggressive */
+				skip_frame = (retro_audio_buff_occupancy < 33);
+			break;
+			case 3: /* max */
+				skip_frame = (retro_audio_buff_occupancy < 50);
+			break;
+			default:
+				skip_frame = false;
+			break;
 		}
-		else
+
+		if (skip_frame)
 		{
-			frameskip_counter = 0;
-			return 0;
+			if(frameskip_counter < 30)
+			{
+				frameskip_counter++;
+				return 1;
+			}
+			else
+				frameskip_counter = 0;
 		}
-	}
+    } 
 	return 0;
 }
 

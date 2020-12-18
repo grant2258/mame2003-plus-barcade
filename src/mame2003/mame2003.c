@@ -120,6 +120,7 @@ void retro_set_audio_buff_status_cb(void)
    else
       environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
             NULL);
+
 	if (frameskip_init_status != -1)   frameskip_init_status = options.frameskip;
 }
 
