@@ -197,7 +197,7 @@ static struct Samplesinterface ff_samples =
 static struct Samplesinterface sf2_samples =
 {
 	2, // 2 channels
-	39, // volume
+	54, // volume
 	sf2_sample_names
 };
 
@@ -268,6 +268,7 @@ static READ_HANDLER( cps1_snd_fade_timer_r )
 	return cps1_sound_fade_timer;
 }
 
+static int volume=100;
 
 static WRITE16_HANDLER( cps1_sound_command_w )
 {
@@ -436,15 +437,16 @@ static WRITE16_HANDLER( cps1_sound_command_w )
 		}
 
 		// Determine how we should mix these samples together.
-		if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
-			sample_set_stereo_volume(1, 100, 100);
+		if(sample_playing(0) == 1 && sample_playing(1) == 1) { // Both left and right channels. Lets make them play in there respective speakers.
+			sample_set_stereo_volume(0, 100, 0);
+			sample_set_stereo_volume(1, 0, 100);
 		}
 		else if(sample_playing(0) == 1 && sample_playing(1) == 0) { // Left channel only. Lets make it play in both speakers.
 			sample_set_stereo_volume(0, 100, 100);
 		}
-		else if(sample_playing(0) == 1 && sample_playing(1) == 1) { // Both left and right channels. Lets make them play in there respective speakers.
-			sample_set_stereo_volume(0, 100, 0);
-			sample_set_stereo_volume(1, 0, 100);
+
+		else if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
+			sample_set_stereo_volume(1, 100, 100);
 		}
 		else if(sample_playing(0) == 0 && sample_playing(1) == 0) { // No sample playing, revert to the default sound.
 			if(ACCESSING_LSB) {
@@ -896,16 +898,19 @@ static WRITE16_HANDLER( cps1_sound_command_w )
 				break;
 		}
 
+
+		volume = (int) (fadeMusicVolume * 100);
 		// Determine how we should mix these samples together.
-		if(sample_playing(0) == 0 && sample_playing(1) == 1 ) { // Right channel only. Lets make it play in both speakers.
-			sample_set_stereo_volume(1, 100, 100);
+		if      (sample_playing(0) == 1 && sample_playing(1) == 1) { // Both left and right channels. Lets make them play in there respective speakers.
+			sample_set_stereo_volume(0, volume, 0);
+			sample_set_stereo_volume(1, 0, volume);
 		}
-		else if(sample_playing(0) == 1 && sample_playing(1) == 0 ) { // Left channel only. Lets make it play in both speakers.
-			sample_set_stereo_volume(0, 100, 100);
+		else if(sample_playing(0) == 1 && sample_playing(1) == 0) { // Left channel only. Lets make it play in both speakers.
+			sample_set_stereo_volume(0, volume, volume);
 		}
-		else if(sample_playing(0) == 1 && sample_playing(1) == 1 ) { // Both left and right channels. Lets make them play in there respective speakers.
-			sample_set_stereo_volume(0, 100, 0);
-			sample_set_stereo_volume(1, 0, 100);
+
+		else if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
+			sample_set_stereo_volume(1, volume, volume);
 		}
 		else if(sample_playing(0) == 0 && sample_playing(1) == 0 ) { // No sample playing, revert to the default sound.
 			if(ACCESSING_LSB) {
@@ -969,30 +974,36 @@ static INTERRUPT_GEN( cps1_interrupt )
 		const float prospectiveVolume = fadeMusicVolume - 0.0048f;
 
 		// We need to convert the volume level to int for the mame2003 sample sound system.
-		const int volume = (int) (prospectiveVolume * 100);
+
 
 		if (prospectiveVolume <= 0.0f)
-		{
 			fadingMusic = false;
-      sample_set_stereo_volume(0, 0, 0);
-      sample_set_stereo_volume(1, 0, 0);
-		}
 		else
-		{
 			fadeMusicVolume = prospectiveVolume;
 
-			if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
-				sample_set_stereo_volume(1, volume, volume);
-			}
-			else if(sample_playing(0) == 1 && sample_playing(1) == 0) { // Left channel only. Lets make it play in both speakers.
-				sample_set_stereo_volume(0, volume, volume);
-			}
-			else if(sample_playing(0) == 1 && sample_playing(1) == 1) { // Both left and right channels. Lets make them play in there respective speakers.
-				sample_set_stereo_volume(0, volume, 0);
-				sample_set_stereo_volume(1, 0, volume);
-			}
-
+		volume = (int) (fadeMusicVolume * 100);
+		
+		if (volume < 0) volume = 0;
+		
+		// Determine how we should mix these samples together.
+		if(sample_playing(0) == 1 && sample_playing(1) == 1) { // Both left and right channels. Lets make them play in there respective speakers.
+			sample_set_stereo_volume(0, volume, 0);
+			sample_set_stereo_volume(1, 0, volume);
 		}
+		else if(sample_playing(0) == 1 && sample_playing(1) == 0) { // Left channel only. Lets make it play in both speakers.
+			sample_set_stereo_volume(0, volume, volume);
+		}
+		else if(sample_playing(0) == 0 && sample_playing(1) == 1) { // Right channel only. Lets make it play in both speakers.
+			sample_set_stereo_volume(1, volume, volume);
+		}
+	}
+	//Fade in volume if fade state is false (this fixes any cases missing in the ost like the endings with jigger pokery)
+	if(sf2_playing_street_fighter == true && fadingMusic == false && fadeMusicVolume <= 1.0f) {	
+		const float prospectiveVolume = fadeMusicVolume + 0.0048f;
+		
+		if (prospectiveVolume <= 1.0f)
+			fadeMusicVolume = prospectiveVolume;
+		volume = (int) (fadeMusicVolume * 100);
 	}
 }
 
