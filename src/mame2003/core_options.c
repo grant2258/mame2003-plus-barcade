@@ -51,7 +51,7 @@ void init_core_options(void)
 	init_default(&default_options[OPT_SAMPLE_RATE], APPNAME "_sample_rate", "Sample Rate (KHz); 48000|8000|11025|22050|30000|44100|");
 	init_default(&default_options[OPT_DCS_SPEEDHACK], APPNAME "_dcs_speedhack", "DCS Speedhack; enabled|disabled");
 	init_default(&default_options[OPT_INPUT_INTERFACE], APPNAME "_input_interface", "Input interface; simultaneous|retropad|keyboard");
-	init_default(&default_options[OPT_FRAMESKIP], APPNAME "_frameskip", "Auto Frameskip; auto|aggressive|max|disabled");
+	init_default(&default_options[OPT_FRAMESKIP], APPNAME "_frameskip", "Frameskip; disabled|1|2|3|4|5|auto|auto_aggressive|auto_max");
 	init_default(&default_options[OPT_CORE_SYS_SUBFOLDER], APPNAME "_core_sys_subfolder", "Locate system files within a subfolder; enabled|disabled");      /* This should be probably handled by the frontend and not by cores per discussions in Fall 2018 but RetroArch for example doesn't provide this as an option. */
 	init_default(&default_options[OPT_CORE_SAVE_SUBFOLDER], APPNAME "_core_save_subfolder", "Locate save files within a subfolder; enabled|disabled");      /* This is already available as an option in RetroArch although it is left enabled by default as of November 2018 for consistency with past practice. At least for now.*/
 	init_default(&default_options[OPT_Cheat_Input_Ports], APPNAME "_cheat_input_ports", "Dip switch/Cheat input ports; disabled|enabled");
@@ -108,11 +108,6 @@ static void set_variables(bool first_time)
 		case OPT_NVRAM_BOOTSTRAP:
 			if (!options.content_flags[CONTENT_NVRAM_BOOTSTRAP])
 				continue;
-			break;
-		case OPT_FRAMESKIP:
-			if (!environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
-            &buf_status_cb))
-            continue;
 			break;
 		}
 		effective_defaults[effective_options_count] = first_time ? default_options[option_index] : *spawn_effective_option(option_index);
@@ -339,17 +334,31 @@ void update_variables(bool first_time)
 					options.activate_dcs_speedhack = 0;
 				break;
 			case OPT_FRAMESKIP:
-				if (strcmp(var.value, "auto") == 0)
+				if (strcmp(var.value, "1") == 0)
 					options.frameskip = 1;
-				else if (strcmp(var.value, "aggressive") == 0)
+
+				else if (strcmp(var.value, "2") == 0)
 					options.frameskip = 2;
-				else if(strcmp(var.value, "max") == 0)
+
+				else if (strcmp(var.value, "3") == 0)
 					options.frameskip = 3;
+
+				else if (strcmp(var.value, "4") == 0)
+					options.frameskip = 4;
+
+				else if (strcmp(var.value, "5") == 0)
+					options.frameskip = 5;
+
+				else if (strcmp(var.value, "auto") == 0)
+					options.frameskip = 6;
+				else if (strcmp(var.value, "auto_aggressive") == 0)
+					options.frameskip = 7;
+				else if(strcmp(var.value, "auto_max") == 0)
+					options.frameskip = 8;
 				else
 					options.frameskip = 0;
 
-				if (frameskip_init_status !=- 1 && options.frameskip != frameskip_init_status)
-					retro_set_audio_buff_status_cb();
+				retro_set_audio_buff_status_cb();
 				break;
 
 			case OPT_CORE_SYS_SUBFOLDER:

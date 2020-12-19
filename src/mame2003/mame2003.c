@@ -90,8 +90,6 @@ bool retro_audio_buff_active        = false;
 unsigned retro_audio_buff_occupancy = 0;
 bool retro_audio_buff_underrun      = false;
 
-int frameskip_init_status            = 0;
-
 static void retro_audio_buff_status_cb(bool active, unsigned occupancy, bool underrun_likely)
 {
    retro_audio_buff_active    = active;
@@ -101,8 +99,9 @@ static void retro_audio_buff_status_cb(bool active, unsigned occupancy, bool und
 
 void retro_set_audio_buff_status_cb(void)
 {
-   if (options.frameskip)
-   {
+  if (options.frameskip >0 && options.frameskip >= 6)
+  {
+
       if (!environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
             &buf_status_cb))
       {
@@ -112,16 +111,13 @@ void retro_set_audio_buff_status_cb(void)
          retro_audio_buff_active    = false;
          retro_audio_buff_occupancy = 0;
          retro_audio_buff_underrun  = false;
-         frameskip_init_status = -1;
       }
       else
       log_cb(RETRO_LOG_INFO, "Frameskip Enabled\n");
-   }
+  }
    else
-      environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,
-            NULL);
+      environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,NULL);
 
-	if (frameskip_init_status != -1)   frameskip_init_status = options.frameskip;
 }
 
 void retro_init(void)
@@ -319,7 +315,7 @@ void retro_run(void)
 		thisInput++;
 	}
 
-	for (i = 0; i < 4; i++) 
+	for (i = 0; i < 4; i++)
 	{
 		unsigned int offset = (i * number_of_controls);
 
@@ -333,10 +329,10 @@ void retro_run(void)
 		analogjoy[i][5] = convert_analog_scale( input_cb(i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_BUTTON, RETRO_DEVICE_ID_JOYPAD_R2) );
 		/* this port dont support half axis so add them together
 		   check the pedal if pedals can be mapped on different axis other analog controls cant
-		*/ 
-		analogjoy[i][4] = analogjoy[i][4] + analogjoy[i][5]; 
+		*/
+		analogjoy[i][4] = analogjoy[i][4] + analogjoy[i][5];
 
-		
+
 		if (1) // add check for libretro_supports_bitmasks at some point dont care about backwards stone age compatability just exit if ra is too old :-) )
 		{
   			joymask[i] = 0;
@@ -348,27 +344,27 @@ void retro_run(void)
 			if (joymask[i] & (1 << j)) retroJsState[offset+j] = 1;
 			else     retroJsState[offset+j] = 0;
 		}
-      
+
  		/*
  		disable l2 and r2 if analog buttons are pressed pressing lt + rt will set analogjoy[i][4] to zero so account for that
  		else digital will kick in because ra button is set when trigger it pressed for analog and digital in RA
  		*/
- 		 	 
+
   		if (analogjoy[i][4] || analogjoy[i][5] )
   		{
   			retroJsState[offset+RETRO_DEVICE_ID_JOYPAD_L2] = 0;
   			retroJsState[offset+RETRO_DEVICE_ID_JOYPAD_R2] = 0;
  		}
-  		if (options.mouse_device) 
+  		if (options.mouse_device)
 		{
-			if (options.mouse_device == RETRO_DEVICE_MOUSE) 
+			if (options.mouse_device == RETRO_DEVICE_MOUSE)
 			{
 				retroJsState[16 + offset] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
 				retroJsState[17 + offset] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_RIGHT);
 				mouse_x[i] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
 				mouse_y[i] = input_cb(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
-			} 
-			else 
+			}
+			else
 			{ /* RETRO_DEVICE_POINTER */
 				pointer_pressed = input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
 				retroJsState[16 + offset] = pointer_pressed;
@@ -377,13 +373,13 @@ void retro_run(void)
 				mouse_y[i] = pointer_pressed ? get_pointer_delta(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y), &prev_pointer_y) : 0;
 			}
 		}
-		else 
+		else
 		{
 			retroJsState[16 + offset] = 0;
 			retroJsState[17 + offset] = 0;
 		}
 
-		
+
 
 		retroJsState[18 + offset] = 0;
 		retroJsState[19 + offset] = 0;

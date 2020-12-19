@@ -367,47 +367,72 @@ extern bool retro_audio_buff_active;
 extern unsigned retro_audio_buff_occupancy;
 extern void (*pause_action)(void);
 
+const int frameskip_table[12][12] =
+{    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+     { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1 },
+     { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 },
+     { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 },
+     { 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1 },
+     { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 },
+     { 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1 },
+     { 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1 },
+     { 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 },
+     { 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1 },
+     { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
+
+ unsigned frameskip_counter = 0;
 int osd_skip_this_frame(void)
 {
 
-	static unsigned frameskip_counter = 0;
+	static unsigned auto_frameskip_counter = 0;
+
 	bool skip_frame;
 
 	if (pause_action)  return 0;  // dont skip pause action hack (rendering mame info screens or you wont see them and not know to press a key)
 
-
-
-	if ( retro_audio_buff_active && retro_audio_buff_underrun && options.frameskip ) 
+//auto frame skip options
+	if(options.frameskip >0 && options.frameskip >= 6)
 	{
-		switch ( options.frameskip)
+		if ( retro_audio_buff_active)
 		{
-			case 1: /* auto */
-				skip_frame = retro_audio_buff_underrun;
-			break;
-			case 2: /* aggressive */
-				skip_frame = (retro_audio_buff_occupancy < 33);
-			break;
-			case 3: /* max */
-				skip_frame = (retro_audio_buff_occupancy < 50);
-			break;
-			default:
-				skip_frame = false;
-			break;
-		}
-
-		if (skip_frame)
-		{
-			if(frameskip_counter < 30)
+			switch ( options.frameskip)
 			{
-				frameskip_counter++;
-				return 1;
+				case 6: /* auto */
+					skip_frame = retro_audio_buff_underrun;
+				break;
+				case 7: /* aggressive */
+					skip_frame = (retro_audio_buff_occupancy < 33);
+				break;
+				case 8: /* max */
+					skip_frame = (retro_audio_buff_occupancy < 50);
+				break;
+				default:
+					skip_frame = false;
+				break;
 			}
-			else
-				frameskip_counter = 0;
+
+			if (skip_frame)
+			{
+				if(auto_frameskip_counter < 30)
+				{
+					auto_frameskip_counter++;;
+				}
+				else
+				{
+					auto_frameskip_counter = 0;// control will return 0 at the end
+					skip_frame=0;
+				}
+			}
 		}
-    } 
-	return 0;
+	}
+	else //manual frameskip includes disabled check
+	{
+		skip_frame = frameskip_table[options.frameskip][frameskip_counter % 12];
+	}
+	return skip_frame;
 }
+
 
 void osd_update_video_and_audio(struct mame_display *display)
 {
@@ -464,7 +489,6 @@ void osd_update_video_and_audio(struct mame_display *display)
 		}
 		prev_led_state = display->led_state;
 	}
-
 	gotFrame = 1;
 
 	RETRO_PERFORMANCE_STOP(perf_cb, update_video_and_audio);
