@@ -99,7 +99,7 @@ static void retro_audio_buff_status_cb(bool active, unsigned occupancy, bool und
 
 void retro_set_audio_buff_status_cb(void)
 {
-  if (options.frameskip >0 && options.frameskip >= 6)
+  if (options.frameskip >0 && options.frameskip >= 12)
   {
 
       if (!environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK,

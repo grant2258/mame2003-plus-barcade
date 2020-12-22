@@ -365,12 +365,11 @@ void (*pause_action)(void);
 void mame_frame(void)
 {
     extern int gotFrame;
-    extern unsigned frameskip_counter;
+  
     if(!pause_action)
     {    
 
         while(!gotFrame)  cpu_timeslice();
-        if(gotFrame)  frameskip_counter++;
         
         gotFrame = 0;
  
