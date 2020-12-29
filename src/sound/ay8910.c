@@ -33,28 +33,27 @@ struct _ay_ym_param
 struct AY8910
 {
 	int index;
-	INT16 Channel;;
+	INT16 Channel;
 	int SampleRate;
 	int ready;
 	mem_read_handler PortAread;
 	mem_read_handler PortBread;
 	mem_write_handler PortAwrite;
 	mem_write_handler PortBwrite;
-   INT32 register_latch;
-	unsigned char Regs[16];
-	int lastEnable;
-	unsigned int UpdateStep;
-	int PeriodA,PeriodB,PeriodC,PeriodN,PeriodE;
-	int CountA,CountB,CountC,CountN,CountE;
-	//unsigned int VolA,VolB,VolC,VolE;
-   UINT32 VolE;
-	unsigned char EnvelopeA,EnvelopeB,EnvelopeC;
-	UINT8 Output[NUM_CHANNELS];
-	unsigned char OutputN;
-	signed char CountEnv;
+	INT32 register_latch;
+	UINT8 Regs[16];
+	INT32 lastEnable;
 	INT32 Count[NUM_CHANNELS];
-	unsigned char Hold,Alternate,Attack,Holding;
-	int RNG;
+	UINT8 Output[NUM_CHANNELS];
+	UINT8 OutputN;
+	INT32 CountN;
+	INT32 CountE;
+	INT8 CountEnv;
+	UINT32 VolE;
+	UINT8 Hold,Alternate,Attack,Holding;
+	INT32 RNG;
+	UINT8 EnvP;
+	/* init parameters ... */
 	int step;
 	int zero_is_off;
 	UINT8 vol_enabled[NUM_CHANNELS];
@@ -63,7 +62,6 @@ struct AY8910
 	INT32 VolTable[NUM_CHANNELS][16];
 	INT32 VolTableE[NUM_CHANNELS][32];
 	INT32 vol3d_tab[8*32*32*32];
-	UINT8 EnvP;
 };
 
 /* register id's */
