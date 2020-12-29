@@ -694,7 +694,7 @@ static int AY8910_init(const char *chip_name,int chip,
 
 /* causes crashes with YM2610 games - overflow?*/
 /*	if (options.use_filter)*/
-	sample_rate = clock/8;
+	sample_rate = (clock/8) ;
 
 	memset(PSG,0,sizeof(struct AY8910));
 	PSG->SampleRate = sample_rate;
