@@ -99,7 +99,7 @@ static struct AY8910 AYPSG[MAX_8910];		/* array of PSG's */
 
 
 
-static ay_ym_param ym2149_param = 
+static ay_ym_param ym2149_param =
 {
 	630, 801,
 	16,
@@ -107,7 +107,7 @@ static ay_ym_param ym2149_param =
 	   4763,  3521,  2403,  1737,  1123,   762,  438,   251 },
 };
 
-static ay_ym_param ym2149_paramE = 
+static ay_ym_param ym2149_paramE =
 {
 	630, 801,
 	32,
@@ -117,12 +117,12 @@ static ay_ym_param ym2149_paramE =
 	    1397,  1123,   925,   762,   578,   438,   332,   251 },
 };
 
-/* 
+/*
  * RL = 3000, Hacker Kay normalized pattern, 1.5V to 2.8V
  * These values correspond with guesses based on Gyruss schematics
  * They work well with scramble as well.
  */
-static ay_ym_param ay8910_param = 
+static ay_ym_param ay8910_param =
 {
 	930, 454,
 	16,
@@ -167,11 +167,11 @@ void _AYWriteReg(int n, int r, int v)
 			    ((PSG->lastEnable & 0x40) != (PSG->Regs[AY_ENABLE] & 0x40)))
 			{
 				/* write out 0xff if port set to input */
-				
+
 				if (PSG->PortAwrite)
 					(*PSG->PortAwrite)( 0, (PSG->Regs[AY_ENABLE] & 0x40) ? PSG->Regs[AY_PORTA] : 0xff);
 			}
-	
+
 			if ((PSG->lastEnable == -1) ||
 			    ((PSG->lastEnable & 0x80) != (PSG->Regs[AY_ENABLE] & 0x80)))
 			{
@@ -179,7 +179,7 @@ void _AYWriteReg(int n, int r, int v)
 				if (PSG->PortBwrite)
 					(*PSG->PortBwrite)(0, (PSG->Regs[AY_ENABLE] & 0x80) ? PSG->Regs[AY_PORTB] : 0xff);
 			}
-	
+
 			PSG->lastEnable = PSG->Regs[AY_ENABLE];
 			break;
 		case AY_AVOL:
@@ -406,7 +406,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 	/* (ToneOn | ToneDisable) & (NoiseOn | NoiseDisable). */
 	/* Note that this means that if both tone and noise are disabled, the output */
 	/* is 1, not 0, and can be modulated changing the volume. */
-	
+
 	/* buffering loop */
 	while (length)
 	{
@@ -438,7 +438,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 			/* bit0, relying on the fact that after three shifts of the */
 			/* register, what now is bit3 will become bit0, and will */
 			/* invert, if necessary, bit14, which previously was bit17. */
-			if (PSG->RNG & 1) 
+			if (PSG->RNG & 1)
 				PSG->RNG ^= 0x24000; /* This version is called the "Galois configuration". */
 			PSG->RNG >>= 1;
 			PSG->CountN = 0;
@@ -452,7 +452,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 		/* update envelope */
 		if (PSG->Holding == 0)
 		{
-			PSG->CountE++; 
+			PSG->CountE++;
 			if (PSG->CountE >= ENVELOPE_PERIOD(PSG))
 			{
 				PSG->CountE = 0;
@@ -500,8 +500,8 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 		{
 			*(buf[0]++) = mix_3D(PSG);
 #if 0
-			*(buf[0]) = (  vol_enabled[0] * PSG->VolTable[PSG->Vol[0]] 
-			             + vol_enabled[1] * PSG->VolTable[PSG->Vol[1]] 
+			*(buf[0]) = (  vol_enabled[0] * PSG->VolTable[PSG->Vol[0]]
+			             + vol_enabled[1] * PSG->VolTable[PSG->Vol[1]]
 			             + vol_enabled[2] * PSG->VolTable[PSG->Vol[2]]) / PSG->step;
 #endif
 		}
@@ -513,17 +513,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 
 void AY8910_set_clock(int chip,int clock)
 {
-	struct AY8910 *PSG = &AYPSG[chip];
 
-	/* the step clock for the tone and noise generators is the chip clock    */
-	/* divided by 8; for the envelope generator of the AY-3-8910, it is half */
-	/* that much (clock/16), but the envelope of the YM2149 goes twice as    */
-	/* fast, therefore again clock/8.                                        */
-	/* Here we calculate the number of steps which happen during one sample  */
-	/* at the given sample rate. No. of events = sample rate / (clock/8).    */
-	/* STEP is a multiplier used to turn the fraction into a fixed point     */
-	/* number.                                                               */
-	PSG->UpdateStep = ((double)STEP * PSG->SampleRate * 8 + clock/2) / clock;
 }
 
 
@@ -555,7 +545,7 @@ static INLINE void build_single_table(double rl, ay_ym_param *par, int normalize
 			rw += 1.0 / par->r_up;
 			rt += 1.0 / par->r_up;
 		}
-		
+
 		temp[j] = rw / rt;
 		if (temp[j] < min)
 			min = temp[j];
@@ -572,7 +562,7 @@ static INLINE void build_single_table(double rl, ay_ym_param *par, int normalize
 		for (j=0; j < par->N; j++)
 			tab[j] = MAX_OUTPUT * temp[j];
 	}
-		
+
 }
 static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE, int normalize, double factor, int zero_is_off, INT32 *tab)
 {
@@ -582,7 +572,7 @@ static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE
 	double *temp;
 
 	temp = malloc(8*32*32*32*sizeof(*temp));
-	
+
 	for (e=0; e < 8; e++)
 		for (j1=0; j1 < 32; j1++)
 			for (j2=0; j2 < 32; j2++)
@@ -590,23 +580,23 @@ static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE
 				{
 					if (zero_is_off)
 					{
-						n  = (j1 != 0 || (e & 0x01)) ? 1 : 0; 
-						n += (j2 != 0 || (e & 0x02)) ? 1 : 0; 
-						n += (j3 != 0 || (e & 0x04)) ? 1 : 0; 
+						n  = (j1 != 0 || (e & 0x01)) ? 1 : 0;
+						n += (j2 != 0 || (e & 0x02)) ? 1 : 0;
+						n += (j3 != 0 || (e & 0x04)) ? 1 : 0;
 					}
 					else
 						n = 3.0;
-					
+
 					rt = n / par->r_up + 3.0 / par->r_down + 1.0 / rl;
 					rw = n / par->r_up;
-					
+
 					rw += 1.0 / ( (e & 0x01) ? parE->res[j1] : par->res[j1]);
 					rt += 1.0 / ( (e & 0x01) ? parE->res[j1] : par->res[j1]);
 					rw += 1.0 / ( (e & 0x02) ? parE->res[j2] : par->res[j2]);
 					rt += 1.0 / ( (e & 0x02) ? parE->res[j2] : par->res[j2]);
 					rw += 1.0 / ( (e & 0x04) ? parE->res[j3] : par->res[j3]);
 					rt += 1.0 / ( (e & 0x04) ? parE->res[j3] : par->res[j3]);
-						
+
 					indx = (e << 15) | (j3<<10) | (j2<<5) | j1;
 					temp[indx] = rw / rt;
 					if (temp[indx] < min)
@@ -625,9 +615,9 @@ static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE
 		for (j=0; j < 32*32*32*8; j++)
 			tab[j] = MAX_OUTPUT * temp[j];
 	}
-	
+
 	/* for (e=0;e<16;e++) printf("%d %d\n",e<<10, tab[e<<10]); */
-	
+
 	free(temp);
 }
 
@@ -638,7 +628,7 @@ static void build_mixer_table(int chip)
 	int	normalize = 0;
 	int	chan;
  struct AY8910 *PSG = &AYPSG[chip];
-	
+
 /*	if ((PSG->intf->flags & AY8910_LEGACY_OUTPUT) != 0)
 	{
 		logerror("AY-3-8910/YM2149 using legacy output levels!\n");
@@ -652,7 +642,7 @@ static void build_mixer_table(int chip)
 		PSG->parE = &ay8910_param;
 		PSG->zero_is_off = 1;
 
-		PSG->EnvP = PSG->step * 16 - 1; 
+		PSG->EnvP = PSG->step * 16 - 1;
 	for (chan=0; chan < NUM_CHANNELS; chan++)
 	{
 		build_single_table(1.0, PSG->par, normalize, PSG->VolTable[chan], PSG->zero_is_off);
@@ -704,7 +694,7 @@ static int AY8910_init(const char *chip_name,int chip,
 
 /* causes crashes with YM2610 games - overflow?*/
 /*	if (options.use_filter)*/
-/*		sample_rate = clock/8;*/
+	sample_rate = clock/8;
 
 	memset(PSG,0,sizeof(struct AY8910));
 	PSG->SampleRate = sample_rate;
@@ -723,7 +713,7 @@ static int AY8910_init(const char *chip_name,int chip,
 	if (PSG->Channel == -1)
 		return 1;
 
-	AY8910_set_clock(chip,clock);
+	//AY8910_set_clock(chip,clock);
 
 	return 0;
 }
