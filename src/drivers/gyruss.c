@@ -418,8 +418,9 @@ static struct AY8910interface ay8910_interface =
 {
 	5,	/* 5 chips */
 	14318180/8,	/* 1.789772727 MHz */
-	{ MIXERG(10,MIXER_GAIN_4x,MIXER_PAN_RIGHT), MIXERG(10,MIXER_GAIN_4x,MIXER_PAN_LEFT),
-			MIXERG(20,MIXER_GAIN_4x,MIXER_PAN_RIGHT), MIXERG(20,MIXER_GAIN_4x,MIXER_PAN_RIGHT), MIXERG(20,MIXER_GAIN_4x,MIXER_PAN_LEFT) },
+	{ 30, 30,
+		40, 40,
+    40 },
 	/*  R       L   |   R       R       L */
 	/*   effects    |         music       */
 	{ 0, 0, gyruss_portA_r },

@@ -40,7 +40,7 @@ struct AY8910
 	mem_read_handler PortBread;
 	mem_write_handler PortAwrite;
 	mem_write_handler PortBwrite;
-	int register_latch;
+   INT32 register_latch;
 	unsigned char Regs[16];
 	int lastEnable;
 	unsigned int UpdateStep;
@@ -664,12 +664,18 @@ void AY8910_reset(int chip)
 	PSG->Output[0] = 0;
 	PSG->Output[1] = 0;
 	PSG->Output[2] = 0;
-	PSG->OutputN = 0xff;
+	PSG->Count[0] = 0;
+	PSG->Count[1] = 0;
+	PSG->Count[2] = 0;
+	PSG->CountN = 0;
+	PSG->CountE = 0;
+	PSG->OutputN = 0x01;
 	PSG->lastEnable = -1;	/* force a write */
 	for (i = 0;i < AY_PORTA;i++)
 		_AYWriteReg(chip,i,0);	/* AYWriteReg() uses the timer system; we cannot */
 								/* call it at this time because the timer system */
 								/* has not been initialized. */
+PSG->ready = 1;
 }
 
 void AY8910_sh_reset(void)
