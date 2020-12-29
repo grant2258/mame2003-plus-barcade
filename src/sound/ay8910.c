@@ -21,6 +21,7 @@
 int ay8910_index_ym;
 static int num = 0, ym_num = 0;
 
+//static INLINE UINT16 mix_3D(struct AY8910 *PSG);
 typedef struct _ay_ym_param ay_ym_param;
 struct _ay_ym_param
 {
@@ -33,6 +34,7 @@ struct _ay_ym_param
 struct AY8910
 {
 	int index;
+	int streams;
 	INT16 Channel;
 	int SampleRate;
 	int ready;
@@ -374,6 +376,23 @@ WRITE16_HANDLER( AY8910_write_port_3_msb_w ) { if (ACCESSING_MSB) AY8910Write(3,
 WRITE16_HANDLER( AY8910_write_port_4_msb_w ) { if (ACCESSING_MSB) AY8910Write(4,1,data >> 8); }
 
 
+static INLINE UINT16 mix_3D(struct AY8910 *PSG)
+{
+	int indx = 0, chan;
+
+	for (chan = 0; chan < NUM_CHANNELS; chan++)
+		if (TONE_ENVELOPE(PSG, chan))
+		{
+			indx |= (1 << (chan+15)) | ( PSG->vol_enabled[chan] ? PSG->VolE << (chan*5) : 0);
+		}
+		else
+		{
+			indx |= (PSG->vol_enabled[chan] ? TONE_VOLUME(PSG, chan) << (chan*5) : 0);
+		}
+	return PSG->vol3d_tab[indx];
+}
+
+
 
 static void AY8910_update(int chip, INT16 **buffer,int length)
 {
@@ -382,14 +401,9 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 	int chan;
 
 	buf[0] = buffer[0];
-	buf[1] = NULL;
-	buf[2] = NULL;
-
-//	if (PSG->streams == NUM_CHANNELS)
-//	{
-		buf[1] = buffer[1];
-		buf[2] = buffer[2];
-//	}
+	buf[1] = buffer[1];
+	buf[2] = buffer[2];
+	
 	/* hack to prevent us from hanging when starting filtered outputs */
 	if (!PSG->ready)
 	{
@@ -481,7 +495,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 		}
 		PSG->VolE = (PSG->CountEnv ^ PSG->Attack);
 
-		if (1)
+		if (PSG->streams == NUM_CHANNELS)
 		{
 			for (chan = 0; chan < NUM_CHANNELS; chan++)
 				if (TONE_ENVELOPE(PSG,chan))
@@ -497,11 +511,8 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 		else
 		{
 			*(buf[0]++) = mix_3D(PSG);
-#if 0
-			*(buf[0]) = (  vol_enabled[0] * PSG->VolTable[PSG->Vol[0]]
-			             + vol_enabled[1] * PSG->VolTable[PSG->Vol[1]]
-			             + vol_enabled[2] * PSG->VolTable[PSG->Vol[2]]) / PSG->step;
-#endif
+			*(buf[1]++) =0;
+			*(buf[2]++) = 0; // clear these buffers when not in use 
 		}
 		length--;
 	}
@@ -524,6 +535,7 @@ void AY8910_set_volume(int chip,int channel,int volume)
 		if (channel == ch || channel == ALL_8910_CHANNELS)
 			mixer_set_volume(PSG->Channel + ch, volume);
 }
+
 
 static INLINE void build_single_table(double rl, ay_ym_param *par, int normalize, INT32 *tab, int zero_is_off)
 {
@@ -562,6 +574,8 @@ static INLINE void build_single_table(double rl, ay_ym_param *par, int normalize
 	}
 
 }
+
+
 static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE, int normalize, double factor, int zero_is_off, INT32 *tab)
 {
 	int j, j1, j2, j3, e, indx;
@@ -606,7 +620,7 @@ static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE
 	if (normalize)
 	{
 		for (j=0; j < 32*32*32*8; j++)
-			tab[j] = MAX_OUTPUT * (((temp[j] - min)/(max-min)) - 0.25) * factor;
+			tab[j] = MAX_OUTPUT * (((temp[j] - min)/(max-min))) * factor;
 	}
 	else
 	{
@@ -620,27 +634,43 @@ static INLINE void build_3D_table(double rl, ay_ym_param *par, ay_ym_param *parE
 }
 
 
-static void build_mixer_table(int chip)
+static void build_mixer_table(int chip, int type)
 
 {
+
+log_cb(RETRO_LOG_INFO, "**************************************************build mixer %d\n",chip);
 	int	normalize = 0;
 	int	chan;
- struct AY8910 *PSG = &AYPSG[chip];
+	struct AY8910 *PSG = &AYPSG[chip];
 
 /*	if ((PSG->intf->flags & AY8910_LEGACY_OUTPUT) != 0)
 	{
-		logerror("AY-3-8910/YM2149 using legacy output levels!\n");
+		logerror("AY-3-8910/YM2149 "using legacy output levels!\n");
 		normalize = 1;
 	}
 */
-			normalize = 1;
-		//PSG->streams = 3;
+	//if (type == 0)
+	if (1)
+	{
+		normalize = 1;
 		PSG->step = 1;
 		PSG->par = &ay8910_param;
 		PSG->parE = &ay8910_param;
 		PSG->zero_is_off = 1;
+		PSG->streams= 3;
+	}
 
-		PSG->EnvP = PSG->step * 16 - 1;
+	else if ( type == 1)
+	{	
+			normalize = 1;
+			PSG->step = 2;
+			PSG->par = &ym2149_param;
+			PSG->parE = &ym2149_paramE;
+			PSG->zero_is_off = 0;
+			PSG->streams= 1;
+	}
+	PSG->EnvP = PSG->step * 16 - 1;
+	
 	for (chan=0; chan < NUM_CHANNELS; chan++)
 	{
 		build_single_table(1.0, PSG->par, normalize, PSG->VolTable[chan], PSG->zero_is_off);
@@ -738,7 +768,7 @@ int AY8910_sh_start(const struct MachineSound *msound)
 				intf->portAread[chip],intf->portBread[chip],
 				intf->portAwrite[chip],intf->portBwrite[chip]) != 0)
 			return 1;
-		build_mixer_table(chip+ym_num);
+		build_mixer_table(chip+ym_num,0);
 	}
 	return 0;
 }
@@ -752,7 +782,6 @@ int AY8910_sh_start_ym(const struct MachineSound *msound)
 {
 	int chip;
 	const struct AY8910interface *intf = msound->sound_interface;
-
 	ym_num = intf->num;
 	ay8910_index_ym = num;
 
@@ -764,7 +793,7 @@ int AY8910_sh_start_ym(const struct MachineSound *msound)
 				intf->portAread[chip],intf->portBread[chip],
 				intf->portAwrite[chip],intf->portBwrite[chip]) != 0)
 			return 1;
-		build_mixer_table(chip+num);
+		build_mixer_table(chip+num,1);
 	}
 	return 0;
 }
