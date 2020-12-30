@@ -74,7 +74,7 @@ void apply_RC_filter(int channel,INT16 *buf,int len,int sample_rate)
 	for (i = 1;i < len;i++)
 		buf[i] = buf[i] + (buf[i-1] - buf[i]) * K / 0x10000;
 
-	memory[channel] = buf[len-1];
+	memory[channel] = buf[len];
 }
 
 
