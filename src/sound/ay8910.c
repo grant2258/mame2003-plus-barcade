@@ -155,7 +155,7 @@ struct _ay_ym_param
 {
 	double r_up;
 	double r_down;
-	int    N;
+	int    res_count;
 	double res[32];
 };
 
@@ -167,7 +167,7 @@ struct AY8910
 	int ready;
 	INT32 register_latch;
 	UINT8 regs[16];
-	INT32 lastEnable;
+	INT32 last_enable;
 	INT32 Count[NUM_CHANNELS];
 	UINT8 Output[NUM_CHANNELS];
 	UINT8 OutputN;
@@ -335,7 +335,7 @@ static INLINE void build_single_table(double rl, ay_ym_param *par, int normalize
 	double rt, rw = 0;
 	double temp[32], min=10.0, max=0.0;
 
-	for (j=0; j < par->N; j++)
+	for (j=0; j < par->res_count; j++)
 	{
 		rt = 1.0 / par->r_down + 1.0 / rl;
 
@@ -356,12 +356,12 @@ static INLINE void build_single_table(double rl, ay_ym_param *par, int normalize
 	}
 	if (normalize)
 	{
-		for (j=0; j < par->N; j++)
+		for (j=0; j < par->res_count; j++)
 			tab[j] = MAX_OUTPUT * (((temp[j] - min)/(max-min)) - 0.25) * 0.5;
 	}
 	else
 	{
-		for (j=0; j < par->N; j++)
+		for (j=0; j < par->res_count; j++)
 			tab[j] = MAX_OUTPUT * temp[j];
 	}
 
@@ -420,8 +420,8 @@ void _AYWriteReg(int n, int r, int v)
 			/* No action required */
 			break;
 		case AY_ENABLE:
-			if ((PSG->lastEnable == -1) ||
-			    ((PSG->lastEnable & 0x40) != (PSG->regs[AY_ENABLE] & 0x40)))
+			if ((PSG->last_enable == -1) ||
+			    ((PSG->last_enable & 0x40) != (PSG->regs[AY_ENABLE] & 0x40)))
 			{
 				/* write out 0xff if port set to input */
 
@@ -429,15 +429,15 @@ void _AYWriteReg(int n, int r, int v)
 					(*PSG->PortAwrite)( 0, (PSG->regs[AY_ENABLE] & 0x40) ? PSG->regs[AY_PORTA] : 0xff);
 			}
 
-			if ((PSG->lastEnable == -1) ||
-			    ((PSG->lastEnable & 0x80) != (PSG->regs[AY_ENABLE] & 0x80)))
+			if ((PSG->last_enable == -1) ||
+			    ((PSG->last_enable & 0x80) != (PSG->regs[AY_ENABLE] & 0x80)))
 			{
 				/* write out 0xff if port set to input */
 				if (PSG->PortBwrite)
 					(*PSG->PortBwrite)(0, (PSG->regs[AY_ENABLE] & 0x80) ? PSG->regs[AY_PORTB] : 0xff);
 			}
 
-			PSG->lastEnable = PSG->regs[AY_ENABLE];
+			PSG->last_enable = PSG->regs[AY_ENABLE];
 			break;
 		case AY_AVOL:
 		case AY_BVOL:
@@ -798,7 +798,7 @@ void AY8910_reset(int chip)
 	PSG->CountN = 0;
 	PSG->CountE = 0;
 	PSG->OutputN = 0x01;
-	PSG->lastEnable = -1;	/* force a write */
+	PSG->last_enable = -1;	/* force a write */
 	for (i = 0;i < AY_PORTA;i++)
 		_AYWriteReg(chip,i,0);	/* AYWriteReg() uses the timer system; we cannot */
 								/* call it at this time because the timer system */
@@ -897,6 +897,10 @@ int AY8910_sh_start_ym(const struct MachineSound *msound)
 	return 0;
 }
 
+void AY8910_sh_stop_ym(void)
+{
+	ym_num = 0;
+}
 /*************************************
  *
  * Read/Write Handlers
