@@ -163,20 +163,20 @@ struct AY8910
 {
 	int index;
 	int streams;
-	INT16 Channel;
+	INT16 channel;
 	int ready;
 	INT32 register_latch;
 	UINT8 regs[16];
 	INT32 last_enable;
 	INT32 count[NUM_CHANNELS];
-	UINT8 Output[NUM_CHANNELS];
+	UINT8 output[NUM_CHANNELS];
 	UINT8 output_noise;
 	INT32 count_noise;
 	INT32 count_env;
-	INT8 CountEnv;
-	UINT32 VolE;
-	UINT8 Hold,Alternate,Attack,Holding;
-	INT32 RNG;
+	INT8 env_step;
+	UINT32 env_volume;
+	UINT8 hold,alternate,attack,holding;
+	INT32 rng;
 	UINT8 env_step_mask;
 	/* init parameters ... */
 	int step;
@@ -184,9 +184,9 @@ struct AY8910
 	UINT8 vol_enabled[NUM_CHANNELS];
 	ay_ym_param *par;
 	ay_ym_param *par_env;
-	INT32 VolTable[NUM_CHANNELS][16];
-	INT32 VolTableE[NUM_CHANNELS][32];
-	INT32 vol3d_tab[8*32*32*32];
+	INT32 vol_table[NUM_CHANNELS][16];
+	INT32 env_table[NUM_CHANNELS][32];
+	INT32 vol3d_table[8*32*32*32];
 	mem_read_handler PortAread;
 	mem_read_handler PortBread;
 	mem_write_handler PortAwrite;
@@ -373,13 +373,13 @@ static INLINE UINT16 mix_3D(struct AY8910 *psg)
 	for (chan = 0; chan < NUM_CHANNELS; chan++)
 		if (TONE_ENVELOPE(psg, chan))
 		{
-			indx |= (1 << (chan+15)) | ( psg->vol_enabled[chan] ? psg->VolE << (chan*5) : 0);
+			indx |= (1 << (chan+15)) | ( psg->vol_enabled[chan] ? psg->env_volume << (chan*5) : 0);
 		}
 		else
 		{
 			indx |= (psg->vol_enabled[chan] ? TONE_VOLUME(psg, chan) << (chan*5) : 0);
 		}
-	return psg->vol3d_tab[indx];
+	return psg->vol3d_table[indx];
 }
 
 /*************************************
@@ -464,21 +464,21 @@ void _AYWriteReg(int n, int r, int v)
 	        The envelope counter on the AY-3-8910 has 16 steps. On the YM2149 it
 	        has twice the steps, happening twice as fast.
 	        */
-			psg->Attack = (psg->regs[AY_ESHAPE] & 0x04) ? psg->env_step_mask : 0x00;
+			psg->attack = (psg->regs[AY_ESHAPE] & 0x04) ? psg->env_step_mask : 0x00;
 			if ((psg->regs[AY_ESHAPE] & 0x08) == 0)
 			{
 				/* if Continue = 0, map the shape to the equivalent one which has Continue = 1 */
-				psg->Hold = 1;
-				psg->Alternate = psg->Attack;
+				psg->hold = 1;
+				psg->alternate = psg->attack;
 			}
 			else
 			{
-				psg->Hold = psg->regs[AY_ESHAPE] & 0x01;
-				psg->Alternate = psg->regs[AY_ESHAPE] & 0x02;
+				psg->hold = psg->regs[AY_ESHAPE] & 0x01;
+				psg->alternate = psg->regs[AY_ESHAPE] & 0x02;
 			}
-			psg->CountEnv = psg->env_step_mask;
-			psg->Holding = 0;
-			psg->VolE = (psg->CountEnv ^ psg->Attack);
+			psg->env_step = psg->env_step_mask;
+			psg->holding = 0;
+			psg->env_volume = (psg->env_step ^ psg->attack);
 			break;
 		case AY_PORTA:
 			if (psg->regs[AY_ENABLE] & 0x40)
@@ -542,7 +542,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 			psg->count[chan]++;
 			if (psg->count[chan] >= TONE_PERIOD(psg, chan) * psg->step)
 			{
-				psg->Output[chan] ^= 1;
+				psg->output[chan] ^= 1;
 				psg->count[chan] = 0;;
 			}
 		}
@@ -551,7 +551,7 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 		if (psg->count_noise >= NOISE_PERIOD(psg) * psg->step)
 		{
 			/* Is noise output going to change? */
-			if ((psg->RNG + 1) & 2)	/* (bit0^bit1)? */
+			if ((psg->rng + 1) & 2)	/* (bit0^bit1)? */
 			{
 				psg->output_noise ^= 1;
 			}
@@ -565,50 +565,50 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 			/* bit0, relying on the fact that after three shifts of the */
 			/* register, what now is bit3 will become bit0, and will */
 			/* invert, if necessary, bit14, which previously was bit17. */
-			if (psg->RNG & 1)
-				psg->RNG ^= 0x24000; /* This version is called the "Galois configuration". */
-			psg->RNG >>= 1;
+			if (psg->rng & 1)
+				psg->rng ^= 0x24000; /* This version is called the "Galois configuration". */
+			psg->rng >>= 1;
 			psg->count_noise = 0;
 		}
 
 		for (chan = 0; chan < NUM_CHANNELS; chan++)
 		{
-			psg->vol_enabled[chan] = (psg->Output[chan] | TONE_ENABLEQ(psg, chan)) & (psg->output_noise | NOISE_ENABLEQ(psg, chan));
+			psg->vol_enabled[chan] = (psg->output[chan] | TONE_ENABLEQ(psg, chan)) & (psg->output_noise | NOISE_ENABLEQ(psg, chan));
 		}
 
 		/* update envelope */
-		if (psg->Holding == 0)
+		if (psg->holding == 0)
 		{
 			psg->count_env++;
 			if (psg->count_env >= ENVELOPE_PERIOD(psg))
 			{
 				psg->count_env = 0;
-				psg->CountEnv--;
+				psg->env_step--;
 
 				/* check envelope current position */
-				if (psg->CountEnv < 0)
+				if (psg->env_step < 0)
 				{
-					if (psg->Hold)
+					if (psg->hold)
 					{
-						if (psg->Alternate)
-							psg->Attack ^= psg->env_step_mask;
-						psg->Holding = 1;
-						psg->CountEnv = 0;
+						if (psg->alternate)
+							psg->attack ^= psg->env_step_mask;
+						psg->holding = 1;
+						psg->env_step = 0;
 					}
 					else
 					{
-						/* if CountEnv has looped an odd number of times (usually 1), */
+						/* if env_step has looped an odd number of times (usually 1), */
 						/* invert the output. */
-						if (psg->Alternate && (psg->CountEnv & (psg->env_step_mask + 1)))
- 							psg->Attack ^= psg->env_step_mask;
+						if (psg->alternate && (psg->env_step & (psg->env_step_mask + 1)))
+ 							psg->attack ^= psg->env_step_mask;
 
-						psg->CountEnv &= psg->env_step_mask;
+						psg->env_step &= psg->env_step_mask;
 					}
 				}
 
 			}
 		}
-		psg->VolE = (psg->CountEnv ^ psg->Attack);
+		psg->env_volume = (psg->env_step ^ psg->attack);
 
 		if (psg->streams == NUM_CHANNELS)
 		{
@@ -616,18 +616,16 @@ static void AY8910_update(int chip, INT16 **buffer,int length)
 				if (TONE_ENVELOPE(psg,chan))
 				{
 					/* Envolope has no "off" state */
-					*(buf[chan]++) = psg->VolTableE[chan][psg->vol_enabled[chan] ? psg->VolE : 0];
+					*(buf[chan]++) = psg->env_table[chan][psg->vol_enabled[chan] ? psg->env_volume : 0];
 				}
 				else
 				{
-					*(buf[chan]++) = psg->VolTable[chan][psg->vol_enabled[chan] ? TONE_VOLUME(psg, chan) : 0];
+					*(buf[chan]++) = psg->vol_table[chan][psg->vol_enabled[chan] ? TONE_VOLUME(psg, chan) : 0];
 				}
 		}
 		else
 		{
 			*(buf[0]++) = mix_3D(psg);
-			*(buf[1]++) =0;
-			*(buf[2]++) = 0; // clear these buffers when not in use 
 		}
 		length--;
 	}
@@ -645,7 +643,7 @@ void AYWriteReg(int chip, int r, int v)
 		if (r == AY_ESHAPE || psg->regs[r] != v)
 		{
 			/* update the output buffer before changing the register */
-			stream_update(psg->Channel,0);
+			stream_update(psg->channel,0);
 		}
 	}
 
@@ -743,10 +741,10 @@ static void build_mixer_table(int chip, int type)
 	
 	for (chan=0; chan < NUM_CHANNELS; chan++)
 	{
-		build_single_table(1.0, psg->par, normalize, psg->VolTable[chan], psg->zero_is_off);
-		build_single_table(1.0, psg->par_env, normalize, psg->VolTableE[chan], 0);
+		build_single_table(1.0, psg->par, normalize, psg->vol_table[chan], psg->zero_is_off);
+		build_single_table(1.0, psg->par_env, normalize, psg->env_table[chan], 0);
 	}
-	build_3D_table(1.0, psg->par, psg->par_env, normalize, 3, psg->zero_is_off, psg->vol3d_tab);
+	build_3D_table(1.0, psg->par, psg->par_env, normalize, 3, psg->zero_is_off, psg->vol3d_table);
 }
 
 /*************************************
@@ -770,11 +768,11 @@ void AY8910_set_volume(int chip,int channel,int volume)
 
 	for (ch = 0; ch < 3; ch++)
 		if (channel == ch || channel == ALL_8910_CHANNELS)
-			mixer_set_volume(psg->Channel + ch, volume);
+			mixer_set_volume(psg->channel + ch, volume);
 }
 
 
-
+ 
 
 
 
@@ -788,10 +786,10 @@ void AY8910_reset(int chip)
 	struct AY8910 *psg = &AYpsg[chip];
 
 	psg->register_latch = 0;
-	psg->RNG = 1;
-	psg->Output[0] = 0;
-	psg->Output[1] = 0;
-	psg->Output[2] = 0;
+	psg->rng = 1;
+	psg->output[0] = 0;
+	psg->output[1] = 0;
+	psg->output[2] = 0;
 	psg->count[0] = 0;
 	psg->count[1] = 0;
 	psg->count[2] = 0;
@@ -841,9 +839,9 @@ static int AY8910_init(const char *chip_name,int chip,
 		name[i] = buf[i];
 		sprintf(buf[i],"%s #%d Ch %c",chip_name,chip,'A'+i);
 	}
-	psg->Channel = stream_init_multi(3,name,vol,sample_rate,chip,AY8910_update);
+	psg->channel = stream_init_multi(3,name,vol,sample_rate,chip,AY8910_update);
 
-	if (psg->Channel == -1)
+	if (psg->channel == -1)
 		return 1;
 
 	//AY8910_set_clock(chip,clock);
