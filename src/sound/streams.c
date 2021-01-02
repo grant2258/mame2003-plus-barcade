@@ -18,9 +18,9 @@
 
 static int stream_joined_channels[MIXER_MAX_CHANNELS];
 static INT16 *stream_buffer[MIXER_MAX_CHANNELS];
-static int stream_sample_rate[MIXER_MAX_CHANNELS];
+ int stream_sample_rate[MIXER_MAX_CHANNELS];
 static int stream_buffer_pos[MIXER_MAX_CHANNELS];
-static int stream_sample_length[MIXER_MAX_CHANNELS];	/* in usec */
+int stream_sample_length[MIXER_MAX_CHANNELS];	/* in usec */
 static int stream_param[MIXER_MAX_CHANNELS];
 static void (*stream_callback[MIXER_MAX_CHANNELS])(int param,INT16 *buffer,int length);
 static void (*stream_callback_multi[MIXER_MAX_CHANNELS])(int param,INT16 **buffer,int length);

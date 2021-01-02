@@ -191,7 +191,8 @@ struct AY8910
 	mem_read_handler PortBread;
 	mem_write_handler PortAwrite;
 	mem_write_handler PortBwrite;
-
+	int vol[3];
+	char name[3][40];
 };
 static struct AY8910 AYpsg[MAX_8910];		/* array of psg's */
 
@@ -740,31 +741,40 @@ int AY8910Read(int chip)
  *
  *************************************/
 
+extern int stream_sample_rate[];
+extern int stream_sample_length[];
 void AY8910_set_clock(int chip,int clock)
 {
+	struct AY8910 *psg = &AYpsg[chip];
+	int rate=clock/8;
+
 	int vol[3];
 	char buf[3][40];
 	const char *name[3];
-	struct AY8910 *psg = &AYpsg[chip];
-	int rate=clock/(8 / psg->step);
-
-	int i;
-	
-	for (i = 0;i < 3;i++)
-	{
-		vol[i] = 16;
-		name[i] = buf[i];
-		sprintf(buf[i],"%s #%d Ch %c","monkey",chip,'A'+i);
-	}
+	name[0] = psg->name[0];
+	name[1] = psg->name[1];
+	name[2] = psg->name[2];
 
 if(psg->channel ==0)
-//log_cb(RETRO_LOG_INFO, LOGPRE "not==3\n");
-	psg->channel = stream_init_multi(3, name, vol,rate,chip,AY8910_update);
-  log_cb(RETRO_LOG_INFO, LOGPRE "chip = %d clock=%d AY8910 clockrate=%d psg->channel=%d\n",chip,clock,clock/(8 / psg->step),psg->channel);
+	psg->channel = stream_init_multi(3, name, psg->vol,rate,chip,AY8910_update);
+	log_cb(RETRO_LOG_INFO, LOGPRE "*****************************************************************************************\n");
+	log_cb(RETRO_LOG_INFO, LOGPRE "(AY8910_set_clock)chip=%d clock=%d rate=%d psg->channel=%d psg->step=%d\n",chip,clock,rate,psg->channel,psg->step);
+	log_cb(RETRO_LOG_INFO, LOGPRE "(AY8910_set_clock)stream_sample_rate=%d\n",stream_sample_rate[psg->channel]);
+	log_cb(RETRO_LOG_INFO, LOGPRE "*****************************************************************************************\n\n");
+	stream_sample_rate[psg->channel]=rate;
+	stream_sample_rate[psg->channel+1]=rate;
+	stream_sample_rate[psg->channel+2]=rate;
+	stream_sample_length[psg->channel] = 1000000 / rate;
+	stream_sample_length[psg->channel] = 1000000 / rate;
+	stream_sample_length[psg->channel] = 1000000 / rate;
 
 }
-
-
+void AY8910_RANDOM_CALLER(int chip, int clock)
+{
+	log_cb(RETRO_LOG_INFO, LOGPRE "*****************************************************************************************\n");
+	log_cb(RETRO_LOG_INFO, LOGPRE "AY8910_RANDOM_CALLER chip=%d clock=%d \n",chip,clock);
+	log_cb(RETRO_LOG_INFO, LOGPRE "*****************************************************************************************\n\n");
+}	
 void AY8910_set_volume(int chip,int channel,int volume)
 {
 	struct AY8910 *psg = &AYpsg[chip];
@@ -814,10 +824,7 @@ void AY8910_sh_reset(void)
 {
 	int i;
 	struct AY8910 *psg = &AYpsg[chip];
-	char buf[3][40];
 	const char *name[3];
-	int vol[3];
-
 
 	memset(psg,0,sizeof(struct AY8910));
 	psg->index=chip;
@@ -827,9 +834,9 @@ void AY8910_sh_reset(void)
 	psg->PortBwrite = portBwrite;
 	for (i = 0;i < 3;i++)
 	{
-		vol[i] = volume;
-		name[i] = buf[i];
-		sprintf(buf[i],"%s #%d Ch %c",chip_name,chip,'A'+i);
+		psg->vol[i] = volume;
+		name[i] = psg->name;
+		sprintf(psg->name,"%s #%d Ch %c",chip_name,chip,'A'+i);
 	}
    if (type == 0)
 	{
@@ -839,7 +846,7 @@ void AY8910_sh_reset(void)
 			psg->par_env = &ay8910_param;
 			psg->zero_is_off = 1;
 			psg->env_step_mask = 0x0F;
-			AY8910_set_clock(chip,clock);
+			AY8910_set_clock(chip,clock );
 	}
 
 	else 	if ( type == 1)
@@ -852,6 +859,7 @@ void AY8910_sh_reset(void)
 			psg->env_step_mask = 0x1F;
 	}
 	build_mixer_table(chip);
+AY8910_RANDOM_CALLER( chip,clock);
 // 	psg->channel = stream_init_multi(3,name,vol,sample_rate,chip,AY8910_update);
 	
 //	if (psg->channel == -1)
