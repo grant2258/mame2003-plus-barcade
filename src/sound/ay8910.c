@@ -220,7 +220,7 @@ static ay_ym_param ym2149_param_env =
 	    1397,  1123,   925,   762,   578,   438,   332,   251 },
 };
 
-#if 0
+
 /* RL = 1000, Hacker Kay normalized, 2.1V to 3.2V */
 static const ay_ym_param ay8910_param =
 {
@@ -234,7 +234,8 @@ static const ay_ym_param ay8910_param =
  * These values correspond with guesses based on Gyruss schematics
  * They work well with scramble as well.
  */
-static ay_ym_param ay8910_param =
+
+static ay_ym_param ay8910_param1 =
 {
 	930, 454,
 	16,
@@ -247,19 +248,19 @@ static ay_ym_param ay8910_param =
  * These values correspond with guesses based on Gyruss schematics
  * They work well with scramble as well.
  */
-static const ay_ym_param ay8910_param =
+
+static const ay_ym_param ay8910_param2 =
 {
 	1371, 313,
 	16,
 	{ 93399, 33289, 25808, 19285, 13940, 9846,  7237,  4493,
 	   3814,  2337,  1629,  1263,   962,  727,   580,   458 },
 };
-#endif
 
 /*
  * RL = 1000, Hacker Kay normalized pattern, 0.2V to 1.5V
  */
-static const ay_ym_param ay8910_param =
+static const ay_ym_param ay8910_param3 =
 {
 	5806, 300,
 	16,
@@ -842,8 +843,8 @@ void AY8910_sh_reset(void)
 	{
 			psg->streams = 3;
 			psg->step = 2;
-			psg->par = &ay8910_param;
-			psg->par_env = &ay8910_param;
+			psg->par = &ay8910_param2;
+			psg->par_env = &ay8910_param2;
 			psg->zero_is_off = 1;
 			psg->env_step_mask = 0x0F;
 			AY8910_set_clock(chip,clock );
