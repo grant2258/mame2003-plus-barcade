@@ -836,8 +836,8 @@ void AY8910_sh_reset(void)
 	for (i = 0;i < 3;i++)
 	{
 		psg->vol[i] = volume;
-		name[i] = psg->name;
-		sprintf(psg->name,"%s #%d Ch %c",chip_name,chip,'A'+i);
+		name[i] = psg->name[i];
+		sprintf(psg->name[i],"%s #%d Ch %c",chip_name,chip,'A'+i);
 	}
    if (type == 0)
 	{
