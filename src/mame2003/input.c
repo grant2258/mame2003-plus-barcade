@@ -5,7 +5,8 @@
 /* todo
    do lots of testing a lots changed
 */
-int deadzone = (int) 32767 * 0.2;
+
+int deadzone = 0;
 const int number_of_controls=28;
 struct JoystickInfo mame_joy_map[] =
 {
@@ -130,6 +131,9 @@ struct JoystickInfo mame_joy_map[] =
 
 int16_t mouse_x[8] = { 0 };
 int16_t mouse_y[8] = { 0 };
+int16_t pointer_x[8] = { 0 };
+int16_t pointer_y[8] = { 0 };
+
 int retroJsState[112] = { 0 };              // initialise to zero - we are only reading 4 players atm map for 6 (4*27)
 int16_t analogjoy[8][6] = { 0 };
 
@@ -186,6 +190,16 @@ return 0;
 
 void osd_lightgun_read(int player, int *deltax, int *deltay)
 {
+	if (options.mouse_device == RETRO_DEVICE_POINTER) 
+	{
+		*deltax = pointer_x[player];
+		*deltay = pointer_y[player];
+	}
+	else
+	{ 
+		*deltax = 0;
+		*deltay = 0;
+	}
 }
 
 void osd_analogjoy_read(int player, int analog_axis[MAX_ANALOG_AXES], InputCode analogjoy_input[MAX_ANALOG_AXES])
@@ -405,8 +419,6 @@ long map2(long x, long in_min, long in_max, long out_min, long out_max) {
 
 int convert_analog_scale(int input)
 {
-	//log_cb(RETRO_LOG_INFO, LOGPRE "map(%d) map2(%d) \n,",(int)map(input,0,32767,0,128),(int)map2(input,0,32767,0,128));
-	if ( ( input > -deadzone && input < 0) || (input < deadzone && input > 0) ) input = 0;
 	return (int)map(input,0,32767 ,0,128);
 }
 

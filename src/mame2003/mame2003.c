@@ -19,8 +19,10 @@
 #include "controls.h"
 #include "usrintrf.h"
 
-extern int16_t mouse_x[4];
-extern int16_t mouse_y[4];
+extern int16_t mouse_x[];
+extern int16_t mouse_y[];
+extern int16_t pointer_x[];
+extern int16_t pointer_y[];  
 extern struct JoystickInfo mame_joy_map[];
 extern int retroJsState[112];
 extern int16_t analogjoy[4][6];
@@ -369,8 +371,8 @@ void retro_run(void)
 				pointer_pressed = input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
 				retroJsState[16 + offset] = pointer_pressed;
 				retroJsState[17 + offset] = 0; /* padding */
-				mouse_x[i] = pointer_pressed ? get_pointer_delta(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X), &prev_pointer_x) : 0;
-				mouse_y[i] = pointer_pressed ? get_pointer_delta(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y), &prev_pointer_y) : 0;
+				pointer_x[i] = convert_analog_scale(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X));
+				pointer_y[i] = convert_analog_scale(input_cb(i, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y));
 			}
 		}
 		else
